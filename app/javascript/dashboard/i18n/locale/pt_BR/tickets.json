@@ -1,0 +1,92 @@
+{
+  "TICKETS": {
+    "TITLE": "Ticket",
+    "TITLE_PLACEHOLDER": "Insira o título do ticket",
+    "DESCRIPTION": "Descrição do Ticket",
+    "DESCRIPTION_PLACEHOLDER": "Insira uma descrição do ticket",
+    "RESOLVE": "Resolver",
+    "RESOLVED_AT": "Resolvido em",
+    "ACTIONS": {
+      "EDIT": "Editar",
+      "SAVE": "Salvar",
+      "DELETE": "Excluir",
+      "CLOSE": "Fechar"
+    },
+    "ASSIGNEE": {
+      "ASSIGNED_TO": "Atribuído para",
+      "ASSIGNEE_TO_ME": "Atribuir para mim"
+    },
+    "STATUS": {
+      "TITLE": "Status",
+      "OPEN": "Aberto",
+      "PENDING": "Pendente",
+      "RESOLVED": "Resolvido",
+      "ALL": "Todos"
+    },
+    "PRIORITY": {
+      "LOW": "Baixo",
+      "MEDIUM": "Médio",
+      "HIGH": "Alto"
+    },
+    "STATUS_FILTER": {
+      "OPEN": "Aberto",
+      "PENDING": "Pendente",
+      "RESOLVED": "Resolvido"
+    },
+    "PRIORITY_FILTER": {
+      "LOW": "Baixo",
+      "MEDIUM": "Médio",
+      "HIGH": "Alto"
+    },
+    "ASSIGNEE_FILTER": {
+      "ME": "Para mim",
+      "UNASSIGNED": "Não atribuído"
+    },
+    "LABELS": {
+      "TITLE": "Etiquetas",
+      "CREATE": "Criar Etiqueta",
+      "ME": "Eu",
+      "UNASSIGNED": "Não atribuído"
+    },
+    "CREATE": {
+      "TITLE": "Criar Ticket",
+      "DESCRIPTION": "Descrição do Ticket",
+      "PRIORITY": "Prioridade",
+      "STATUS": "Status",
+      "ASSIGNEE": "Atribuído",
+      "LABELS": "Etiquetas",
+      "SUBMIT": "Criar Ticket"
+    },
+    "LIST": {
+      "NO_TICKETS": "Sem Tickets",
+      "LOADING_MESSAGE": "Carregando tickets...",
+      "404": "Nenhum ticket encontrado",
+      "EOF": "Todos os tickets carregados 🎉"
+    },
+    "EDIT": {
+      "TITLE": "Editar Ticket",
+      "DESCRIPTION": "Descrição do Ticket",
+      "PRIORITY": "Prioridade",
+      "STATUS": "Status",
+      "ASSIGNEE": "Atribuído",
+      "LABELS": "Etiquetas",
+      "SUBMIT": "Editar Ticket"
+    },
+    "SHOW": {
+      "TITLE": "Ticket",
+      "DESCRIPTION": "Descrição do Ticket",
+      "PRIORITY": "Prioridade",
+      "STATUS": "Status",
+      "ASSIGNEE": "Atribuído",
+      "LABELS": "Etiquetas",
+      "SUBMIT": "Editar Ticket",
+      "CLOSE": "Fechar Ticket",
+      "REOPEN": "Reabrir Ticket",
+      "ASSIGN": "Atribuir Ticket",
+      "UNASSIGN": "Remover Ticket",
+      "LABEL": "Adicionar Etiqueta",
+      "UNLABEL": "Remover Etiqueta",
+      "SNOOZE": "Adicionar Soneca"
+    }
+  }
+}

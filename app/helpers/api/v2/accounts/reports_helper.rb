@@ -44,6 +44,14 @@ module Api::V2::Accounts::ReportsHelper
     V2::ReportBuilder.new(Current.account, params).triggers_metrics
   end
 
+  def generate_invoices_report
+    V2::ReportInvoicesBuilder.new(Current.account, params).invoices_metrics
+  end
+
+  def generate_tickets_report
+    V2::ReportTicketsBuilder.new(Current.account, params).tickets_metrics
+  end
+
   private
 
   def generate_readable_report_metrics(report_metric)

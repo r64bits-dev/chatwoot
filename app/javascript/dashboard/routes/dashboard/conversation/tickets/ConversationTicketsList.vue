@@ -1,6 +1,14 @@
 <template>
   <div class="sidebar-labels-wrap">
     <div v-if="!labelUiFlags.isFetching" class="conversation-tickets-list">
+      <div
+        class="flex w-full border-b border-solid border-slate-100 dark:border-slate-800 mb-3"
+      >
+        <span class="text-slate-600 dark:text-slate-300 text-sm py-2">
+          {{ $t('TICKETS.LIST.TOTAL_TICKETS') }}:
+          <strong>{{ tickets.length }}</strong>
+        </span>
+      </div>
       <!-- list tickets labels -->
       <div v-if="tickets.length">
         <ticket-item
@@ -20,7 +28,7 @@
 <script>
 import { mapGetters } from 'vuex';
 import Spinner from 'shared/components/Spinner.vue';
-import TicketItem from './TicketItem.vue';
+import TicketItem from './ConversationTicketItem.vue';
 
 export default {
   components: {

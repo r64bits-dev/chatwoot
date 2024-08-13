@@ -163,7 +163,7 @@ import CustomAttributeSelector from './customAttributes/CustomAttributeSelector.
 import draggable from 'vuedraggable';
 import uiSettingsMixin from 'dashboard/mixins/uiSettings';
 import MacrosList from './Macros/List.vue';
-import ConversationTickets from './tickets/TicketsList.vue';
+import ConversationTickets from './tickets/ConversationTicketsList.vue';
 
 export default {
   components: {

@@ -58,6 +58,7 @@
       "SUBMIT": "Create Ticket"
     },
     "LIST": {
+      "TOTAL_TICKETS": "Total of Tickets",
       "NO_TICKETS": "No Tickets",
       "LOADING_MESSAGE": "Loading tickets...",
       "404": "No tickets found",

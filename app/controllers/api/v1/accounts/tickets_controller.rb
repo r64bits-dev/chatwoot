@@ -12,7 +12,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def conversations
-    @tickets = @conversation.tickets
+    @tickets = @conversation.tickets.limit(10)
   end
 
   def show
@@ -21,7 +21,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
 
   def create
     @ticket = current_account.tickets.create!(ticket_params.merge(user: current_user))
-    create_or_update_labels
+    create_or_update_labels(@ticket)
   end
 
   def update

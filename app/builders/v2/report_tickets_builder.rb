@@ -44,7 +44,7 @@ class V2::ReportTicketsBuilder
       tickets: assigned_tickets.count,
       resolved: resolved_tickets.where(assigned_to: user.id).count,
       unresolved: unresolved_tickets.where(assigned_to: user.id).count,
-      avg_time_to_resolution: avg_time_to_resolution(assigned_tickets)
+      avg_time_to_resolution_in_seconds: avg_time_to_resolution(assigned_tickets)
     }
   end
 

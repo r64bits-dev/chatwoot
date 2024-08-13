@@ -39,6 +39,7 @@ import Spinner from 'shared/components/Spinner.vue';
 import EmptyState from 'dashboard/components/widgets/EmptyState.vue';
 import Thumbnail from 'dashboard/components/widgets/Thumbnail.vue';
 import rtlMixin from 'shared/mixins/rtlMixin';
+import timeMixin from 'dashboard/mixins/time';
 
 export default {
   name: 'TicketAgentsTableComponent',
@@ -48,7 +49,7 @@ export default {
     Spinner,
     EmptyState,
   },
-  mixins: [rtlMixin],
+  mixins: [rtlMixin, timeMixin],
   props: {
     accountId: {
       type: Number,
@@ -120,6 +121,17 @@ export default {
           ),
           align: this.isRTLView ? 'right' : 'left',
           width: 10,
+        },
+        {
+          field: 'avg_time_to_resolution_in_seconds',
+          key: 'avg_time_to_resolution_in_seconds',
+          title: this.$t(
+            'TICKETS_REPORTS.AGENT_CONVERSATIONS.TABLE_HEADER.AVG_TIME_TO_RESOLUTION'
+          ),
+          align: this.isRTLView ? 'right' : 'left',
+          width: 10,
+          renderBodyCell: ({ row }) =>
+            this.formatTime(row.avg_time_to_resolution_in_seconds),
         },
       ];
     },

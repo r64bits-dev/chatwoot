@@ -47,7 +47,8 @@ Authorization: {{token}}
 
 # Path: http/tickets.http
 # @name tickets
-GET {{api}}/api/v2/accounts/{{account_id}}/reports/tickets?since={{since}}&until={{until}}
+GET {{api}}/api/v2/accounts/{{account_id}}/reports/tickets
+# ?since={{since}}&until={{until}}
 Content-Type: application/json
 Authorization: {{token}}
 

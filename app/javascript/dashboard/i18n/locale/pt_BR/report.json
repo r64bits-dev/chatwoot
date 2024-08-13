@@ -516,6 +516,9 @@
       },
       "UNRESOLVED": {
         "NAME": "Tickets não resolvidos"
+      },
+      "AVG_TIME_TO_RESOLUTION": {
+        "NAME": "Tempo médio para resolução"
       }
     },
     "AGENT_CONVERSATIONS": {
@@ -525,7 +528,8 @@
       "TABLE_HEADER": {
         "AGENT": "Agente",
         "RESOLVED": "Atendido",
-        "UNATTENDED": "Não atendido"
+        "UNATTENDED": "Não atendido",
+        "AVG_TIME_TO_RESOLUTION": "Tempo médio para resolução"
       }
     }
   },

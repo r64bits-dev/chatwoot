@@ -487,6 +487,9 @@
       },
       "UNRESOLVED": {
         "NAME": "Unresolved Tickets"
+      },
+      "AVG_TIME_TO_RESOLUTION": {
+        "NAME": "Average Time to Resolution"
       }
     },
     "AGENT_CONVERSATIONS": {
@@ -496,7 +499,8 @@
       "TABLE_HEADER": {
         "AGENT": "Agent",
         "OPEN": "Open",
-        "UNATTENDED": "Unattended"
+        "UNATTENDED": "Unattended",
+        "AVG_TIME_TO_RESOLUTION": "Average Time to Resolution"
       }
     }
   },

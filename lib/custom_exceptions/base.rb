@@ -11,7 +11,7 @@ class CustomExceptions::Base < StandardError
     403
   end
 
-  def initialize(data)
+  def initialize(data = {})
     @data = data
     super()
   end

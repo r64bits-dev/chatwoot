@@ -10,6 +10,7 @@ class Api::BaseController < ApplicationController
               CustomExceptions::Account::UserErrors,
               CustomExceptions::Team::InvalidEmail,
               CustomExceptions::Team::TeamNotFoundError,
+              CustomExceptions::Team::NeedsToBeAssignedError,
               CustomExceptions::Agent::InvalidEmail,
               CustomExceptions::Agent::AgentOfflineError,
               CustomExceptions::Agent::AgentNotFoundError,

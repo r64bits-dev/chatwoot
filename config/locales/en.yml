@@ -108,7 +108,12 @@ en:
             user:
               blank: is required
               required: is required
-
+        team:
+          needs_to_be_assigned: The team needs to be assigned to a conversation first
+          attributes:
+            name:
+              blank: is required
+              required: is required
   reports:
     period: Reporting period %{since} to %{until}
     utc_warning: The report generated is in UTC timezone

@@ -38,7 +38,7 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
     return if agent.nil?
 
     raise CustomExceptions::Agent::AgentOfflineError if agent.offline?
-    raise CustomExceptions::Team::TeamNotFoundError if @conversation.team.nil?
+    raise CustomExceptions::Team::NeedsToBeAssignedError if @conversation.team.nil?
 
     agent
   end

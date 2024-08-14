@@ -16,4 +16,10 @@ module CustomExceptions::Team
       I18n.t('errors.not_found', resource: 'Team')
     end
   end
+
+  class NeedsToBeAssignedError < CustomExceptions::Base
+    def message
+      I18n.t('activerecord.errors.models.team.needs_to_be_assigned')
+    end
+  end
 end

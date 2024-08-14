@@ -94,7 +94,12 @@ pt_BR:
             user:
               blank: é obrigatório
               required: é obrigatório
-  
+        team:
+          needs_to_be_assigned: O Equipe/Time precisa ser atribuído a uma conversa primeiro
+          attributes:
+            name:
+              blank: é obrigatório
+              required: é obrigatório
   reports:
     period: Reportando o período %{since} a %{until}
     utc_warning: O relatório gerado está em fuso horário UTC

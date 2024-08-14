@@ -1,12 +1,12 @@
 <template>
   <div class="flex-1 overflow-auto p-4">
-    <!-- <report-filters
-      type="invoices"
+    <report-filters
+      type="tickets"
       :group-by-filter-items-list="groupByFilterItemsList"
       @date-range-change="onDateRangeChange"
       @business-hours-toggle="onBusinessHoursToggle"
       @group-by-filter-change="onGroupByFilterChange"
-    /> -->
+    />
     <div class="row">
       <metric-card
         :is-live="false"
@@ -43,6 +43,7 @@ import { mapGetters } from 'vuex';
 import { TICKETS_SUMMARY_METRICS } from './constants';
 
 import MetricCard from './components/overview/MetricCard';
+import ReportFilters from './components/ReportFilters.vue';
 import TicketAgentsTableComponent from 'dashboard/routes/dashboard/tickets/components/TicketAgentsTableComponent';
 
 export default {
@@ -50,6 +51,7 @@ export default {
   components: {
     MetricCard,
     TicketAgentsTableComponent,
+    ReportFilters,
   },
   data: () => ({
     itemComponent: TicketAgentsTableComponent,

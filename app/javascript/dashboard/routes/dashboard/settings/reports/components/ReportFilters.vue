@@ -2,7 +2,7 @@
   <div class="flex flex-col md:flex-row">
     <div class="flex w-full flex-col md:flex-row items-baseline">
       <!-- SELECT ONE -->
-      <div v-if="type !== 'triggers' && type !== 'invoices'">
+      <div v-if="!excludedTypes.includes(type)">
         <div
           v-if="type === 'agent'"
           class="md:w-[240px] w-full multiselect-wrap--small"
@@ -166,7 +166,7 @@
         />
       </div>
       <div
-        v-if="notLast7Days"
+        v-if="notLast7Days && type !== 'tickets'"
         class="mx-1 md:w-[240px] w-full multiselect-wrap--small"
       >
         <p class="text-xs mb-2 font-medium">
@@ -236,6 +236,7 @@ export default {
   },
   data() {
     return {
+      excludedTypes: ['triggers', 'invoices', 'tickets'],
       currentSelectedFilter: null,
       currentDateRangeSelection: this.$t('REPORT.DATE_RANGE')[0],
       dateRange: this.$t('REPORT.DATE_RANGE'),

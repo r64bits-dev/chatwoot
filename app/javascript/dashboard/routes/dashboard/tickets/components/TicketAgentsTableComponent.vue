@@ -135,6 +135,17 @@ export default {
         },
       ];
     },
+    dateRange() {
+      return { from: this.from, to: this.to };
+    },
+  },
+  watch: {
+    dateRange: {
+      handler() {
+        this.fetchAllData();
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.fetchAllData();

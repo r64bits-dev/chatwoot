@@ -92,7 +92,9 @@ export const actions = {
         description,
         status,
         assignee_id: assigneeId,
-        conversation_id: conversationId,
+        conversation: {
+          id: conversationId,
+        },
       });
       commit(types.default.SET_TICKETS, response.data);
       commit(types.default.SET_TICKETS_UI_FLAG, {

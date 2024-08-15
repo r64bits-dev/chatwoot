@@ -8,10 +8,10 @@
     />
     <div
       v-if="isOpen"
-      class="absolute right-0 mt-1 py-2 w-48 bg-white border border-black-300 rounded-md shadow-lg"
+      class="absolute right-0 mt-1 py-2 w-48 bg-white dark:bg-slate-800 border border-black-300 dark:border-slate-700 rounded-md shadow-lg"
     >
       <woot-button
-        class="clear px-4 py-2 w-full"
+        class="clear px-4 py-2 w-full text-black dark:text-slate-100"
         icon="edit"
         @click="toggleEditMode"
       >
@@ -19,14 +19,14 @@
       </woot-button>
       <woot-button
         v-if="!ticket.assigned_to"
-        class="clear px-4 py-2 w-full"
+        class="clear px-4 py-2 w-full text-black dark:text-slate-100"
         icon="person"
         @click="assignToMe"
       >
         {{ $t('TICKETS.ASSIGNEE.ASSIGNEE_TO_ME') }}
       </woot-button>
       <woot-button
-        class="clear px-4 py-2 w-full"
+        class="clear px-4 py-2 w-full text-black dark:text-slate-100"
         icon="checkmark-circle"
         @click="resolveTicket"
       >
@@ -34,7 +34,7 @@
       </woot-button>
       <woot-button
         v-if="isAdmin"
-        class="clear px-4 py-2 w-full"
+        class="clear px-4 py-2 w-full text-red-600 dark:text-red-400"
         color-scheme="alert"
         icon="delete"
         @click="deleteTicket"

@@ -155,6 +155,30 @@ export default {
         })),
       };
     },
+    ticketLabelSection() {
+      return {
+        icon: 'number-symbol',
+        label: 'LABELS',
+        hasSubMenu: true,
+        key: 'label',
+        newLink: this.showNewLink(FEATURE_FLAGS.TEAM_MANAGEMENT),
+        newLinkTag: 'NEW_LABEL',
+        toState: frontendURL(`accounts/${this.accountId}/tickets`),
+        toStateName: 'labels_list',
+        showModalForNewItem: true,
+        modalName: 'AddLabel',
+        dataTestid: 'sidebar-new-label-button',
+        children: this.labels.map(label => ({
+          id: label.id,
+          label: label.title,
+          color: label.color,
+          truncateLabel: true,
+          toState: frontendURL(
+            `accounts/${this.accountId}/tickets?label=${label.title}`
+          ),
+        })),
+      };
+    },
     contactLabelSection() {
       return {
         icon: 'number-symbol',
@@ -237,8 +261,10 @@ export default {
       let conversationMenuItems = [];
       if (this.currentRole === 'administrator')
         conversationMenuItems.push(this.inboxSection);
+
       conversationMenuItems.push(this.labelSection);
       let contactMenuItems = [this.contactLabelSection];
+
       if (this.teams.length) {
         conversationMenuItems = [this.teamSection, ...conversationMenuItems];
       }
@@ -251,6 +277,7 @@ export default {
       return {
         conversations: conversationMenuItems,
         contacts: contactMenuItems,
+        tickets: [this.ticketLabelSection],
       };
     },
   },

@@ -484,6 +484,55 @@
       }
     }
   },
+  "INVOICE_REPORTS": {
+    "HEADER": "Relatórios de Faturamento",
+    "SUBTITLE": "relatório para faturamento de conversas e agentes",
+    "GRAPH_COLUMN_LABEL": "Faturas",
+    "GRAPH_TITLE": "Gráfico de faturas",
+    "METRICS": {
+      "TOTAL": {
+        "NAME": "Faturas"
+      },
+      "PROCESSED": {
+        "NAME": "Mensagens enviadas"
+      },
+      "UNPROCESSED": {
+        "NAME": "Mensagens não processadas"
+      }
+    }
+  },
+  "TICKETS_REPORTS": {
+    "HEADER": "Tickets",
+    "SUBTITLE": "Relatório de tickets",
+    "EMPTY_STATE": "Não há agentes",
+    "GRAPH_COLUMN_LABEL": "Tickets",
+    "GRAPH_TITLE": "Gráfico de tickets",
+    "METRICS": {
+      "TOTAL": {
+        "NAME": "Tickets"
+      },
+      "RESOLVED": {
+        "NAME": "Tickets resolvidos"
+      },
+      "UNRESOLVED": {
+        "NAME": "Tickets não resolvidos"
+      },
+      "AVG_TIME_TO_RESOLUTION": {
+        "NAME": "Tempo médio para resolução"
+      }
+    },
+    "AGENT_CONVERSATIONS": {
+      "HEADER": "Conversas por Agentes",
+      "LOADING_MESSAGE": "Carregando conversas por agentes...",
+      "NO_AGENTS": "Não há agentes associados a esta conta",
+      "TABLE_HEADER": {
+        "AGENT": "Agente",
+        "RESOLVED": "Resolvido",
+        "UNATTENDED": "Não atendido",
+        "AVG_TIME_TO_RESOLUTION": "Tempo médio para resolução"
+      }
+    }
+  },
   "DAYS_OF_WEEK": {
     "SUNDAY": "Domingo",
     "MONDAY": "Segunda-feira",

@@ -3,7 +3,10 @@ import {
   isSameYear,
   fromUnixTime,
   formatDistanceToNow,
+  intervalToDuration,
+  formatDuration,
 } from 'date-fns';
+import { ptBR } from 'date-fns/locale';
 
 export default {
   methods: {
@@ -27,6 +30,19 @@ export default {
     dateFormat(time, dateFormat = 'MMM d, yyyy') {
       const unixTime = fromUnixTime(time);
       return format(unixTime, dateFormat);
+    },
+    formatTime(timeInSeconds, locale = ptBR) {
+      if (timeInSeconds) {
+        const duration = intervalToDuration({
+          start: 0,
+          end: timeInSeconds * 1000,
+        });
+
+        const formattedTime = formatDuration(duration, { locale });
+
+        return formattedTime;
+      }
+      return '-';
     },
     shortTimestamp(time) {
       const convertToShortTime = time

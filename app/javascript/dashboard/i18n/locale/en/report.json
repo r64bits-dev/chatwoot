@@ -426,7 +426,7 @@
       "NO_AGENTS": "There are no conversations by agents",
       "TABLE_HEADER": {
         "AGENT": "Agent",
-        "OPEN": "OPEN",
+        "RESOLVED": "Resolved",
         "UNATTENDED": "Unattended",
         "STATUS": "Status"
       }
@@ -452,6 +452,55 @@
       },
       "UNPROCESSED": {
         "NAME": "Unprocessed Messages"
+      }
+    }
+  },
+  "INVOICE_REPORTS": {
+    "HEADER": "Invoices Reports",
+    "SUBTITLE": "Invoices Report",
+    "GRAPH_COLUMN_LABEL": "Invoices",
+    "GRAPH_TITLE": "Invoices Graph",
+    "METRICS": {
+      "TOTAL": {
+        "NAME": "Invoices"
+      },
+      "PROCESSED": {
+        "NAME": "Messages Sent"
+      },
+      "UNPROCESSED": {
+        "NAME": "Unprocessed Messages"
+      }
+    }
+  },
+  "TICKETS_REPORTS": {
+    "HEADER": "Tickets",
+    "SUBTITLE": "Tickets Report",
+    "EMPTY_STATE": "No agents",
+    "GRAPH_COLUMN_LABEL": "Tickets",
+    "GRAPH_TITLE": "Tickets Graph",
+    "METRICS": {
+      "TOTAL": {
+        "NAME": "Tickets"
+      },
+      "RESOLVED": {
+        "NAME": "Resolved Tickets"
+      },
+      "UNRESOLVED": {
+        "NAME": "Unresolved Tickets"
+      },
+      "AVG_TIME_TO_RESOLUTION": {
+        "NAME": "Average Time to Resolution"
+      }
+    },
+    "AGENT_CONVERSATIONS": {
+      "HEADER": "Conversations by Agents",
+      "LOADING_MESSAGE": "Loading conversations by agents...",
+      "NO_AGENTS": "There are no agents associated to this account",
+      "TABLE_HEADER": {
+        "AGENT": "Agent",
+        "OPEN": "Open",
+        "UNATTENDED": "Unattended",
+        "AVG_TIME_TO_RESOLUTION": "Average Time to Resolution"
       }
     }
   },

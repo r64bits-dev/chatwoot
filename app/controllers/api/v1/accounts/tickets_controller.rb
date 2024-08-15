@@ -7,8 +7,10 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
 
   before_action :check_authorization
 
+  RESULTS_PER_PAGE = 200
+
   def index
-    @tickets = find_tickets.search(params).order(created_at: :desc)
+    @tickets = find_tickets.search(params).order(created_at: :desc).page(params[:page] || 1).per(RESULTS_PER_PAGE)
   end
 
   def conversations

@@ -14,9 +14,11 @@
         @blur="title.$touch"
       />
       <!-- description -->
-      <woot-input
+      <woot-text-area
         v-model.trim="description"
         class="columns"
+        rows="4"
+        help-text="Forneça uma descrição detalhada."
         :label="$t('CONVERSATION.CUSTOM_TICKET.DESCRIPTION')"
         :placeholder="$t('CONVERSATION.CUSTOM_TICKET.DESCRIPTION_PLACEHOLDER')"
         @blur="description.$touch"

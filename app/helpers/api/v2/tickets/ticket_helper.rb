@@ -8,6 +8,17 @@ module Api::V2::Tickets::TicketHelper
     end
   end
 
+  def build_ticket_with_account(account)
+    ActiveRecord::Base.transaction do
+      ticket = Ticket.new(ticket_params)
+      p ticket_params
+      ticket.account = account
+      create_or_update_labels(ticket)
+      ticket.save!
+      ticket
+    end
+  end
+
   def update_ticket(ticket)
     ActiveRecord::Base.transaction do
       create_or_update_labels(ticket)

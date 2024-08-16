@@ -2,17 +2,10 @@ module Api::V2::Tickets::TicketHelper
   def build_ticket
     ActiveRecord::Base.transaction do
       ticket = Ticket.new(ticket_params)
-      create_or_update_labels(ticket)
-      ticket.save!
-      ticket
-    end
-  end
+      ticket.user = current_user
+      ticket.conversation = find_conversation(params[:display_id]) if params[:display_id].present?
+      ticket.account = current_account
 
-  def build_ticket_with_account(account)
-    ActiveRecord::Base.transaction do
-      ticket = Ticket.new(ticket_params)
-      p ticket_params
-      ticket.account = account
       create_or_update_labels(ticket)
       ticket.save!
       ticket
@@ -45,5 +38,19 @@ module Api::V2::Tickets::TicketHelper
                                                     :account_id, :user_id, :resolved_at)
     request_params[:conversation_id] = params.dig(:conversation, :id) if params.dig(:conversation, :id).present?
     request_params
+  end
+
+  def find_tickets
+    if current_user.administrator?
+      current_account.tickets
+    else
+      current_account.tickets.assigned_to(current_user.id)
+    end
+  end
+
+  private
+
+  def find_conversation(display_id)
+    Conversation.find_by(display_id: display_id)
   end
 end

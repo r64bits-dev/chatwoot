@@ -22,7 +22,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def create
-    @ticket = build_ticket_with_account(Current.account)
+    @ticket = build_ticket
   end
 
   def update
@@ -62,13 +62,5 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
 
   def fetch_ticket
     @ticket = current_account.tickets.find(params[:id])
-  end
-
-  def find_tickets
-    if current_user.administrator?
-      current_account.tickets
-    else
-      current_account.tickets.assigned_to(current_user.id)
-    end
   end
 end

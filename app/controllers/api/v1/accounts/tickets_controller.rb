@@ -22,8 +22,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def create
-    @ticket = current_account.tickets.create!(ticket_params.merge(user: current_user))
-    create_or_update_labels(@ticket)
+    @ticket = build_ticket_with_account(Current.account)
   end
 
   def update

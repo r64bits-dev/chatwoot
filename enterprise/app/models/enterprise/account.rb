@@ -63,4 +63,8 @@ module Enterprise::Account
       event_end_time: Time.current
     )
   end
+
+  def product
+    @product ||= Product.joins(:accounts).find_by(accounts: { id: id }, product_type: 'plan')
+  end
 end

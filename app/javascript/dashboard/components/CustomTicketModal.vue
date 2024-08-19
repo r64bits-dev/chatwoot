@@ -11,7 +11,7 @@
         class="columns"
         :label="$t('CONVERSATION.CUSTOM_TICKET.NAME')"
         :placeholder="$t('CONVERSATION.CUSTOM_TICKET.NAME_PLACEHOLDER')"
-        @blur="title.$touch"
+        @blur="validateText"
       />
       <!-- description -->
       <woot-text-area
@@ -21,7 +21,7 @@
         help-text="Forneça uma descrição detalhada."
         :label="$t('CONVERSATION.CUSTOM_TICKET.DESCRIPTION')"
         :placeholder="$t('CONVERSATION.CUSTOM_TICKET.DESCRIPTION_PLACEHOLDER')"
-        @blur="description.$touch"
+        @blur="validateText"
       />
 
       <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full">
@@ -83,6 +83,12 @@ export default {
         .catch(() => {
           this.showAlert(this.$t('CONVERSATION.CUSTOM_TICKET.ERROR_MESSAGE'));
         });
+    },
+    validateText() {
+      if (this.title.$error || this.description.$error) {
+        this.title.$touch();
+        this.description.$touch();
+      }
     },
   },
 };

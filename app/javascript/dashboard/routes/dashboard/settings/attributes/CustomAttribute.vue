@@ -129,9 +129,13 @@ export default {
       uiFlags: 'attributes/getUIFlags',
     }),
     attributes() {
-      const attributeModel = this.selectedTabIndex
-        ? 'contact_attribute'
-        : 'conversation_attribute';
+      const attributeModels = [
+        'conversation_attribute',
+        'contact_attribute',
+        'ticket_attribute',
+      ];
+      const attributeModel =
+        attributeModels[this.selectedTabIndex] || 'ticket_attribute';
 
       return this.$store.getters['attributes/getAttributesByModel'](
         attributeModel
@@ -146,6 +150,10 @@ export default {
         {
           key: 1,
           name: this.$t('ATTRIBUTES_MGMT.TABS.CONTACT'),
+        },
+        {
+          key: 2,
+          name: 'Tickets',
         },
       ];
     },

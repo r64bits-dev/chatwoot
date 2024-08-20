@@ -4,8 +4,7 @@
       :header-title="$t('CONVERSATION.CUSTOM_TICKET.TITLE')"
       :header-content="$t('CONVERSATION.CUSTOM_TICKET.SUBTITLE')"
     />
-    <form class="w-full flex flex-col" @submit.prevent="onSubmit">
-      <!-- name -->
+    <div class="p-8 w-full">
       <woot-input
         v-model.trim="title"
         class="columns"
@@ -40,11 +39,11 @@
         <woot-button variant="clear" @click.prevent="onClose">
           {{ $t('CONVERSATION.CUSTOM_TICKET.CANCEL') }}
         </woot-button>
-        <woot-button :is-loading="ticketUIFlags.isCreating">
+        <woot-button :is-loading="ticketUIFlags.isCreating" @click="onSubmit">
           {{ $t('CONVERSATION.CUSTOM_TICKET.CREATE') }}
         </woot-button>
       </div>
-    </form>
+    </div>
   </div>
 </template>
 
@@ -80,14 +79,27 @@ export default {
     ...mapGetters({
       conversationUiFlags: 'conversationLabels/getUIFlags',
       ticketUIFlags: 'tickets/getUIFlags',
+      getAttributesByModel: 'attributes/getAttributesByModel',
     }),
+  },
+  mounted() {
+    const attributes = this.getAttributesByModel('ticket_attribute');
+    const data = attributes.reduce((acc, attribute) => {
+      acc[attribute.attribute_key] = attribute.default_value;
+      return acc;
+    }, {});
+    this.$store.commit('tickets/SET_TICKET_CUSTOM_ATTRIBUTES', data);
   },
   methods: {
     onClose() {
       this.$emit('close');
     },
     updateContactCustomAttributes(values) {
-      this.customAttributes = values;
+      this.customAttributes = { ...this.customAttributes, ...values };
+      this.$store.commit(
+        'tickets/SET_TICKET_CUSTOM_ATTRIBUTES',
+        this.customAttributes
+      );
     },
     onSubmit() {
       this.$store

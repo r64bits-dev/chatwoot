@@ -4,6 +4,7 @@ import TicketsAPI from '../../api/tickets';
 const state = {
   records: [],
   selectedTicket: null,
+  customAttributes: {},
   uiFlags: {
     isCreating: false,
     isFetching: false,
@@ -34,6 +35,9 @@ export const getters = {
   },
   getTicket: $state => {
     return $state.selectedTicket;
+  },
+  getCustomAttributes($state) {
+    return $state.customAttributes;
   },
 };
 
@@ -242,6 +246,9 @@ export const mutations = {
     $state.selectedTicket.labels = $state.selectedTicket.labels.filter(
       l => l.id !== label.id
     );
+  },
+  [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
+    $state.customAttributes = customAttributes;
   },
 };
 

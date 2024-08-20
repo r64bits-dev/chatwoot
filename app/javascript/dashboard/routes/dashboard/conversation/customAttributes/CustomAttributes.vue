@@ -11,6 +11,7 @@
       emoji=""
       :value="attribute.value"
       :show-actions="true"
+      :show-delete-button="attributeType !== 'ticket_attribute'"
       :class="attributeClass"
       @update="onUpdate"
       @delete="onDelete"

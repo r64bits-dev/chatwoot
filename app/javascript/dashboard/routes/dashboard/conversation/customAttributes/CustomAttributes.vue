@@ -40,6 +40,7 @@ export default {
       default: '',
     },
     contactId: { type: Number, default: null },
+    ticketId: { type: Number, default: null },
   },
   methods: {
     async onUpdate(key, value) {
@@ -48,6 +49,12 @@ export default {
         if (this.attributeType === 'conversation_attribute') {
           await this.$store.dispatch('updateCustomAttributes', {
             conversationId: this.conversationId,
+            customAttributes: updatedAttributes,
+          });
+        }
+        if (this.attributeType === 'ticket_attribute') {
+          await this.$store.dispatch('tickets/update', {
+            ticketId: this.ticketId,
             customAttributes: updatedAttributes,
           });
         } else {
@@ -70,6 +77,12 @@ export default {
         if (this.attributeType === 'conversation_attribute') {
           await this.$store.dispatch('updateCustomAttributes', {
             conversationId: this.conversationId,
+            customAttributes: updatedAttributes,
+          });
+        }
+        if (this.attributeType === 'ticket_attribute') {
+          await this.$store.dispatch('tickets/update', {
+            ticketId: this.ticketId,
             customAttributes: updatedAttributes,
           });
         } else {

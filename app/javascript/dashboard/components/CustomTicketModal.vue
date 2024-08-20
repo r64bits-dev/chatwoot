@@ -24,6 +24,18 @@
         @blur="validateText"
       />
 
+      <!-- custom attributes -->
+      <div class="w-full flex-shrink-0 flex-grow-0">
+        <p class="text-sm font-medium leading-6 text-slate-900 dark:text-white">
+          <!-- {{ $t('CONVERSATION.CUSTOM_TICKET.CUSTOM_ATTRIBUTES') }} -->
+          Atributos Personalizados
+        </p>
+        <custom-attributes
+          attribute-type="ticket_attribute"
+          :ticket-id="ticketId"
+          class="w-full"
+        />
+      </div>
       <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full">
         <woot-button variant="clear" @click.prevent="onClose">
           {{ $t('CONVERSATION.CUSTOM_TICKET.CANCEL') }}
@@ -42,9 +54,13 @@ import adminMixin from 'dashboard/mixins/isAdmin';
 import conversationLabelMixin from 'dashboard/mixins/conversation/labelMixin';
 import eventListenerMixins from 'shared/mixins/eventListenerMixins';
 import alertMixin from 'shared/mixins/alertMixin';
+import CustomAttributes from 'dashboard/routes/dashboard/conversation/customAttributes/CustomAttributes.vue';
 
 export default {
   name: 'CustomTicketModal',
+  components: {
+    CustomAttributes,
+  },
   mixins: [adminMixin, conversationLabelMixin, eventListenerMixins, alertMixin],
   props: {
     conversationId: {

@@ -11,6 +11,18 @@ module CustomExceptions::Agent
     end
   end
 
+  class AgentOfflineError < CustomExceptions::Base
+    def message
+      I18n.t 'errors.agent_offline.failed'
+    end
+  end
+
+  class AgentNotFoundError < CustomExceptions::Base
+    def message
+      I18n.t('errors.not_found', resource: 'Agent')
+    end
+  end
+
   class UserExists < CustomExceptions::Base
     def message
       I18n.t('errors.signup.email_already_exists', email: @data[:email])

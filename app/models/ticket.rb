@@ -2,25 +2,27 @@
 #
 # Table name: tickets
 #
-#  id              :bigint           not null, primary key
-#  assigned_to     :bigint
-#  description     :text
-#  resolved_at     :datetime
-#  status          :integer          default("pending"), not null
-#  title           :string           not null
-#  created_at      :datetime         not null
-#  updated_at      :datetime         not null
-#  account_id      :bigint
-#  conversation_id :bigint           not null
-#  user_id         :bigint           not null
+#  id                :bigint           not null, primary key
+#  assigned_to       :bigint
+#  custom_attributes :jsonb
+#  description       :text
+#  resolved_at       :datetime
+#  status            :integer          default("pending"), not null
+#  title             :string           not null
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  account_id        :bigint
+#  conversation_id   :bigint           not null
+#  user_id           :bigint           not null
 #
 # Indexes
 #
-#  index_tickets_on_account_id       (account_id)
-#  index_tickets_on_assigned_to      (assigned_to)
-#  index_tickets_on_conversation_id  (conversation_id)
-#  index_tickets_on_status           (status)
-#  index_tickets_on_user_id          (user_id)
+#  index_tickets_on_account_id         (account_id)
+#  index_tickets_on_assigned_to        (assigned_to)
+#  index_tickets_on_conversation_id    (conversation_id)
+#  index_tickets_on_custom_attributes  (custom_attributes) USING gin
+#  index_tickets_on_status             (status)
+#  index_tickets_on_user_id            (user_id)
 #
 # Foreign Keys
 #
@@ -41,6 +43,7 @@ class Ticket < ApplicationRecord
 
   validates :title, presence: true
   validates :status, inclusion: { in: statuses.keys }
+  validates :custom_attributes, jsonb_attributes_length: true, allow_nil: true
 
   before_save :set_resolved_at
 
@@ -66,6 +69,14 @@ class Ticket < ApplicationRecord
     else
       all
     end
+  end
+
+  def custom_attribute(key)
+    custom_attributes[key.to_s]
+  end
+
+  def set_custom_attribute(key, value)
+    self.custom_attributes = (custom_attributes || {}).merge(key.to_s => value)
   end
 
   private

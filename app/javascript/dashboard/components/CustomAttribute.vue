@@ -18,7 +18,7 @@
             {{ label }}
           </span>
           <woot-button
-            v-if="showActions"
+            v-if="showActions && showDeleteButton"
             v-tooltip.left="$t('CUSTOM_ATTRIBUTES.ACTIONS.DELETE')"
             variant="link"
             size="medium"
@@ -140,6 +140,7 @@ export default {
     attributeType: { type: String, default: 'text' },
     attributeKey: { type: String, required: true },
     contactId: { type: Number, default: null },
+    showDeleteButton: { type: Boolean, default: true },
   },
   data() {
     return {

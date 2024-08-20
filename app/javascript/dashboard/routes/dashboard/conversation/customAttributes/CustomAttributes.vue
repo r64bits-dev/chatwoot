@@ -40,7 +40,6 @@ export default {
       default: '',
     },
     contactId: { type: Number, default: null },
-    ticketId: { type: Number, default: null },
   },
   methods: {
     async onUpdate(key, value) {
@@ -58,10 +57,7 @@ export default {
             customAttributes: updatedAttributes,
           });
         } else {
-          this.$store.dispatch('contacts/update', {
-            id: this.contactId,
-            custom_attributes: updatedAttributes,
-          });
+          this.$emit('update-contact-custom-attributes', updatedAttributes);
         }
         this.showAlert(this.$t('CUSTOM_ATTRIBUTES.FORM.UPDATE.SUCCESS'));
       } catch (error) {

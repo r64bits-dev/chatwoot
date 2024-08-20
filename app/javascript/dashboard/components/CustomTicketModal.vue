@@ -32,8 +32,8 @@
         </p>
         <custom-attributes
           attribute-type="ticket_attribute"
-          :ticket-id="ticketId"
           class="w-full"
+          @update-contact-custom-attributes="updateContactCustomAttributes"
         />
       </div>
       <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full">
@@ -84,6 +84,10 @@ export default {
   methods: {
     onClose() {
       this.$emit('close');
+    },
+    updateContactCustomAttributes(customAttributes) {
+      // eslint-disable-next-line no-console
+      console.log(customAttributes);
     },
     onSubmit() {
       this.$store

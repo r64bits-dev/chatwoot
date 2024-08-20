@@ -316,16 +316,16 @@ GEM
     google-cloud-translate-v3 (0.6.0)
       gapic-common (>= 0.17.1, < 2.a)
       google-cloud-errors (~> 1.0)
-    google-protobuf (3.22.3)
-    google-protobuf (3.22.3-arm64-darwin)
-    google-protobuf (3.22.3-x86_64-darwin)
-    google-protobuf (3.22.3-x86_64-linux)
+    google-protobuf (3.25.4)
+    google-protobuf (3.25.4-arm64-darwin)
+    google-protobuf (3.25.4-x86_64-darwin)
+    google-protobuf (3.25.4-x86_64-linux)
     googleapis-common-protos (1.4.0)
       google-protobuf (~> 3.14)
       googleapis-common-protos-types (~> 1.2)
       grpc (~> 1.27)
-    googleapis-common-protos-types (1.6.0)
-      google-protobuf (~> 3.14)
+    googleapis-common-protos-types (1.15.0)
+      google-protobuf (>= 3.18, < 5.a)
     googleauth (1.5.2)
       faraday (>= 0.17.3, < 3.a)
       jwt (>= 1.4, < 3.0)
@@ -335,14 +335,17 @@ GEM
       signet (>= 0.16, < 2.a)
     groupdate (6.2.1)
       activesupport (>= 5.2)
-    grpc (1.54.0)
-      google-protobuf (~> 3.21)
+    grpc (1.65.2)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.54.0-x86_64-darwin)
-      google-protobuf (~> 3.21)
+    grpc (1.65.2-arm64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
-    grpc (1.54.0-x86_64-linux)
-      google-protobuf (~> 3.21)
+    grpc (1.65.2-x86_64-darwin)
+      google-protobuf (>= 3.25, < 5.0)
+      googleapis-common-protos-types (~> 1.0)
+    grpc (1.65.2-x86_64-linux)
+      google-protobuf (>= 3.25, < 5.0)
       googleapis-common-protos-types (~> 1.0)
     haikunator (1.1.1)
     hairtrigger (1.0.0)
@@ -835,6 +838,7 @@ PLATFORMS
   arm64-darwin-20
   arm64-darwin-21
   arm64-darwin-22
+  arm64-linux
   ruby
   x86_64-darwin-18
   x86_64-darwin-20
@@ -974,4 +978,4 @@ RUBY VERSION
    ruby 3.2.2p185
 
 BUNDLED WITH
-   2.5.11
+   2.5.17

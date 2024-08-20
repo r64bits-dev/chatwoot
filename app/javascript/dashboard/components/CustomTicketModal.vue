@@ -73,6 +73,7 @@ export default {
       title: '',
       description: '',
       priority: '',
+      customAttributes: {},
     };
   },
   computed: {
@@ -85,9 +86,8 @@ export default {
     onClose() {
       this.$emit('close');
     },
-    updateContactCustomAttributes(customAttributes) {
-      // eslint-disable-next-line no-console
-      console.log(customAttributes);
+    updateContactCustomAttributes(values) {
+      this.customAttributes = values;
     },
     onSubmit() {
       this.$store
@@ -95,6 +95,7 @@ export default {
           title: this.title,
           description: this.description,
           conversationId: this.conversationId,
+          customAttributes: this.customAttributes,
         })
         .then(() => {
           this.showAlert(this.$t('CONVERSATION.CUSTOM_TICKET.SUCCESS_MESSAGE'));

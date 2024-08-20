@@ -52,13 +52,15 @@ export default {
           });
         }
         if (this.attributeType === 'ticket_attribute') {
-          await this.$store.dispatch('tickets/update', {
-            ticketId: this.ticketId,
-            customAttributes: updatedAttributes,
-          });
-        } else {
           this.$emit('update-contact-custom-attributes', updatedAttributes);
+          return;
         }
+
+        this.$store.dispatch('contacts/update', {
+          id: this.contactId,
+          custom_attributes: updatedAttributes,
+        });
+
         this.showAlert(this.$t('CUSTOM_ATTRIBUTES.FORM.UPDATE.SUCCESS'));
       } catch (error) {
         const errorMessage =

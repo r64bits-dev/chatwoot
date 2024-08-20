@@ -83,7 +83,7 @@ export const actions = {
   },
   create: async (
     { commit },
-    { title, description, status, assigneeId, conversationId }
+    { title, description, status, assigneeId, conversationId, customAttributes }
   ) => {
     commit(types.default.SET_TICKETS_UI_FLAG, { isCreating: true });
     try {
@@ -94,6 +94,7 @@ export const actions = {
         assignee_id: assigneeId,
         conversation_id: conversationId,
         display_id: conversationId,
+        custom_attributes: customAttributes,
       });
       commit(types.default.SET_TICKETS, response.data);
       commit(types.default.SET_TICKETS_UI_FLAG, {

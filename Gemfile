@@ -50,6 +50,8 @@ gem 'aws-sdk-s3', require: false
 gem 'azure-storage-blob', git: 'https://github.com/chatwoot/azure-storage-ruby', branch: 'chatwoot', require: false
 gem 'google-cloud-storage', require: false
 gem 'image_processing'
+# for cloudinary -- only for favicion uploads
+gem 'cloudinary'
 
 # #-- gems for database --#
 gem 'groupdate'

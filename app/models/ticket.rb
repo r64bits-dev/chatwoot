@@ -53,7 +53,7 @@ class Ticket < ApplicationRecord
     where(assigned_to: agent_ids) if agent_ids.present?
   }
 
-  scope :only_custom_attributes, ->(custom_attributes) { custom_attributes.map { |key| with_filled_custom_attribute(key) }.reduce(:and) }
+  scope :only_custom_attributes, ->(custom_attributes) { custom_attributes.map { |key| with_filled_custom_attribute(key) }.reduce(:or) }
   scope :with_filled_custom_attribute, lambda { |key|
     where("custom_attributes ->> ? IS NOT NULL AND custom_attributes ->> ? != ''", key.to_s, key.to_s)
   }

@@ -51,6 +51,7 @@
           :account-id="accountId"
           :from="from"
           :to="to"
+          :selected-custom-attributes="selectedCustomAttributes"
         />
       </metric-card>
     </div>
@@ -118,6 +119,7 @@ export default {
     },
     changeCustomAttributesSelection(selectedCustomAttributes) {
       this.selectedCustomAttributes = selectedCustomAttributes;
+      this.fetchAllData();
     },
 
     onGroupByFilterChange(payload) {
@@ -135,11 +137,17 @@ export default {
       this.fetchAllData();
     },
     fetchAllData() {
-      const { from, to, groupBy } = this;
+      const { from, to, groupBy, selectedCustomAttributes } = this;
       const payload = { from, to };
 
       if (groupBy) {
         payload.groupBy = groupBy;
+      }
+
+      if (selectedCustomAttributes.length) {
+        payload.customAttributes = selectedCustomAttributes.map(
+          attribute => attribute.name
+        );
       }
 
       this.$store.dispatch('ticketsReport/getSummary', payload);

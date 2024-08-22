@@ -27,22 +27,18 @@ class V2::ReportTicketsBuilder
   end
 
   def load_tickets
-    tickets = account.tickets
-    apply_filters(tickets)
+    scope = account.tickets
+    scope = filter_by_filled_custom_attributes(scope)
+    filter_by_date_range(scope)
   end
 
-  def apply_filters(scope)
-    scope = apply_custom_attributes_filter(scope)
-    apply_date_range_filter(scope)
-  end
-
-  def apply_custom_attributes_filter(scope)
+  def filter_by_filled_custom_attributes(scope)
     return scope if params[:custom_attributes].blank?
 
     scope.only_custom_attributes(params[:custom_attributes])
   end
 
-  def apply_date_range_filter(scope)
+  def filter_by_date_range(scope)
     return scope unless params[:since].present? && params[:until].present?
 
     scope.where(created_at: range)

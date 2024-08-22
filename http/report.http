@@ -42,7 +42,7 @@ Authorization: {{token}}
 ## get summary of tickets
 GET {{api}}/api/v2/accounts/{{account_id}}/reports/summary_tickets
 ?&type=account&since={{since}}&until={{until}}
-&custom_attributes[]=status&custom_attributes[]=assignee_id
+# &custom_attributes[]=status&custom_attributes[]=assignee_id
 Content-Type: application/json
 Authorization: {{token}}
 

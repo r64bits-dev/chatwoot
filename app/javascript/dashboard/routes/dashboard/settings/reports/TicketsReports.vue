@@ -6,7 +6,23 @@
       @date-range-change="onDateRangeChange"
       @business-hours-toggle="onBusinessHoursToggle"
       @group-by-filter-change="onGroupByFilterChange"
-    />
+    >
+      <template #customAttributes>
+        <p class="text-xs mb-2 font-medium">
+          {{ $t('TICKETS_REPORTS.CUSTOM_ATTRIBUTES.HEADER') }}
+        </p>
+        <multiselect
+          v-model="selectedCustomAttributes"
+          :options="customAttributesOptions"
+          :multiple="true"
+          :option-height="24"
+          track-by="id"
+          label="name"
+          :placeholder="$t('TICKETS_REPORTS.CUSTOM_ATTRIBUTES.PLACEHOLDER')"
+          @input="changeCustomAttributesSelection"
+        />
+      </template>
+    </report-filters>
     <div class="row">
       <metric-card
         :is-live="false"
@@ -57,6 +73,8 @@ export default {
     itemComponent: TicketAgentsTableComponent,
     from: Math.floor(new Date().setMonth(new Date().getMonth() - 6) / 1000),
     to: Math.floor(Date.now() / 1000),
+    selectedCustomAttributes: [],
+    customAttributesOptions: [],
     groupBy: null,
   }),
   computed: {
@@ -65,6 +83,7 @@ export default {
       ticketsSummary: 'ticketsReport/getTicketsSummary',
       ticketsUIFlags: 'ticketsReport/getUIFlags',
       accountId: 'getCurrentAccountId',
+      getAttributesByModel: 'attributes/getAttributesByModel',
     }),
     groupByFilterItemsList() {
       return this.$t('REPORT.GROUP_BY_YEAR_OPTIONS');
@@ -80,10 +99,24 @@ export default {
       return metric;
     },
   },
-  created() {
+  mounted() {
+    // fetch custom attributes
+    this.fetchTicketCustomAttributes();
+
+    // fetch data on mount
     this.fetchAllData();
   },
   methods: {
+    changeCustomAttributesSelection(selectedCustomAttributes) {
+      this.selectedCustomAttributes = selectedCustomAttributes;
+    },
+    fetchTicketCustomAttributes() {
+      const attributes = this.getAttributesByModel('ticket_attribute');
+      this.customAttributesOptions = attributes.map(attribute => ({
+        id: attribute.id,
+        name: attribute.attribute_display_name,
+      }));
+    },
     onGroupByFilterChange(payload) {
       this.groupBy = payload.id;
       this.fetchAllData();

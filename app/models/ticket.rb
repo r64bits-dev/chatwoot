@@ -52,6 +52,9 @@ class Ticket < ApplicationRecord
   scope :with_agents_ids, lambda { |agent_ids|
     where(assigned_to: agent_ids) if agent_ids.present?
   }
+  scope :only_custom_attributes, lambda { |custom_attributes|
+    where(custom_attributes: custom_attributes) if custom_attributes.present?
+  }
 
   scope :assigned_to, ->(user_id) { where(assigned_to: user_id).or(where(assigned_to: nil)) }
 

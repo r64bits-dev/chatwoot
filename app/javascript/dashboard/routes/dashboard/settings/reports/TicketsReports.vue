@@ -7,7 +7,7 @@
       @business-hours-toggle="onBusinessHoursToggle"
       @group-by-filter-change="onGroupByFilterChange"
     >
-      <template #customAttributes>
+      <template #additionalFilters>
         <p class="text-xs mb-2 font-medium">
           {{ $t('TICKETS_REPORTS.CUSTOM_ATTRIBUTES.HEADER') }}
         </p>

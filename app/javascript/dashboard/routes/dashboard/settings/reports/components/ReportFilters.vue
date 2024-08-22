@@ -186,10 +186,10 @@
 
       <!-- custom attributes -->
       <div
-        v-if="$slots.customAttributes"
+        v-if="$slots.additionalFilters"
         class="md:w-[240px] w-full mx-1 multiselect-wrap--small"
       >
-        <slot name="customAttributes" />
+        <slot name="additionalFilters" />
       </div>
     </div>
     <div class="flex items-center my-2">

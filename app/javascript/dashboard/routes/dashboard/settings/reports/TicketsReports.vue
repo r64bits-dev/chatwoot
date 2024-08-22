@@ -18,6 +18,9 @@
           :option-height="24"
           track-by="id"
           label="name"
+          :no-search-result="
+            $t('TICKETS_REPORTS.CUSTOM_ATTRIBUTES.NO_ATTRIBUTES')
+          "
           :placeholder="$t('TICKETS_REPORTS.CUSTOM_ATTRIBUTES.PLACEHOLDER')"
           @input="changeCustomAttributesSelection"
         />
@@ -99,17 +102,13 @@ export default {
       return metric;
     },
   },
-  mounted() {
-    // fetch custom attributes
-    this.fetchTicketCustomAttributes();
-
-    // fetch data on mount
-    this.fetchAllData();
+  created() {
+    this.$store.dispatch('attributes/get').then(() => {
+      this.fetchTicketCustomAttributes();
+      this.fetchAllData();
+    });
   },
   methods: {
-    changeCustomAttributesSelection(selectedCustomAttributes) {
-      this.selectedCustomAttributes = selectedCustomAttributes;
-    },
     fetchTicketCustomAttributes() {
       const attributes = this.getAttributesByModel('ticket_attribute');
       this.customAttributesOptions = attributes.map(attribute => ({
@@ -117,6 +116,10 @@ export default {
         name: attribute.attribute_display_name,
       }));
     },
+    changeCustomAttributesSelection(selectedCustomAttributes) {
+      this.selectedCustomAttributes = selectedCustomAttributes;
+    },
+
     onGroupByFilterChange(payload) {
       this.groupBy = payload.id;
       this.fetchAllData();

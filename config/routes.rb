@@ -160,7 +160,11 @@ Rails.application.routes.draw do
               post :add
             end
           end
-          resources :labels, only: [:index, :show, :create, :update, :destroy]
+          resources :labels, only: [:index, :show, :create, :update, :destroy] do
+            collection do
+              get :conversations
+            end
+          end
           resources :response_sources, only: [:create] do
             collection do
               post :parse

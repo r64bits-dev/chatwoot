@@ -33,6 +33,10 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     head :ok
   end
 
+  def labels
+    @labels = current_account.labels.with_usage_count(:label_tickets)
+  end
+
   def assign
     @ticket.assignee = User.find(params[:user_id]) || current_user
     @ticket.save!

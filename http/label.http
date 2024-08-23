@@ -17,7 +17,6 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 
 # Path: http/label.http
 # @name GetUseConversationsByLabel
-@account_id = 1
-GET {{api}}/api/v1/accounts/{{account_id}}/labels/conversations
+GET {{api}}/api/v1/accounts/1/labels/conversations
 Content-Type: application/json
 Authorization: {{token}}

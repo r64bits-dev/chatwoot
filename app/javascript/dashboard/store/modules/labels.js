@@ -108,6 +108,14 @@ export const actions = {
       commit(types.SET_LABEL_UI_FLAG, { isDeleting: false });
     }
   },
+  updateUsageCount: async function updateUsageCount({ commit }) {
+    try {
+      const response = await LabelsAPI.getConversationsUsageCount();
+      commit(types.SET_LABELS_USAGE_COUNT, response.data);
+    } catch (error) {
+      // Ignore error
+    }
+  },
 };
 
 export const mutations = {
@@ -116,6 +124,11 @@ export const mutations = {
       ..._state.uiFlags,
       ...data,
     };
+  },
+  [types.SET_LABELS_USAGE_COUNT](_state, data) {
+    _state.records.forEach(label => {
+      label.totalUsedCount = data.find(l => l.id === label.id)?.totalUsedCount;
+    });
   },
 
   [types.SET_LABELS]: MutationHelpers.set,

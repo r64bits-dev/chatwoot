@@ -23,6 +23,9 @@
         "LABEL": "Description",
         "PLACEHOLDER": "Label Description"
       },
+      "TEAM": {
+        "LABEL": "Team"
+      },
       "COLOR": {
         "LABEL": "Color"
       },

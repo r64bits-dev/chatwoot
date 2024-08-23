@@ -47,6 +47,12 @@ class Label < ApplicationRecord
     end
   }
   scope :find_title, ->(title) { where(title: title.downcase.strip) }
+  scope :with_usage_count, lambda { |association|
+    left_joins(association)
+      .select("labels.*, COUNT(#{association}.id) AS usage_count")
+      .group('labels.id')
+      .order('usage_count DESC')
+  }
 
   before_validation do
     self.title = title.downcase if attribute_present?('title')

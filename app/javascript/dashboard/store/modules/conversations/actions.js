@@ -198,7 +198,11 @@ const actions = {
       });
       dispatch('setCurrentChatAssignee', response.data);
     } catch (error) {
-      // Handle error
+      if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      }
+
+      throw error.message;
     }
   },
 

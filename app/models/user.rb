@@ -142,6 +142,10 @@ class User < ApplicationRecord
     }
   end
 
+  def offline?
+    availability_status == 'offline'
+  end
+
   def webhook_data
     {
       id: id,

@@ -150,15 +150,16 @@ export default {
       },
       set(agent) {
         const agentId = agent ? agent.id : 0;
-        this.$store.dispatch('setCurrentChatAssignee', agent);
         this.$store
           .dispatch('assignAgent', {
             conversationId: this.currentChat.id,
             agentId,
           })
           .then(() => {
+            this.$store.dispatch('setCurrentChatAssignee', agent);
             this.showAlert(this.$t('CONVERSATION.CHANGE_AGENT'));
-          });
+          })
+          .catch(e => this.showAlert(e.message));
       },
     },
     assignedTeam: {

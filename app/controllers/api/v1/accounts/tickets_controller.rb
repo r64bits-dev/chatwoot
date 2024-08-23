@@ -2,7 +2,6 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   include Api::V2::Tickets::TicketHelper
 
   before_action :fetch_ticket, only: %i[show update destroy assign resolve add_label remove_label]
-  before_action :create_or_update_labels, only: [:update]
   before_action :fetch_conversation, only: [:conversations]
 
   before_action :check_authorization
@@ -26,7 +25,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def update
-    @ticket.update!(ticket_params)
+    update_ticket(@ticket)
   end
 
   def destroy

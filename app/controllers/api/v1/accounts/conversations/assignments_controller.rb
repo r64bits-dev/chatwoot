@@ -13,7 +13,7 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
   private
 
   def set_agent
-    @agent = Current.account.users.find_by(id: params[:assignee_id])
+    @agent = find_and_validate_agent(params[:assignee_id])
     @conversation.assignee = @agent
     @conversation.save!
     render_agent
@@ -31,5 +31,13 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
     @team = Current.account.teams.find_by(id: params[:team_id])
     @conversation.update!(team: @team)
     render json: @team
+  end
+
+  def find_and_validate_agent(id)
+    agent = Current.account.users.find_by(id: id)
+    return if agent.nil?
+    raise CustomExceptions::Agent::AgentOfflineError if agent.offline?
+
+    agent
   end
 end

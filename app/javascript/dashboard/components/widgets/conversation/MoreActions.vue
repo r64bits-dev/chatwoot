@@ -41,7 +41,11 @@
       @cancel="toggleEmailActionsModal"
     />
 
-    <woot-modal :show="showTicketModal" :on-close="toggleTicketModal">
+    <woot-modal
+      :show="showTicketModal"
+      :on-close="toggleTicketModal"
+      size="large"
+    >
       <custom-ticket-modal
         :conversation-id="currentChat.id"
         @close="toggleTicketModal"

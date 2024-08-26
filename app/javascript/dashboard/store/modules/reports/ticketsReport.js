@@ -26,13 +26,14 @@ export const getters = {
 };
 
 export const actions = {
-  getAll: async ({ commit }, { from, to, businessHours }) => {
+  getAll: async ({ commit }, { from, to, businessHours, customAttributes }) => {
     commit(types.default.SET_TICKETS_UI_FLAG_REPORT, { isFetching: true });
     try {
       const response = await ReportsAPI.getTicketsReport({
         from,
         to,
         businessHours,
+        customAttributes,
       });
       commit(types.default.SET_TICKETS_UI_FLAG_REPORT, { isFetching: false });
       commit(types.default.SET_TICKETS_REPORT, response.data);
@@ -40,10 +41,14 @@ export const actions = {
       commit(types.default.SET_TICKETS_UI_FLAG_REPORT, { isFetching: false });
     }
   },
-  getSummary: async ({ commit }, { from, to }) => {
+  getSummary: async ({ commit }, { from, to, customAttributes }) => {
     commit(types.default.SET_TICKETS_UI_FLAG_REPORT, { isFetching: true });
     try {
-      const response = await ReportsAPI.getTicketsSummaryReport({ from, to });
+      const response = await ReportsAPI.getTicketsSummaryReport({
+        from,
+        to,
+        customAttributes,
+      });
       commit(types.default.SET_TICKETS_UI_FLAG_REPORT, { isFetching: false });
       commit(types.default.SET_TICKETS_REPORT_METRIC, response.data);
     } catch (error) {

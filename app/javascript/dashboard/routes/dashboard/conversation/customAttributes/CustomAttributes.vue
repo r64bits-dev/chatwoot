@@ -11,6 +11,7 @@
       emoji=""
       :value="attribute.value"
       :show-actions="true"
+      :show-delete-button="attributeType !== 'ticket_attribute'"
       :class="attributeClass"
       @update="onUpdate"
       @delete="onDelete"
@@ -50,12 +51,17 @@ export default {
             conversationId: this.conversationId,
             customAttributes: updatedAttributes,
           });
-        } else {
-          this.$store.dispatch('contacts/update', {
-            id: this.contactId,
-            custom_attributes: updatedAttributes,
-          });
         }
+        if (this.attributeType === 'ticket_attribute') {
+          this.$emit('update-contact-custom-attributes', updatedAttributes);
+          return;
+        }
+
+        this.$store.dispatch('contacts/update', {
+          id: this.contactId,
+          custom_attributes: updatedAttributes,
+        });
+
         this.showAlert(this.$t('CUSTOM_ATTRIBUTES.FORM.UPDATE.SUCCESS'));
       } catch (error) {
         const errorMessage =
@@ -70,6 +76,12 @@ export default {
         if (this.attributeType === 'conversation_attribute') {
           await this.$store.dispatch('updateCustomAttributes', {
             conversationId: this.conversationId,
+            customAttributes: updatedAttributes,
+          });
+        }
+        if (this.attributeType === 'ticket_attribute') {
+          await this.$store.dispatch('tickets/update', {
+            ticketId: this.ticketId,
             customAttributes: updatedAttributes,
           });
         } else {

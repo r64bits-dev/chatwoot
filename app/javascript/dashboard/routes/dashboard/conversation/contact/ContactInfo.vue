@@ -303,9 +303,21 @@ export default {
       this.showBlockContactModal = !this.showBlockContactModal;
     },
     blockContact() {
-      // TODO: Implement block contact
+      try {
+        this.$store.dispatch('contacts/blockContact', this.contact.id);
+        this.$emit('panel-close');
+        this.showAlert(this.$t('BLOCK_CONTACT.API.SUCCESS_MESSAGE'));
 
-      this.closeDelete();
+        this.checkForNewRoute();
+      } catch (error) {
+        this.showAlert(
+          error.message
+            ? error.message
+            : this.$t('DELETE_CONTACT.API.ERROR_MESSAGE')
+        );
+      } finally {
+        this.closeDelete();
+      }
     },
     confirmDeletion() {
       this.deleteContact(this.contact);
@@ -331,15 +343,7 @@ export default {
         this.$emit('panel-close');
         this.showAlert(this.$t('DELETE_CONTACT.API.SUCCESS_MESSAGE'));
 
-        if (isAConversationRoute(this.$route.name)) {
-          this.$router.push({
-            name: getConversationDashboardRoute(this.$route.name),
-          });
-        } else if (this.$route.name !== 'contacts_dashboard') {
-          this.$router.push({
-            name: 'contacts_dashboard',
-          });
-        }
+        this.checkForNewRoute();
       } catch (error) {
         this.showAlert(
           error.message
@@ -350,6 +354,17 @@ export default {
     },
     openMergeModal() {
       this.toggleMergeModal();
+    },
+    checkForNewRoute() {
+      if (isAConversationRoute(this.$route.name)) {
+        this.$router.push({
+          name: getConversationDashboardRoute(this.$route.name),
+        });
+      } else if (this.$route.name !== 'contacts_dashboard') {
+        this.$router.push({
+          name: 'contacts_dashboard',
+        });
+      }
     },
   },
 };

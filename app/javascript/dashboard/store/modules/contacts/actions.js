@@ -167,6 +167,23 @@ export const actions = {
     }
   },
 
+  blockContact: async ({ commit }, contactId) => {
+    commit(types.SET_CONTACT_UI_FLAG, { isDeleting: true });
+    try {
+      // await ContactsAPI.blockContact(contactId);
+      // eslint-disable-next-line no-console
+      console.log('blockContact', contactId);
+      commit(types.SET_CONTACT_UI_FLAG, { isDeleting: false });
+    } catch (error) {
+      commit(types.SET_CONTACT_UI_FLAG, { isDeleting: false });
+      if (error.response?.data?.message) {
+        throw new Error(error.response.data.message);
+      } else {
+        throw new Error(error);
+      }
+    }
+  },
+
   deleteCustomAttributes: async ({ commit }, { id, customAttributes }) => {
     try {
       const response = await ContactAPI.destroyCustomAttributes(

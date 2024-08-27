@@ -115,6 +115,7 @@ class Conversation < ApplicationRecord
   after_commit :set_display_id, unless: :display_id?
 
   delegate :auto_resolve_duration, to: :account
+  delegate :whatsapp?, to: :inbox
 
   def can_reply?
     channel = inbox&.channel
@@ -208,12 +209,6 @@ class Conversation < ApplicationRecord
 
   def csat_survey_link
     "#{ENV.fetch('FRONTEND_URL', nil)}/survey/responses/#{uuid}"
-  end
-
-  # Is to avoid overriding the method in the model
-  # rubocop:disable Naming/PredicateName
-  def is_group?
-    conversation_participants.size > 1
   end
 
   private

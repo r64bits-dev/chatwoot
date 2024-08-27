@@ -32,7 +32,7 @@ export const actions = {
         await ConversationInboxApi.fetchParticipants(conversationId);
       commit(types.SET_CONVERSATION_PARTICIPANTS, {
         conversationId,
-        data: response.data,
+        data: response.data.payload,
       });
     } catch (error) {
       throwErrorMessage(error);

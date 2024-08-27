@@ -6,6 +6,10 @@ import ConversationInboxApi from '../../api/inbox/conversation';
 
 const state = {
   records: {},
+  whatsappParticipants: [],
+  flags: {
+    isWhatsAppEnabled: false,
+  },
   uiFlags: {
     isFetching: false,
     isUpdating: false,
@@ -18,6 +22,12 @@ export const getters = {
   },
   getByConversationId: _state => conversationId => {
     return _state.records[conversationId];
+  },
+  isWhatsAppEnabled(_state) {
+    return _state.flags.isWhatsAppEnabled;
+  },
+  getWhatsAppParticipants(_state) {
+    return _state.whatsappParticipants;
   },
 };
 
@@ -33,6 +43,7 @@ export const actions = {
       commit(types.SET_CONVERSATION_PARTICIPANTS, {
         conversationId,
         data: response.data.payload,
+        isWhatsAppEnabled: response.data.meta.whatsapp,
       });
     } catch (error) {
       throwErrorMessage(error);
@@ -65,6 +76,23 @@ export const actions = {
       });
     }
   },
+
+  getParticipantsWhatsApp: async ({ commit }, { conversationId }) => {
+    commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG, {
+      isFetching: true,
+    });
+    try {
+      const response =
+        await ConversationInboxApi.getWhatsAppParticipants(conversationId);
+      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP, response.data);
+    } catch (error) {
+      throwErrorMessage(error);
+    } finally {
+      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG, {
+        isFetching: false,
+      });
+    }
+  },
 };
 
 export const mutations = {
@@ -74,8 +102,23 @@ export const mutations = {
       ...data,
     };
   },
+  [types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG]($state, data) {
+    $state.uiFlags = {
+      ...$state.uiFlags,
+      ...data,
+    };
+  },
+  [types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP]($state, { data }) {
+    Vue.set($state, 'whatsappParticipants', data);
+  },
+  [types.SET_CONVERSATION_PARTICIPANTS](
+    $state,
+    { data, conversationId, isWhatsAppEnabled }
+  ) {
+    if (isWhatsAppEnabled) {
+      Vue.set($state.flags, 'isWhatsAppEnabled', isWhatsAppEnabled);
+    }
 
-  [types.SET_CONVERSATION_PARTICIPANTS]($state, { data, conversationId }) {
     Vue.set($state.records, conversationId, data);
   },
 };

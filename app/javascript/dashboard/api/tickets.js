@@ -35,6 +35,10 @@ export class TicketsAPI extends CacheEnabledApiClient {
   removeLabel(ticketId, label) {
     return axios.delete(`${this.url}/${ticketId}/labels/${label.id}`);
   }
+
+  getLabels() {
+    return axios.get(`${this.url}/labels`);
+  }
 }
 
 export default new TicketsAPI();

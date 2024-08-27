@@ -76,7 +76,7 @@
     </div>
 
     <div v-if="isWhatsAppEnabled" class="flex flex-col w-full">
-      <whats-app-participants />
+      <whats-app-participants :conversation-id="conversationId" />
     </div>
   </div>
 </template>

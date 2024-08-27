@@ -1,10 +1,37 @@
 <template>
-  <div class="relative bg-white dark:bg-slate-900">
-    <hr class="h-px my-8 bg-black-200 border-1 dark:bg-black-700" />
-    <div class="flex flex-col items-center justify-between mb-1">
-      <p class="text-sm text-slate-600 dark:text-slate-300">Participantes</p>
-      <span class="text-sm text-slate-600 dark:text-slate-300">
-        não tem participantes
+  <div class="relative bg-white dark:bg-slate-900 pt-4 px-1">
+    <div class="flex flex-col justify-between mb-4">
+      <p class="text-sm dark:text-slate-300">Participantes</p>
+      <spinner v-if="uiFlags.isFetching" size="small" />
+      <div
+        v-if="participantsWhatsApp.length"
+        class="flex flex-col items-start w-full"
+      >
+        <div
+          v-for="participant in participantsWhatsApp"
+          :key="participant.id"
+          class="flex mb-4"
+        >
+          <thumbnail
+            :src="participant.thumbnail"
+            :username="participant.name"
+            :title="participant.name"
+            :size="'40px'"
+            :has-border="true"
+            class="mr-4"
+          />
+          <div>
+            <p class="text-sm text-slate-600 dark:text-slate-300">
+              {{ participant.name }}
+            </p>
+            <p class="text-xs text-slate-400 dark:text-slate-500">
+              {{ participant.phone }}
+            </p>
+          </div>
+        </div>
+      </div>
+      <span v-else class="text-sm text-slate-400 dark:text-slate-300">
+        Não há participantes.
       </span>
     </div>
   </div>
@@ -12,15 +39,20 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import Spinner from 'shared/components/Spinner';
+import Thumbnail from 'dashboard/components/widgets/Thumbnail';
 
 export default {
   name: 'WhatsAppParticipants',
-  data() {
-    return {
-      selectedWatchers: [],
-      whatsappAgents: [],
-      showDropDown: false,
-    };
+  components: {
+    Spinner,
+    Thumbnail,
+  },
+  props: {
+    conversationId: {
+      type: [Number, String],
+      required: true,
+    },
   },
   computed: {
     ...mapGetters({
@@ -33,11 +65,12 @@ export default {
   },
   methods: {
     fetchWhatsAppParticipants() {
-      const conversationId = this.conversationId;
       this.$store.dispatch('conversationWatchers/getParticipantsWhatsApp', {
-        conversationId,
+        conversationId: this.conversationId,
       });
     },
   },
 };
 </script>
+
+<style scoped></style>

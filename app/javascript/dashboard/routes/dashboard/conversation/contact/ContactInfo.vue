@@ -181,7 +181,7 @@
       :on-confirm="blockContact"
       :title="$t('BLOCK_CONTACT.CONFIRM.TITLE')"
       :message="$t('BLOCK_CONTACT.CONFIRM.MESSAGE')"
-      :message-value="$t('BLOCK_CONTACT.CONFIRM.MESSAGE')"
+      :message-value="confirmDeleteMessage"
       :confirm-text="$t('BLOCK_CONTACT.CONFIRM.YES')"
       :reject-text="$t('BLOCK_CONTACT.CONFIRM.NO')"
     />

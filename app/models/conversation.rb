@@ -210,6 +210,12 @@ class Conversation < ApplicationRecord
     "#{ENV.fetch('FRONTEND_URL', nil)}/survey/responses/#{uuid}"
   end
 
+  # Is to avoid overriding the method in the model
+  # rubocop:disable Naming/PredicateName
+  def is_group?
+    conversation_participants.size > 1
+  end
+
   private
 
   def execute_after_update_commit_callbacks

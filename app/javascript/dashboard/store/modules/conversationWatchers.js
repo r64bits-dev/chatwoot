@@ -78,7 +78,7 @@ export const actions = {
   },
 
   getParticipantsWhatsApp: async ({ commit }, { conversationId }) => {
-    commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG, {
+    commit(types.SET_CONVERSATION_PARTICIPANTS_UI_FLAG, {
       isFetching: true,
     });
     try {
@@ -88,7 +88,7 @@ export const actions = {
     } catch (error) {
       throwErrorMessage(error);
     } finally {
-      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG, {
+      commit(types.SET_CONVERSATION_PARTICIPANTS_UI_FLAG, {
         isFetching: false,
       });
     }
@@ -97,12 +97,6 @@ export const actions = {
 
 export const mutations = {
   [types.SET_CONVERSATION_PARTICIPANTS_UI_FLAG]($state, data) {
-    $state.uiFlags = {
-      ...$state.uiFlags,
-      ...data,
-    };
-  },
-  [types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP_UI_FLAG]($state, data) {
     $state.uiFlags = {
       ...$state.uiFlags,
       ...data,

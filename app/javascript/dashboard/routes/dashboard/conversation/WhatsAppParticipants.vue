@@ -4,7 +4,7 @@
       <p class="text-sm dark:text-slate-300">
         {{ $t('CONVERSATION_PARTICIPANTS.WHATSAPP.TITLE') }}
       </p>
-      <spinner v-if="uiFlags.isFetching" size="small" />
+      <spinner v-if="uiFlags.isFetching" size="small" color-scheme="primary" />
       <div
         v-if="participantsWhatsApp.length"
         class="flex flex-col items-start w-full"
@@ -32,7 +32,10 @@
           </div>
         </div>
       </div>
-      <span v-else class="text-sm text-slate-400 dark:text-slate-300">
+      <span
+        v-else-if="!uiFlags.isFetching"
+        class="text-sm text-slate-400 dark:text-slate-300"
+      >
         {{ $t('CONVERSATION_PARTICIPANTS.WHATSAPP.NO_PARTICIPANTS') }}
       </span>
     </div>

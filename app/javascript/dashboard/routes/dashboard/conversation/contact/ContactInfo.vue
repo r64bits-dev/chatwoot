@@ -141,7 +141,7 @@
           size="small"
           color-scheme="alert"
           :disabled="uiFlags.isDeleting"
-          @click="toggleDeleteModal"
+          @click="toggleBlockContactModal"
         />
       </div>
       <edit-contact
@@ -173,6 +173,17 @@
       :message-value="confirmDeleteMessage"
       :confirm-text="$t('DELETE_CONTACT.CONFIRM.YES')"
       :reject-text="$t('DELETE_CONTACT.CONFIRM.NO')"
+    />
+    <woot-delete-modal
+      v-if="showBlockContactModal"
+      :show.sync="showBlockContactModal"
+      :on-close="closeDelete"
+      :on-confirm="blockContact"
+      :title="$t('BLOCK_CONTACT.CONFIRM.TITLE')"
+      :message="$t('BLOCK_CONTACT.CONFIRM.MESSAGE')"
+      :message-value="$t('BLOCK_CONTACT.CONFIRM.MESSAGE')"
+      :confirm-text="$t('BLOCK_CONTACT.CONFIRM.YES')"
+      :reject-text="$t('BLOCK_CONTACT.CONFIRM.NO')"
     />
   </div>
 </template>
@@ -234,6 +245,7 @@ export default {
       showConversationModal: false,
       showMergeModal: false,
       showDeleteModal: false,
+      showBlockContactModal: false,
     };
   },
   computed: {
@@ -287,6 +299,14 @@ export default {
     toggleDeleteModal() {
       this.showDeleteModal = !this.showDeleteModal;
     },
+    toggleBlockContactModal() {
+      this.showBlockContactModal = !this.showBlockContactModal;
+    },
+    blockContact() {
+      // TODO: Implement block contact
+
+      this.closeDelete();
+    },
     confirmDeletion() {
       this.deleteContact(this.contact);
       this.closeDelete();
@@ -295,6 +315,7 @@ export default {
       this.showDeleteModal = false;
       this.showConversationModal = false;
       this.showEditModal = false;
+      this.showBlockContactModal = false;
     },
     findCountryFlag(countryCode, cityAndCountry) {
       try {

@@ -104,6 +104,21 @@
       "ERROR_MESSAGE": "Não foi possível excluir o contato. Por favor, tente novamente mais tarde."
     }
   },
+  "BLOCK_CONTACT": {
+    "BUTTON_TEXT": "Bloquear",
+    "TITLE": "Bloquear Contato",
+    "DESC": "Bloquear contatos",
+    "CONFIRM": {
+      "TITLE": "Confirmar Bloqueio",
+      "MESSAGE": "Tem certeza que deseja bloquear ",
+      "YES": "Sim, Bloquear",
+      "NO": "Não, Manter"
+    },
+    "API": {
+      "SUCCESS_MESSAGE": "Contato bloqueado com sucesso",
+      "ERROR_MESSAGE": "Não foi possível bloquear o contato. Por favor tente mais tarde."
+    }
+  },
   "CONTACT_FORM": {
     "FORM": {
       "SUBMIT": "Enviar",

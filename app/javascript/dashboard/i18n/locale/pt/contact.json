@@ -104,6 +104,21 @@
       "ERROR_MESSAGE": "Não foi possível apagar o contacto. Por favor tente mais tarde."
     }
   },
+  "BLOCK_CONTACT": {
+    "BUTTON_TEXT": "Bloquear",
+    "TITLE": "Bloquear Contacto",
+    "DESC": "Bloquear contatos",
+    "CONFIRM": {
+      "TITLE": "Confirmar Bloqueio",
+      "MESSAGE": "Tem certeza que deseja bloquear ",
+      "YES": "Sim, Bloquear",
+      "NO": "Não, Manter"
+    },
+    "API": {
+      "SUCCESS_MESSAGE": "Contacto bloqueado com sucesso",
+      "ERROR_MESSAGE": "Não foi possível bloquear o contacto. Por favor tente mais tarde."
+    }
+  },
   "CONTACT_FORM": {
     "FORM": {
       "SUBMIT": "Submeter",

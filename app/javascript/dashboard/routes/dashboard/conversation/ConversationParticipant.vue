@@ -74,6 +74,10 @@
         @click="onClickItem"
       />
     </div>
+
+    <div v-if="isWhatsAppEnabled" class="flex flex-col w-full">
+      <whats-app-participants />
+    </div>
   </div>
 </template>
 
@@ -85,12 +89,14 @@ import { mapGetters } from 'vuex';
 import agentMixin from 'dashboard/mixins/agentMixin';
 import ThumbnailGroup from 'dashboard/components/widgets/ThumbnailGroup.vue';
 import MultiselectDropdownItems from 'shared/components/ui/MultiselectDropdownItems.vue';
+import WhatsAppParticipants from './WhatsAppParticipants';
 
 export default {
   components: {
     Spinner,
     ThumbnailGroup,
     MultiselectDropdownItems,
+    WhatsAppParticipants,
   },
   mixins: [alertMixin, agentMixin, clickaway],
   props: {
@@ -112,6 +118,7 @@ export default {
   computed: {
     ...mapGetters({
       watchersUiFlas: 'conversationWatchers/getUIFlags',
+      isWhatsAppEnabled: 'conversationWatchers/isWhatsAppEnabled',
       currentUser: 'getCurrentUser',
     }),
     watchersFromStore() {

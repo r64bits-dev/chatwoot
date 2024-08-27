@@ -45,7 +45,10 @@ module ReportHelper
   end
 
   def tickets
-    scope.tickets.with_agents_ids(agents_ids).where(account_id: account.id, created_at: range)
+    scope.tickets
+         .with_agents_ids(agents_ids)
+         .only_custom_attributes(custom_attributes)
+         .where(account_id: account.id, created_at: range)
   end
 
   def resolutions
@@ -130,5 +133,9 @@ module ReportHelper
 
   def agents_ids
     params[:agents_ids]&.map(&:to_i) || []
+  end
+
+  def custom_attributes
+    params[:custom_attributes] || []
   end
 end

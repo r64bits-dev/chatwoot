@@ -5,6 +5,7 @@ const state = {
   records: [],
   labels: [],
   selectedTicket: null,
+  customAttributes: {},
   uiFlags: {
     isCreating: false,
     isFetching: false,
@@ -38,6 +39,9 @@ export const getters = {
   },
   getLabels($state) {
     return $state.labels;
+  },
+  getCustomAttributes($state) {
+    return $state.customAttributes;
   },
 };
 
@@ -87,7 +91,7 @@ export const actions = {
   },
   create: async (
     { commit },
-    { title, description, status, assigneeId, conversationId }
+    { title, description, status, assigneeId, conversationId, customAttributes }
   ) => {
     commit(types.default.SET_TICKETS_UI_FLAG, { isCreating: true });
     try {
@@ -98,6 +102,7 @@ export const actions = {
         assignee_id: assigneeId,
         conversation_id: conversationId,
         display_id: conversationId,
+        custom_attributes: customAttributes,
       });
       commit(types.default.SET_TICKETS, response.data);
       commit(types.default.SET_TICKETS_UI_FLAG, {
@@ -258,6 +263,9 @@ export const mutations = {
   },
   [types.default.SET_TICKETS_LABELS]($state, labels) {
     $state.labels = labels;
+  },
+  [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
+    $state.customAttributes = customAttributes;
   },
 };
 

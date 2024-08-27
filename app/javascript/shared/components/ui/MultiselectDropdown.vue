@@ -8,7 +8,7 @@
       variant="hollow"
       color-scheme="secondary"
       class="w-full border border-solid border-slate-200 dark:border-slate-700 px-2.5 hover:border-slate-75 dark:hover:border-slate-600"
-      @click="toggleDropdown"
+      @click.prevent="toggleDropdown"
     >
       <div class="flex">
         <Thumbnail

@@ -502,6 +502,11 @@
         "UNATTENDED": "Unattended",
         "AVG_TIME_TO_RESOLUTION": "Average Time to Resolution"
       }
+    },
+    "CUSTOM_ATTRIBUTES": {
+      "HEADER": "Custom Attributes",
+      "PLACEHOLDER": "Select attributes",
+      "NO_ATTRIBUTES": "There are no custom attributes available for this account"
     }
   },
   "DAYS_OF_WEEK": {

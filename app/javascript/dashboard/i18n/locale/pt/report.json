@@ -531,6 +531,11 @@
         "UNATTENDED": "Não atendido",
         "AVG_TIME_TO_RESOLUTION": "Tempo médio para resolução"
       }
+    },
+    "CUSTOM_ATTRIBUTES": {
+      "HEADER": "Atributos Personalizados",
+      "PLACEHOLDER": "Selecione atributos",
+      "NO_ATTRIBUTES": "Não há atributos personalizados para esta conta"
     }
   },
   "DAYS_OF_WEEK": {

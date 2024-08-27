@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_07_31_011310) do
+ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -970,9 +970,11 @@ ActiveRecord::Schema[7.0].define(version: 2024_07_31_011310) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "account_id"
+    t.jsonb "custom_attributes", default: {}
     t.index ["account_id"], name: "index_tickets_on_account_id"
     t.index ["assigned_to"], name: "index_tickets_on_assigned_to"
     t.index ["conversation_id"], name: "index_tickets_on_conversation_id"
+    t.index ["custom_attributes"], name: "index_tickets_on_custom_attributes", using: :gin
     t.index ["status"], name: "index_tickets_on_status"
     t.index ["user_id"], name: "index_tickets_on_user_id"
   end

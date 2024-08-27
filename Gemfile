@@ -14,6 +14,7 @@ gem 'attr_extras'
 gem 'browser'
 gem 'hashie'
 gem 'jbuilder'
+# for pagination
 gem 'kaminari'
 gem 'responders', '>= 3.1.1'
 gem 'rest-client'

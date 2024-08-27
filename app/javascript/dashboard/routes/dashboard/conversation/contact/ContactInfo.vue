@@ -132,6 +132,17 @@
           :disabled="uiFlags.isDeleting"
           @click="toggleDeleteModal"
         />
+        <woot-button
+          v-if="isAdmin"
+          v-tooltip="$t('BLOCK_CONTACT.BUTTON_LABEL')"
+          title="$t('BLOCK_CONTACT.BUTTON_LABEL')"
+          icon="block-contact"
+          variant="smooth"
+          size="small"
+          color-scheme="alert"
+          :disabled="uiFlags.isDeleting"
+          @click="toggleDeleteModal"
+        />
       </div>
       <edit-contact
         v-if="showEditModal"

@@ -104,6 +104,21 @@
       "ERROR_MESSAGE": "Could not delete contact. Please try again later."
     }
   },
+  "BLOCK_CONTACT": {
+    "BUTTON_LABEL": "Block Contact",
+    "TITLE": "Block contact",
+    "DESC": "Block contact details",
+    "CONFIRM": {
+      "TITLE": "Confirm Blocking",
+      "MESSAGE": "Are you sure to block ",
+      "YES": "Yes, Block",
+      "NO": "No, Keep"
+    },
+    "API": {
+      "SUCCESS_MESSAGE": "Contact blocked successfully",
+      "ERROR_MESSAGE": "Could not block contact. Please try again later."
+    }
+  },
   "CONTACT_FORM": {
     "FORM": {
       "SUBMIT": "Submit",

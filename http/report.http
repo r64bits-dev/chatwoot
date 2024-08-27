@@ -19,7 +19,7 @@ GET {{api}}/api/v2/accounts/1/reports/?since=1721098800&until=1721703599&type=in
 Content-Type: application/json
 Authorization: {{token}}
 
-### 
+###
 @token = {{LOGIN.response.headers.Authorization}}
 
 # Path: http/report.http
@@ -35,11 +35,14 @@ GET {{api}}/api/v2/accounts/{{account_id}}/reports?metric=triggers&since={{since
 Content-Type: application/json
 Authorization: {{token}}
 
-### 
+###
 
 # Path: http/tickets.http
 # @name summary_tickets
-GET {{api}}/api/v2/accounts/{{account_id}}/reports/summary_tickets?&type=account&since={{since}}&until={{until}}
+## get summary of tickets
+GET {{api}}/api/v2/accounts/{{account_id}}/reports/summary_tickets
+?&type=account&since={{since}}&until={{until}}
+# &custom_attributes[]=status&custom_attributes[]=assignee_id
 Content-Type: application/json
 Authorization: {{token}}
 
@@ -47,12 +50,13 @@ Authorization: {{token}}
 
 # Path: http/tickets.http
 # @name tickets
+## get members of account with tickets
 GET {{api}}/api/v2/accounts/{{account_id}}/reports/tickets
 # ?since={{since}}&until={{until}}
 Content-Type: application/json
 Authorization: {{token}}
 
-### 
+###
 
 # Path: http/invoices.http
 # @name invoices_report
@@ -61,10 +65,11 @@ GET {{api}}/api/v2/accounts/{{account_id}}/reports/invoices
 Content-Type: application/json
 Authorization: {{token}}
 
-### 
+###
 
 # Path: http/triggers.http
 # @name trigger_metrics
+## get summary of triggers
 GET {{api}}/api/v2/accounts/{{account_id}}/reports/triggers
 Content-Type: application/json
 Authorization: {{token}}

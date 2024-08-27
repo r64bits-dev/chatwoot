@@ -176,8 +176,16 @@ export default {
       }
     },
     onChange(e) {
-      this.phoneNumber = e.target.value;
-      this.$emit('input', e.target.value, this.activeDialCode);
+      let phoneNumber = e.target.value;
+
+      if (this.activeDialCode === '+55') {
+        phoneNumber = phoneNumber
+          .replace(/\D/g, '')
+          .replace(/^(\d{5})(\d)/, '$1-$2');
+      }
+
+      this.phoneNumber = phoneNumber;
+      this.$emit('input', phoneNumber, this.activeDialCode);
     },
     onBlur(e) {
       this.$emit('blur', e.target.value);

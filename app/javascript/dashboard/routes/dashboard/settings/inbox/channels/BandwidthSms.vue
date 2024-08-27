@@ -20,18 +20,15 @@
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
       <label :class="{ error: $v.phoneNumber.$error }">
         {{ $t('INBOX_MGMT.ADD.SMS.BANDWIDTH.PHONE_NUMBER.LABEL') }}
-        <input
-          v-model.trim="phoneNumber"
-          type="text"
-          :placeholder="
-            $t('INBOX_MGMT.ADD.SMS.BANDWIDTH.PHONE_NUMBER.PLACEHOLDER')
-          "
-          @blur="$v.phoneNumber.$touch"
-        />
-        <span v-if="$v.phoneNumber.$error" class="message">{{
-          $t('INBOX_MGMT.ADD.SMS.BANDWIDTH.PHONE_NUMBER.ERROR')
-        }}</span>
       </label>
+      <woot-phone-input
+        v-model.trim="phoneNumber"
+        :placeholder="
+          $t('INBOX_MGMT.ADD.SMS.BANDWIDTH.PHONE_NUMBER.PLACEHOLDER')
+        "
+        :error="$v.phoneNumber.$error"
+        @blur="$v.phoneNumber.$touch"
+      />
     </div>
 
     <div class="w-[65%] flex-shrink-0 flex-grow-0 max-w-[65%]">
@@ -151,11 +148,12 @@ export default {
       }
 
       try {
+        const onlyDigits = this.phoneNumber.replace(/\D/g, '');
         const smsChannel = await this.$store.dispatch('inboxes/createChannel', {
           name: this.inboxName,
           channel: {
             type: 'sms',
-            phone_number: this.phoneNumber,
+            phone_number: `+${onlyDigits}`,
             provider_config: {
               api_key: this.apiKey,
               api_secret: this.apiSecret,

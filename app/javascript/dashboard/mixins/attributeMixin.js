@@ -14,6 +14,9 @@ export default {
     customAttributes() {
       if (this.attributeType === 'conversation_attribute')
         return this.currentChat.custom_attributes || {};
+      if (this.attributeType === 'ticket_attribute') {
+        return this.ticketCustomAttributesValues || {};
+      }
       return this.contact.custom_attributes || {};
     },
     contactIdentifier() {
@@ -29,7 +32,9 @@ export default {
     conversationId() {
       return this.currentChat.id;
     },
-
+    ticketCustomAttributesValues() {
+      return this.$store.getters['tickets/getCustomAttributes'];
+    },
     filteredAttributes() {
       return Object.keys(this.customAttributes).map(key => {
         const item = this.attributes.find(

@@ -3,7 +3,7 @@
     "HEADER": "Atributos personalizados",
     "HEADER_BTN_TXT": "Adicionar Atributo Personalizado",
     "LOADING": "Obtendo atributos personalizados",
-    "SIDEBAR_TXT": "<p><b>Atributos personalizados</b> <p>Um atributo personalizado rastreia factos sobre os seus contactos/conversação - como o plano de assinatura, ou quando encomendaram o primeiro artigo, etc. <br /><br />Para criar um Atributo Personalizado, basta clicar no botão <b>Adicionar Atributo Personalizado.</b> Também pode editar ou apagar um Atributo Personalizado existente, clicando no botão Editar ou Apagar.</p>",
+    "SIDEBAR_TXT": "<p><b>Atributos personalizados</b> <p>Um atributo personalizado rastreia factos sobre os seus contactos/conversação/tickets - como o plano de assinatura, ou quando encomendaram o primeiro artigo, etc. <br /><br />Para criar um Atributo Personalizado, basta clicar no botão <b>Adicionar Atributo Personalizado.</b> Também pode editar ou apagar um Atributo Personalizado existente, clicando no botão Editar ou Apagar.</p>",
     "ADD": {
       "TITLE": "Adicionar Atributo Personalizado",
       "SUBMIT": "Criar",
@@ -80,12 +80,7 @@
       "CONTACT": "Contato"
     },
     "LIST": {
-      "TABLE_HEADER": [
-        "Nome:",
-        "Descrição",
-        "Tipo",
-        "Chave"
-      ],
+      "TABLE_HEADER": ["Nome:", "Descrição", "Tipo", "Chave"],
       "BUTTONS": {
         "EDIT": "Alterar",
         "DELETE": "excluir"

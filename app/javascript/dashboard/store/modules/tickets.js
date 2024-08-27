@@ -4,6 +4,7 @@ import TicketsAPI from '../../api/tickets';
 const state = {
   records: [],
   selectedTicket: null,
+  customAttributes: {},
   uiFlags: {
     isCreating: false,
     isFetching: false,
@@ -34,6 +35,9 @@ export const getters = {
   },
   getTicket: $state => {
     return $state.selectedTicket;
+  },
+  getCustomAttributes($state) {
+    return $state.customAttributes;
   },
 };
 
@@ -83,7 +87,7 @@ export const actions = {
   },
   create: async (
     { commit },
-    { title, description, status, assigneeId, conversationId }
+    { title, description, status, assigneeId, conversationId, customAttributes }
   ) => {
     commit(types.default.SET_TICKETS_UI_FLAG, { isCreating: true });
     try {
@@ -94,6 +98,7 @@ export const actions = {
         assignee_id: assigneeId,
         conversation_id: conversationId,
         display_id: conversationId,
+        custom_attributes: customAttributes,
       });
       commit(types.default.SET_TICKETS, response.data);
       commit(types.default.SET_TICKETS_UI_FLAG, {
@@ -241,6 +246,9 @@ export const mutations = {
     $state.selectedTicket.labels = $state.selectedTicket.labels.filter(
       l => l.id !== label.id
     );
+  },
+  [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
+    $state.customAttributes = customAttributes;
   },
 };
 

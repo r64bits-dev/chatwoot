@@ -63,6 +63,10 @@ export default {
       type: Number,
       required: true,
     },
+    selectedCustomAttributes: {
+      type: Array,
+      default: () => [],
+    },
   },
   data: () => ({
     isLoading: false,
@@ -146,6 +150,12 @@ export default {
       },
       deep: true,
     },
+    selectedCustomAttributes: {
+      handler() {
+        this.fetchAllData();
+      },
+      deep: true,
+    },
   },
   mounted() {
     this.fetchAllData();
@@ -155,8 +165,14 @@ export default {
       this.pageIndex = pageIndex;
     },
     async fetchAllData() {
-      const { from, to } = this;
+      const { from, to, selectedCustomAttributes } = this;
       const payload = { from, to };
+
+      if (selectedCustomAttributes.length) {
+        payload.customAttributes = selectedCustomAttributes.map(
+          attribute => attribute.name
+        );
+      }
 
       await this.$store.dispatch('ticketsReport/getAll', payload);
     },

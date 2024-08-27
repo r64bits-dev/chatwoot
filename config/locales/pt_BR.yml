@@ -94,7 +94,10 @@ pt_BR:
             user:
               blank: é obrigatório
               required: é obrigatório
-  
+        label:
+          attributes:
+            title:
+              taken: já existe
   reports:
     period: Reportando o período %{since} a %{until}
     utc_warning: O relatório gerado está em fuso horário UTC

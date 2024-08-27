@@ -1,5 +1,5 @@
 json.meta do
-  json.whatsapp? @conversation.whatsapp?
+  json.whatsapp @conversation.whatsapp?
 end
 
 json.payload do

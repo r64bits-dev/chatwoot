@@ -1,7 +1,9 @@
 <template>
   <div class="relative bg-white dark:bg-slate-900 pt-4 px-1">
     <div class="flex flex-col justify-between mb-4">
-      <p class="text-sm dark:text-slate-300">Participantes</p>
+      <p class="text-sm dark:text-slate-300">
+        {{ $t('CONVERSATION_PARTICIPANTS.WHATSAPP.TITLE') }}
+      </p>
       <spinner v-if="uiFlags.isFetching" size="small" />
       <div
         v-if="participantsWhatsApp.length"
@@ -31,7 +33,7 @@
         </div>
       </div>
       <span v-else class="text-sm text-slate-400 dark:text-slate-300">
-        Não há participantes.
+        {{ $t('CONVERSATION_PARTICIPANTS.WHATSAPP.NO_PARTICIPANTS') }}
       </span>
     </div>
   </div>

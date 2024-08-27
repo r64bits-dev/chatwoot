@@ -329,6 +329,10 @@
     "API": {
       "ERROR_MESSAGE": "Não foi possível atualizar, tente novamente!",
       "SUCCESS_MESSAGE": "Participantes atualizados!"
+    },
+    "WHATSAPP": {
+      "TITLE":"Whatsapp Participantes",
+      "NO_PARTICIPANTS":"Nenhum participante encontrado"
     }
   },
   "TRANSLATE_MODAL": {

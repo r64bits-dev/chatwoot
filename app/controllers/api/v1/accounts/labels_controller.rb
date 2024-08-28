@@ -1,6 +1,6 @@
 class Api::V1::Accounts::LabelsController < Api::V1::Accounts::BaseController
   before_action :current_account
-  before_action :fetch_label, except: [:index, :create]
+  before_action :fetch_label, except: [:index, :create, :conversations]
   before_action :check_authorization
 
   def index
@@ -22,6 +22,10 @@ class Api::V1::Accounts::LabelsController < Api::V1::Accounts::BaseController
     head :ok
   end
 
+  def conversations
+    render json: conversations_labels_with_usage_count.as_json, status: :ok
+  end
+
   private
 
   def fetch_label
@@ -30,5 +34,16 @@ class Api::V1::Accounts::LabelsController < Api::V1::Accounts::BaseController
 
   def permitted_params
     params.require(:label).permit(:title, :description, :color, :show_on_sidebar, :team_id)
+  end
+
+  def conversations_labels_with_usage_count
+    current_account.labels.map.with_object([]) do |label, arr|
+      arr << {
+        id: label.id,
+        title: label.title,
+        color: label.color,
+        totalUsedCount: label.conversations.count
+      }
+    end
   end
 end

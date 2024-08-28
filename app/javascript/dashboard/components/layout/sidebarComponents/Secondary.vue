@@ -73,6 +73,7 @@ export default {
     ...mapGetters({
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       currentPermissions: 'getCurrentPermissions',
+      ticketLabels: 'tickets/getLabels',
     }),
     hasSecondaryMenu() {
       return this.menuConfig.menuItems && this.menuConfig.menuItems.length;
@@ -173,6 +174,7 @@ export default {
           label: label.title,
           color: label.color,
           truncateLabel: true,
+          totalUsedCount: this.findLabelTotalUsedCount(label),
           toState: frontendURL(
             `accounts/${this.accountId}/tickets?label=${label.title}`
           ),
@@ -281,6 +283,11 @@ export default {
       };
     },
   },
+  mounted() {
+    if (this.menuConfig.parentNav === 'tickets') {
+      this.$store.dispatch('tickets/getLabels');
+    }
+  },
   methods: {
     showAddLabelPopup() {
       this.$emit('add-label');
@@ -290,6 +297,9 @@ export default {
     },
     showNewLink(featureFlag) {
       return this.isFeatureEnabledonAccount(this.accountId, featureFlag);
+    },
+    findLabelTotalUsedCount(label) {
+      return this.ticketLabels.find(l => l.id === label.id)?.totalUsedCount;
     },
   },
 };

@@ -3,6 +3,7 @@ import TicketsAPI from '../../api/tickets';
 
 const state = {
   records: [],
+  labels: [],
   selectedTicket: null,
   customAttributes: {},
   uiFlags: {
@@ -35,6 +36,9 @@ export const getters = {
   },
   getTicket: $state => {
     return $state.selectedTicket;
+  },
+  getLabels($state) {
+    return $state.labels;
   },
   getCustomAttributes($state) {
     return $state.customAttributes;
@@ -209,6 +213,16 @@ export const actions = {
       throw error;
     }
   },
+  getLabels: async ({ commit }) => {
+    commit(types.default.SET_TICKETS_UI_FLAG, { isFetching: true });
+    try {
+      const response = await TicketsAPI.getLabels();
+      commit(types.default.SET_TICKETS_LABELS, response.data);
+    } catch (error) {
+      commit(types.default.SET_TICKETS_UI_FLAG, { isFetching: false });
+      throw error;
+    }
+  },
 };
 
 export const mutations = {
@@ -246,6 +260,9 @@ export const mutations = {
     $state.selectedTicket.labels = $state.selectedTicket.labels.filter(
       l => l.id !== label.id
     );
+  },
+  [types.default.SET_TICKETS_LABELS]($state, labels) {
+    $state.labels = labels;
   },
   [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
     $state.customAttributes = customAttributes;

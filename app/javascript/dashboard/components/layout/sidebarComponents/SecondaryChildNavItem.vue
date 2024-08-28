@@ -50,7 +50,7 @@
                 shouldTruncate,
             }"
           >
-            {{ label }}
+            {{ label }} {{ formattedCount }}
           </span>
           <span
             v-if="showChildCount"
@@ -114,6 +114,10 @@ export default {
       type: Number,
       default: 0,
     },
+    totalUsedCount: {
+      type: Number,
+      default: 0,
+    },
   },
   computed: {
     showIcon() {
@@ -126,6 +130,9 @@ export default {
     },
     menuTitle() {
       return this.shouldTruncate ? this.label : '';
+    },
+    formattedCount() {
+      return this.totalUsedCount ? `(${this.totalUsedCount})` : '';
     },
   },
 };

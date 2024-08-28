@@ -9,7 +9,7 @@
       <meta name="msapplication-TileColor" content="#1f93ff">
       <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
       <meta name="theme-color" content="#1f93ff">
-      <meta name="description" content="Chatwoot is a customer support solution that helps companies engage customers over Messenger, Twitter, Telegram, WeChat, Whatsapp. Simply connect your channels and converse with your customers from a single place. Easily add new agents to your system and have them own and resolve conversations with customers.Chatwoot also gives you real-time reports to measure your team's performance, canned responses to easily respond to frequently asked questions and private notes for agents to collaborate among themselves.">
+      <meta name="description" content="Omni is a customer support solution that helps companies engage customers over Messenger, Twitter, Telegram, WeChat, Whatsapp. Simply connect your channels and converse with your customers from a single place. Easily add new agents to your system and have them own and resolve conversations with customers.Omni also gives you real-time reports to measure your team's performance, canned responses to easily respond to frequently asked questions and private notes for agents to collaborate among themselves.">
       <% if ENV['IOS_APP_IDENTIFIER'].present? %>
         <meta name="apple-itunes-app" content='app-id=<%= ENV['IOS_APP_IDENTIFIER'] %>'>
       <% end %>
@@ -23,9 +23,21 @@
       <link rel="apple-touch-icon" sizes="152x152" href="/apple-icon-152x152.png">
       <link rel="apple-touch-icon" sizes="180x180" href="/apple-icon-180x180.png">
       <link rel="icon" type="image/png" sizes="192x192"  href="/android-icon-192x192.png">
-      <link class="favicon" rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-      <link class="favicon" rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
-      <link class="favicon" rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <% if @global_config['FAVICON_16'] %>
+        <link rel="icon" type="image/png" sizes="16x16" href="<%= @global_config['FAVICON_16'] %>">
+      <% else %>
+        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <% end %>
+      <% if @global_config['FAVICON_32'] %>
+        <link rel="icon" type="image/png" sizes="32x32" href="<%= @global_config['FAVICON_32'] %>">
+      <% else %>
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <% end %>
+      <% if @global_config['FAVICON_96'] %>
+        <link rel="icon" type="image/png" sizes="96x96" href="<%= @global_config['FAVICON_96'] %>">
+      <% else %>
+        <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png">
+      <% end %>
       <link rel="manifest" href="/manifest.json">
     <% end %>
     <link rel="icon" type="image/png" sizes="512x512" href="<%= @global_config['LOGO_THUMBNAIL'] %>">

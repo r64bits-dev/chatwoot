@@ -13,7 +13,7 @@ class DashboardController < ActionController::Base
 
   private
 
-  def set_global_config
+  def set_global_config # rubocop:disable Metrics/MethodLength
     @global_config = GlobalConfig.get(
       'LOGO', 'LOGO_DARK', 'LOGO_THUMBNAIL',
       'INSTALLATION_NAME',
@@ -30,7 +30,10 @@ class DashboardController < ActionController::Base
       'LOGOUT_REDIRECT_LINK',
       'DISABLE_USER_PROFILE_UPDATE',
       'DEPLOYMENT_ENV',
-      'CSML_EDITOR_HOST'
+      'CSML_EDITOR_HOST',
+      'FAVICON_16',
+      'FAVICON_32',
+      'FAVICON_96'
     ).merge(app_config)
   end
 

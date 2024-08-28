@@ -44,7 +44,7 @@ export default {
   props: {
     title: {
       type: String,
-      default: 'Chatwoot',
+      default: 'Omni',
     },
   },
   data() {

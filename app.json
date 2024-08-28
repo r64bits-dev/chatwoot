@@ -1,9 +1,9 @@
 {
-  "name": "Chatwoot",
-  "description": "Chatwoot is a customer support tool for instant messaging channels",
-  "website": "https://www.chatwoot.com/",
+  "name": "Omni",
+  "description": "Omni is a customer support tool for instant messaging channels",
+  "website": "https://portal.brainitsolutions.com.br/",
   "repository": "https://github.com/chatwoot/chatwoot",
-  "logo": "https://app.chatwoot.com/brand-assets/logo_thumbnail.svg",
+  "logo": "https://maisomni.com.br/assets/img/logo+omni.png",
   "keywords": [
     "live chat",
     "customer support",
@@ -26,11 +26,11 @@
       "value": "production"
     },
     "FRONTEND_URL": {
-      "description": "Public root URL of the Chatwoot installation. This will be used in the emails.",
+      "description": "Public root URL of the Omni installation. This will be used in the emails.",
       "value": "https://CHANGE.herokuapp.com"
     },
     "INSTALLATION_ENV": {
-      "description": "Installation method used for Chatwoot.",
+      "description": "Installation method used for Omni.",
       "value": "heroku"
     },
     "REDIS_OPENSSL_VERIFY_MODE":{

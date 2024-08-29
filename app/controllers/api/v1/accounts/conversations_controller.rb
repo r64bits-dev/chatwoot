@@ -96,7 +96,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def whatsapp_groups_participants
-    # res = Evolution::FindParticipantsService.new(@conversation.inbox.name, @conversation.identifier).perform
+    # res = Evolution::FindParticipantsService.new(@conversation.inbox.name, @conversation.contact.identifier).perform
     render json: Evolution::FindParticipantsService.new('5541991179192', '120363278888180777%40g.us').perform
   end
 

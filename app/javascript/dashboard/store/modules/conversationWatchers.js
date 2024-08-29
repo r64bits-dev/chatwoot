@@ -84,7 +84,13 @@ export const actions = {
     try {
       const response =
         await ConversationInboxApi.getWhatsAppParticipants(conversationId);
-      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP, response.data);
+      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP, [
+        {
+          id: '1',
+          name: 'Participants',
+          phone: '+919876543210',
+        },
+      ]);
     } catch (error) {
       throwErrorMessage(error);
     } finally {
@@ -102,8 +108,8 @@ export const mutations = {
       ...data,
     };
   },
-  [types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP]($state, { data }) {
-    Vue.set($state, 'whatsappParticipants', data);
+  [types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP]($state, data) {
+    $state.whatsappParticipants = data;
   },
   [types.SET_CONVERSATION_PARTICIPANTS](
     $state,

@@ -89,7 +89,7 @@ import { mapGetters } from 'vuex';
 import agentMixin from 'dashboard/mixins/agentMixin';
 import ThumbnailGroup from 'dashboard/components/widgets/ThumbnailGroup.vue';
 import MultiselectDropdownItems from 'shared/components/ui/MultiselectDropdownItems.vue';
-import WhatsAppParticipants from './WhatsAppParticipants';
+import WhatsAppParticipants from './WhatsappParticipants';
 
 export default {
   components: {

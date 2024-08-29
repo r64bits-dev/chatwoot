@@ -38,10 +38,10 @@ class Evolution::FindParticipantsService
   def update_participant_details(participant, contact)
     if contact
       participant['name'] = contact['pushName'] || 'Nome não encontrado'
-      participant['profilePictureUrl'] = contact['profilePictureUrl']
+      participant['thumbnail'] = contact['profilePictureUrl']
     else
       participant['name'] = 'Nome não encontrado'
-      participant['profilePictureUrl'] = nil
+      participant['thumbnail'] = nil
     end
   end
 

@@ -84,13 +84,7 @@ export const actions = {
     try {
       const response =
         await ConversationInboxApi.getWhatsAppParticipants(conversationId);
-      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP, [
-        {
-          id: '1',
-          name: 'Participants',
-          phone: '+919876543210',
-        },
-      ]);
+      commit(types.SET_CONVERSATION_PARTICIPANTS_WHATSAPP, response.data);
     } catch (error) {
       throwErrorMessage(error);
     } finally {

@@ -132,9 +132,9 @@ class ConversationApi extends ApiClient {
     return axios.get(`${this.url}/${conversationId}/attachments`);
   }
 
-  getWhatsAppParticipants(inboxName, groupId) {
+  getWhatsAppParticipants(conversationId) {
     return axios.get(
-      `${this.evolutionApiUrl}/group/findGroupInfos/${inboxName}?groupJid=${groupId}@g.us&instanceName=${inboxName}`
+      `${this.url}/${conversationId}/whatsapp_groups_participants`
     );
   }
 }

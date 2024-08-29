@@ -3,8 +3,6 @@
 const DEFAULT_API_VERSION = 'v1';
 
 class ApiClient {
-  evolutionApiUrl = 'https://evolutionapi.maisomni.com.br';
-
   constructor(resource, options = {}) {
     this.apiVersion = `/api/${options.apiVersion || DEFAULT_API_VERSION}`;
     this.options = options;

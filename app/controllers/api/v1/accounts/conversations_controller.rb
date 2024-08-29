@@ -95,6 +95,11 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @conversation.save!
   end
 
+  def whatsapp_groups_participants
+    # res = Evolution::FindParticipantsService.new(@conversation.inbox.name, @conversation.identifier).perform
+    render json: Evolution::FindParticipantsService.new('5541991179192', '120363278888180777%40g.us').perform
+  end
+
   private
 
   def update_last_seen_on_conversation(last_seen_at, update_assignee)

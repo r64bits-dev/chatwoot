@@ -105,6 +105,7 @@ Rails.application.routes.draw do
               post :unread
               post :custom_attributes
               get :attachments
+              get :whatsapp_groups_participants
             end
           end
 

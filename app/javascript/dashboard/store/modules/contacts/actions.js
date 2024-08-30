@@ -170,9 +170,7 @@ export const actions = {
   blockContact: async ({ commit }, contactId) => {
     commit(types.SET_CONTACT_UI_FLAG, { isDeleting: true });
     try {
-      // await ContactsAPI.blockContact(contactId);
-      // eslint-disable-next-line no-console
-      console.log('blockContact', contactId);
+      await ContactAPI.blockContact(contactId);
       commit(types.SET_CONTACT_UI_FLAG, { isDeleting: false });
     } catch (error) {
       commit(types.SET_CONTACT_UI_FLAG, { isDeleting: false });

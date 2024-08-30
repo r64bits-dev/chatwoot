@@ -158,6 +158,10 @@ class Contact < ApplicationRecord
     email_format
   end
 
+  def whatsapp?
+    identifier.present? && identifier.ends_with?('@s.whatsapp.net')
+  end
+
   private
 
   def ip_lookup

@@ -115,7 +115,6 @@ class Conversation < ApplicationRecord
   after_commit :set_display_id, unless: :display_id?
 
   delegate :auto_resolve_duration, to: :account
-  delegate :whatsapp?, to: :inbox
 
   def can_reply?
     channel = inbox&.channel
@@ -201,6 +200,10 @@ class Conversation < ApplicationRecord
 
   def tweet?
     inbox.inbox_type == 'Twitter' && additional_attributes['type'] == 'tweet'
+  end
+
+  def whatsapp?
+    inbox.whatsapp? || contact.whatsapp?
   end
 
   def recent_messages

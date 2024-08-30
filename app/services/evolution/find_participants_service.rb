@@ -16,7 +16,8 @@ class Evolution::FindParticipantsService
   private
 
   def validate_response(participants, all_contacts)
-    p participants, all_contacts
+    p 'response', participants, all_contacts
+    [] unless participants.present? && all_contacts.present?
     [] unless participants.is_a?(Array) && all_contacts.is_a?(Array)
   end
 

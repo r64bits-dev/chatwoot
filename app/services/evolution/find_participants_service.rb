@@ -1,9 +1,11 @@
-class Evolution::FindParticipantsService
+class Evolution::FindParticipantsService < Evolution::EvolutionBaseService
   def initialize(inbox_name, group_id)
     @group_id = group_id
     @inbox_name = inbox_name
+    super
   end
 
+  # @override
   def perform
     all_contacts = find_all_contacts
     participants = find_group_infos['participants']
@@ -62,16 +64,5 @@ class Evolution::FindParticipantsService
 
   def find_all_contacts_url
     "#{evolution_api_url}/chat/findContacts/#{@inbox_name}"
-  end
-
-  def headers
-    {
-      'apiKey': ENV.fetch('EVOLUTION_API_TOKEN', nil),
-      'Content-Type': 'application/json'
-    }
-  end
-
-  def evolution_api_url
-    ENV.fetch('EVOLUTION_API_URL', nil)
   end
 end

@@ -106,6 +106,7 @@ Rails.application.routes.draw do
               post :custom_attributes
               get :attachments
               get :whatsapp_groups_participants
+              post :block_contact
             end
           end
 

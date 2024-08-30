@@ -10,14 +10,25 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
   "password": "{{password_jonh}}"
 }
 
-### 
+###
 @token = {{LOGIN.response.headers.Authorization}}
 
-# Path: http/report.http
+# Path: http/showGroupsDetails.http
 # @name ShowConversationGroup
-
 
 GET {{api}}/api/v1/accounts/1/conversations/1/whatsapp_groups_participants
 Content-Type: application/json
 Authorization: {{token}}
 
+###
+
+# Path: http/blockContact.http
+# @name ShowConversationGroup
+
+POST {{api}}/api/v1/accounts/1/conversations/1/block_contact
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "phone_number": "+554175555555"
+}

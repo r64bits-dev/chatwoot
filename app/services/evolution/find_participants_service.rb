@@ -16,7 +16,8 @@ class Evolution::FindParticipantsService
   private
 
   def validate_response(participants, all_contacts)
-    raise StandardError, 'Invalid response format' unless participants.is_a?(Array) && all_contacts.is_a?(Array)
+    p participants, all_contacts
+    [] unless participants.is_a?(Array) && all_contacts.is_a?(Array)
   end
 
   def update_participants_with_contact_info(participants, all_contacts)

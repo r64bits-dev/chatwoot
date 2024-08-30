@@ -115,6 +115,7 @@ class Conversation < ApplicationRecord
   after_commit :set_display_id, unless: :display_id?
 
   delegate :auto_resolve_duration, to: :account
+  delegate :whatsapp?, to: :inbox
 
   def can_reply?
     channel = inbox&.channel

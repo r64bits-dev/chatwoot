@@ -153,6 +153,7 @@ export default {
           toState: frontendURL(
             `accounts/${this.accountId}/label/${label.title}`
           ),
+          totalUsedCount: label.totalUsedCount,
         })),
       };
     },
@@ -286,6 +287,9 @@ export default {
   mounted() {
     if (this.menuConfig.parentNav === 'tickets') {
       this.$store.dispatch('tickets/getLabels');
+    }
+    if (this.menuConfig.parentNav === 'conversations') {
+      this.$store.dispatch('labels/updateUsageCount');
     }
   },
   methods: {

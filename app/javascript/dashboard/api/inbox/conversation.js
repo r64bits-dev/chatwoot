@@ -131,6 +131,12 @@ class ConversationApi extends ApiClient {
   getAllAttachments(conversationId) {
     return axios.get(`${this.url}/${conversationId}/attachments`);
   }
+
+  getWhatsAppParticipants(conversationId) {
+    return axios.get(
+      `${this.url}/${conversationId}/whatsapp_groups_participants`
+    );
+  }
 }
 
 export default new ConversationApi();

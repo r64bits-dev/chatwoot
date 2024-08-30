@@ -330,6 +330,10 @@
     "API": {
       "ERROR_MESSAGE": "Could not update, try again!",
       "SUCCESS_MESSAGE": "Participants updated!"
+    },
+    "WHATSAPP": {
+      "TITLE":"Whatsapp Participants",
+      "NO_PARTICIPANTS":"No participants found"
     }
   },
   "TRANSLATE_MODAL": {

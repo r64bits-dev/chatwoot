@@ -20,4 +20,8 @@ class LabelPolicy < ApplicationPolicy
   def destroy?
     @account_user.administrator?
   end
+
+  def conversations?
+    @account_user.administrator? || can_access?(FEATURE)
+  end
 end

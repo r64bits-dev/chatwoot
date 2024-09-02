@@ -159,7 +159,7 @@ class Contact < ApplicationRecord
   end
 
   def whatsapp?
-    identifier.present? && identifier.ends_with?('@s.whatsapp.net')
+    identifier.present? && (identifier.ends_with?('@s.whatsapp.net') || identifier.ends_with?('@g.us'))
   end
 
   private

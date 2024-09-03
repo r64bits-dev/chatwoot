@@ -9,6 +9,7 @@ json.thumbnail resource.avatar_url
 json.custom_attributes resource.custom_attributes
 json.last_activity_at resource.last_activity_at.to_i if resource[:last_activity_at].present?
 json.created_at resource.created_at.to_i if resource[:created_at].present?
+# we only want to output tickets when its /contacts endpoints
 if defined?(with_tickets) && with_tickets.present?
   json.tickets do
     json.array! conversation.tickets do |ticket|

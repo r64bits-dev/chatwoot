@@ -14,7 +14,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   before_action :check_authorization
   before_action :set_current_page, only: [:index, :active, :search, :filter]
   before_action :fetch_contact, only: [:show, :update, :destroy, :avatar, :contactable_inboxes, :destroy_custom_attributes]
-  before_action :fetch_conversation, only: [:show]
+  before_action :fetch_ticket, only: [:show]
   before_action :set_include_contact_inboxes, only: [:index, :search, :filter]
 
   def index
@@ -175,8 +175,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     @contact = Current.account.contacts.includes(contact_inboxes: [:inbox]).find(params[:id])
   end
 
-  def fetch_conversation
-    @conversation = Current.account.conversations.find(params[:conversation_id]) if params[:conversation_id].present?
+  def fetch_ticket
+    @ticket = Current.account.conversations.find(params[:conversation_id]).tickets.last if params[:conversation_id].present?
   end
 
   def process_avatar_from_url

@@ -9,14 +9,9 @@ json.thumbnail resource.avatar_url
 json.custom_attributes resource.custom_attributes
 json.last_activity_at resource.last_activity_at.to_i if resource[:last_activity_at].present?
 json.created_at resource.created_at.to_i if resource[:created_at].present?
-# we only want to output tickets when its /contacts endpoints
-if defined?(with_tickets) && with_tickets.present? && conversation.present?
-  json.tickets do
-    json.array! conversation.tickets do |ticket|
-      json.partial! 'api/v1/models/ticket', formats: [:json], resource: ticket
-    end
-  end
-end
+
+json.protocol_identifier ticket&.id
+
 # we only want to output contact inbox when its /contacts endpoints
 if defined?(with_contact_inboxes) && with_contact_inboxes.present?
   json.contact_inboxes do

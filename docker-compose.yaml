@@ -60,7 +60,7 @@ services:
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
-    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
+    command: ["sh", "-c", "bundle install && bundle exec sidekiq -C config/sidekiq.yml"]
 
   webpack:
     <<: *base

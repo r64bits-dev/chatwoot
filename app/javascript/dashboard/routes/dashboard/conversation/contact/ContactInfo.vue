@@ -99,6 +99,13 @@
             emoji="🌍"
             :title="$t('CONTACT_PANEL.LOCATION')"
           />
+          <contact-info-row
+            :value="contact.team"
+            icon="people-team"
+            emoji="🚻"
+            :title="$t('CONTACT_PANEL.TEAM')"
+            show-copy
+          />
           <social-icons :social-profiles="socialProfiles" />
         </div>
       </div>

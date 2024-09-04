@@ -176,7 +176,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def fetch_ticket
-    @ticket = Current.account.conversations.find(params[:conversation_id]).tickets.last if params[:conversation_id].present?
+    @conversation = Current.account.conversations.find(params[:conversation_id]) if params[:conversation_id].present?
   end
 
   def process_avatar_from_url

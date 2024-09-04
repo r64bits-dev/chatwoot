@@ -1,7 +1,10 @@
 export const isPhoneE164 = value => !!value.match(/^\+[1-9]\d{1,14}$/);
 
 export const isPhoneNumberValid = (value, dialCode) => {
-  const number = value.replace(dialCode, '');
+  const number = value.replace(dialCode, '').replace(/\D/g, '');
+  if (dialCode === '+55') {
+    return !!number.match(/^[1-9][0-9]{7,8}$/);
+  }
   return !!number.match(/^[0-9]{1,14}$/);
 };
 

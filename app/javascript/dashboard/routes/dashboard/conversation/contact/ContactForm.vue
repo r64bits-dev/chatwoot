@@ -67,15 +67,17 @@
             :error="isPhoneNumberNotValid"
             :placeholder="$t('CONTACT_FORM.FORM.PHONE_NUMBER.PLACEHOLDER')"
             @input="onPhoneNumberInputChange"
-            @blur="$v.phoneNumber.$touch"
+            @blur="handlePhoneBlur"
             @setCode="setPhoneCode"
           />
           <span v-if="isPhoneNumberNotValid" class="message">
             {{ phoneNumberError }}
           </span>
         </label>
+
+        <!-- Div de mensagem de ajuda mostrada somente quando em foco -->
         <div
-          v-if="isPhoneNumberNotValid || !phoneNumber"
+          v-if="(isPhoneNumberNotValid || !phoneNumber) && isPhoneInputFocused"
           class="callout small warning text-sm dark:bg-yellow-200/20 dark:text-yellow-400"
         >
           {{ $t('CONTACT_FORM.FORM.PHONE_NUMBER.HELP') }}
@@ -116,8 +118,22 @@
       :placeholder="$t('CONTACT_FORM.FORM.CITY.PLACEHOLDER')"
     />
 
+    <!-- Botão para exibir/ocultar Social Profiles -->
     <div class="w-full">
-      <label> Social Profiles </label>
+      <woot-button
+        icon="chevron-down"
+        variant="secondary"
+        class="w-full text-center"
+        @click="toggleSocialProfiles"
+      >
+        {{
+          showSocialProfiles ? 'Hide Social Profiles' : 'Add Social Profiles'
+        }}
+      </woot-button>
+    </div>
+
+    <div v-if="showSocialProfiles" class="w-full">
+      <label> Social Profiles (optional) </label>
       <div
         v-for="socialProfile in socialProfileKeys"
         :key="socialProfile.key"
@@ -131,7 +147,8 @@
         />
       </div>
     </div>
-    <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full">
+
+    <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full mt-5">
       <div class="w-full">
         <woot-submit-button
           :loading="inProgress"
@@ -174,6 +191,8 @@ export default {
   },
   data() {
     return {
+      showSocialProfiles: false,
+      isPhoneInputFocused: false,
       countries: countries,
       companyName: '',
       description: '',
@@ -264,6 +283,17 @@ export default {
     onSuccess() {
       this.$emit('success');
     },
+    toggleSocialProfiles() {
+      this.showSocialProfiles = !this.showSocialProfiles;
+    },
+    onPhoneInputFocus() {
+      this.isPhoneInputFocused = true;
+    },
+    handlePhoneBlur() {
+      this.isPhoneInputFocused = false;
+      this.$v.phoneNumber.$touch();
+    },
+
     countryNameWithCode({ name, id }) {
       if (!id) return name;
       if (!name && !id) return '';
@@ -335,9 +365,15 @@ export default {
               ? ''
               : this.country.name,
           city: this.city,
-          social_profiles: this.socialProfileUserNames,
         },
       };
+
+      // Adicionar perfis sociais somente se preenchidos
+      if (this.showSocialProfiles) {
+        contactObject.additional_attributes.social_profiles =
+          this.socialProfileUserNames;
+      }
+
       if (this.avatarFile) {
         contactObject.avatar = this.avatarFile;
         contactObject.isFormData = true;
@@ -346,6 +382,9 @@ export default {
     },
     onPhoneNumberInputChange(value, code) {
       this.activeDialCode = code;
+      if (value) {
+        this.isPhoneInputFocused = true;
+      }
     },
     setPhoneCode(code) {
       if (this.phoneNumber !== '' && this.parsePhoneNumber) {

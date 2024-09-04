@@ -57,6 +57,13 @@
         </p>
         <div class="mb-3">
           <contact-info-row
+            :value="'ID: ' + contact.id"
+            icon="info"
+            emoji="⭕️"
+            :title="$t('CONTACT_PANEL.IDENTIFIER')"
+            show-copy
+          />
+          <contact-info-row
             :href="contact.email ? `mailto:${contact.email}` : ''"
             :value="contact.email"
             icon="mail"

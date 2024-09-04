@@ -74,10 +74,12 @@ export const actions = {
     }
   },
 
-  show: async ({ commit }, { id }) => {
+  show: async ({ commit }, { id, conversationId = null }) => {
     commit(types.SET_CONTACT_UI_FLAG, { isFetchingItem: true });
     try {
-      const response = await ContactAPI.show(id);
+      const response = await ContactAPI.show(id, {
+        conversationId: conversationId,
+      });
       commit(types.SET_CONTACT_ITEM, response.data.payload);
       commit(types.SET_CONTACT_UI_FLAG, {
         isFetchingItem: false,

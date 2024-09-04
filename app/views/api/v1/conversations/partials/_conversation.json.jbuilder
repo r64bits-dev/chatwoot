@@ -1,6 +1,6 @@
 json.meta do
   json.sender do
-    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact
+    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact, ticket: conversation.tickets.last
   end
   json.channel conversation.inbox.try(:channel_type)
   if conversation.assignee&.account

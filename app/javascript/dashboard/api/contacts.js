@@ -1,5 +1,6 @@
 /* global axios */
 import ApiClient from './ApiClient';
+import { convertObjectKeysToSnakeCase } from './utils/string';
 
 export const buildContactParams = (page, sortAttr, label, search) => {
   let params = `include_contact_inboxes=false&page=${page}&sort=${sortAttr}`;
@@ -15,6 +16,15 @@ export const buildContactParams = (page, sortAttr, label, search) => {
 class ContactAPI extends ApiClient {
   constructor() {
     super('contacts', { accountScoped: true });
+  }
+
+  show(id, requestParams = {}) {
+    const snakeCaseParams = convertObjectKeysToSnakeCase(requestParams);
+    return axios.get(`${this.url}/${id}`, {
+      params: {
+        ...snakeCaseParams,
+      },
+    });
   }
 
   get(page, sortAttr = 'name', label = '') {

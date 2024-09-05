@@ -253,7 +253,10 @@ export default {
     },
     getContactDetails() {
       if (this.contactId) {
-        this.$store.dispatch('contacts/show', { id: this.contactId });
+        this.$store.dispatch('contacts/show', {
+          id: this.contactId,
+          conversationId: this.conversationId,
+        });
       }
     },
     getAttributesByModel() {

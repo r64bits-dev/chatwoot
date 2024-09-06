@@ -4,6 +4,7 @@
     type="team"
     getter-key="teams/getTeams"
     action-key="teams/get"
+    :show-agents-filter="true"
     :download-button-label="$t('TEAM_REPORTS.DOWNLOAD_TEAM_REPORTS')"
   />
 </template>

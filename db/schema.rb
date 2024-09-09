@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_09_132336) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -1083,6 +1083,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
       before(:insert).
       for_each(:row) do
     "NEW.display_id := nextval('camp_dpid_seq_' || NEW.account_id);"
+  end
+
+  create_trigger("set_default_message_signature_before_insert", :generated => true, :compatibility => 1).
+      on("users").
+      before(:insert).
+      for_each(:row) do
+    "BEGIN IF NEW.message_signature IS NULL THEN NEW.message_signature := NEW.name; END IF; RETURN NEW; END;"
   end
 
 end

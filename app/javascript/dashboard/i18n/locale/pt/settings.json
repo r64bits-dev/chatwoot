@@ -47,7 +47,7 @@
       "MESSAGE_SIGNATURE": {
         "LABEL": "Assinatura da mensagem",
         "ERROR": "Assinatura da mensagem não pode estar vazia",
-        "PLACEHOLDER": "Escreva aqui a sua assinatura de mensagem pessoal."
+        "PLACEHOLDER": "Escreva aqui a sua assinatura de mensagem pessoal. Se você não preencher esse campo, ele será preenchido com o nome do usuário."
       },
       "PASSWORD_SECTION": {
         "TITLE": "Palavra-passe",
@@ -115,11 +115,7 @@
       },
       "AVAILABILITY": {
         "LABEL": "Disponibilidade",
-        "STATUSES_LIST": [
-          "Disponível",
-          "Ocupado",
-          "Ausente"
-        ],
+        "STATUSES_LIST": ["Disponível", "Ocupado", "Ausente"],
         "SET_AVAILABILITY_SUCCESS": "Disponibilidade foi definida com sucesso",
         "SET_AVAILABILITY_ERROR": "Não foi possível definir a disponibilidade, por favor tente novamente"
       },
@@ -233,7 +229,7 @@
     "CAMPAIGNS": "Campanhas",
     "ONGOING": "Em curso",
     "ONE_OFF": "Pontual",
-    
+
     "REPORTS_CONVERSATION": "Conversas",
     "REPORTS_AGENT": "Agentes",
     "REPORTS_LABEL": "Etiquetas",
@@ -243,7 +239,7 @@
     "REPORTS_INVOICE": "Faturas",
     "TRIGGER_REPORTS": "Disparos",
     "REPORTS_TICKETS": "Tickets",
-    
+
     "SET_AVAILABILITY_TITLE": "Defina-se como",
     "BETA": "Beta",
     "FACEBOOK_REAUTHORIZE": "A sua ligação ao Facebook caducou, volte a ligar a página para poder continuar a utilizar os serviços",

@@ -72,6 +72,10 @@ export default {
           key: 'edit_portal_locales',
           name: this.$t('HELP_CENTER.PORTAL.EDIT.TABS.LOCALE_SETTINGS.TITLE'),
         },
+        {
+          key: 'edit_team',
+          name: this.$t('HELP_CENTER.PORTAL.EDIT.TABS.TEAM_SETTINGS.TITLE'),
+        },
       ];
 
       return tabs;

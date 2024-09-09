@@ -6,6 +6,7 @@ const ListAllPortals = () => import('./pages/portals/ListAllPortals');
 const NewPortal = () => import('./pages/portals/NewPortal');
 
 const EditPortal = () => import('./pages/portals/EditPortal');
+const EditTeam = () => import('./pages/portals/EditTeam');
 const EditPortalBasic = () => import('./pages/portals/EditPortalBasic');
 const EditPortalCustomization = () =>
   import('./pages/portals/EditPortalCustomization');
@@ -98,6 +99,12 @@ const portalRoutes = [
         name: 'list_all_locale_categories',
         roles: AllRoles,
         component: ListAllCategories,
+      },
+      {
+        path: 'team',
+        name: 'edit_team',
+        roles: ['administrator'],
+        component: EditTeam,
       },
     ],
   },

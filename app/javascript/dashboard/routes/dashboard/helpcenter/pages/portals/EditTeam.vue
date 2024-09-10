@@ -42,7 +42,7 @@
         </label>
         <multiselect
           v-model="selectedAgents"
-          :options="teamList"
+          :options="teams"
           track-by="id"
           label="name"
           :multiple="true"
@@ -62,31 +62,22 @@
 <script>
 import Switches from 'vue-switches';
 import { required } from 'vuelidate/lib/validators';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'EditTeam',
   components: {
     Switches,
   },
+
   data: () => ({
     isPublic: true,
     isCreating: false,
     selectedAgents: [],
-    teamList: [
-      {
-        id: 1,
-        name: 'Time 1',
-      },
-      {
-        id: 2,
-        name: 'Time 2',
-      },
-      {
-        id: 3,
-        name: 'Time 3',
-      },
-    ],
   }),
+  computed: {
+    ...mapGetters({ teams: 'teams/getTeams' }),
+  },
   validations: {
     isPublic: { required },
   },

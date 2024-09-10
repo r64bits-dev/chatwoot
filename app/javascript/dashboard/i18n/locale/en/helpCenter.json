@@ -167,6 +167,9 @@
           },
           "LOCALE_SETTINGS": {
             "TITLE": "Locales"
+          },
+          "TEAM_SETTINGS": {
+            "TITLE": "Team"
           }
         },
         "CATEGORIES": {
@@ -279,6 +282,23 @@
           "ERROR_MESSAGE_FOR_BASIC": "Couldn't create the portal. Try again.",
           "SUCCESS_MESSAGE_FOR_UPDATE": "Portal updated successfully.",
           "ERROR_MESSAGE_FOR_UPDATE": "Couldn't update the portal. Try again."
+        },
+        "TEAM_SETTINGS": {
+          "TITLE": "Team Settings",
+          "HELP_TEXT": "The team will be used in the public facing portal to categorize articles.",
+          "ERROR": "Team is required",
+          "FORM": {
+            "PUBLIC": {
+              "LABEL": "Public",
+              "HELP_TEXT_DISABLED": "Only you and administrators can see and respond to messages from other team members.",
+              "HELP_TEXT_ENABLED": "This option allows users to see and respond to messages from other team members."
+            },
+            "TEAMS": {
+              "LABEL": "Teams",
+              "HELP_TEXT": "Select the teams"
+            },
+            "SUBMIT": "Update Teams"
+          }
         }
       },
       "ADD_LOCALE": {

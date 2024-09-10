@@ -269,6 +269,23 @@
           "ERROR_MESSAGE_FOR_BASIC": "Não foi possível criar o portal. Tente novamente.",
           "SUCCESS_MESSAGE_FOR_UPDATE": "Portal atualizado com sucesso.",
           "ERROR_MESSAGE_FOR_UPDATE": "Não foi possível atualizar o portal. Tente novamente."
+        },
+        "TEAM_SETTINGS": {
+          "TITLE": "Configurações da equipe",
+          "HELP_TEXT": "A equipe será usada no portal público para categorizar artigos.",
+          "ERROR": "Equipe é necessária",
+          "FORM": {
+            "PUBLIC": {
+              "LABEL": "Público",
+              "HELP_TEXT_DISABLED": "Somente você e os administradores podem ver e responder mensagens de outros membros da equipe.",
+              "HELP_TEXT_ENABLED": "Esta opção permite que os usuários vejam e respondam mensagens de outros membros da equipe."
+            },
+            "TEAMS": {
+              "LABEL": "Equipes",
+              "HELP_TEXT": "Selecione as equipes"
+            },
+            "SUBMIT": "Atualizar equipes"
+          }
         }
       },
       "ADD_LOCALE": {

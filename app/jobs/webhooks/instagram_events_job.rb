@@ -64,6 +64,6 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   # Registra a mensagem como processada
   def register_message_as_processed(message_id)
-    ::Redis::Alfred.setex("processed_message:#{message_id}", 24.hours, true)
+    ::Redis::Alfred.setex("processed_message:#{message_id}", true, 24.hours)
   end
 end

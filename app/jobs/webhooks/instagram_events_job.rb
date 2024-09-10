@@ -19,12 +19,13 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   # @see https://developers.facebook.com/docs/messenger-platform/instagram/features/webhook
   def process_entries(entries)
+    p entries
     entries.each do |entry|
       entry = entry.with_indifferent_access
       p 'message received', entry
       messages(entry).each do |messaging|
         next if message_processed?(messaging['message']['mid'])
-  
+
         register_message_as_processed(messaging['message']['mid'])
         send(@event_name, messaging) if event_name(messaging)
       end

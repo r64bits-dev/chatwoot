@@ -22,7 +22,6 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
     entries.each do |entry|
       entry = entry.with_indifferent_access
       messages(entry).each do |messaging|
-        p 'messing', messaging, messaging['message']['mid'], message_processed?(messaging['message']['mid'])
         next if message_processed?(messaging['message']['mid'])
 
         register_message_as_processed(messaging['message']['mid'])
@@ -64,6 +63,6 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   # Registra a mensagem como processada
   def register_message_as_processed(message_id)
-    ::Redis::Alfred.setex("processed_message:#{message_id}", true, 24.hours)
+    ::Redis::Alfred.setex("processed_message:#{message_id}", true, 5.minutes)
   end
 end

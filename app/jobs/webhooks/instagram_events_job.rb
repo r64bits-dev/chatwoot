@@ -23,6 +23,9 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
       entry = entry.with_indifferent_access
       p 'message received', entry
       messages(entry).each do |messaging|
+        next if message_processed?(messaging['message']['mid'])
+  
+        register_message_as_processed(messaging['message']['mid'])
         send(@event_name, messaging) if event_name(messaging)
       end
     end
@@ -52,5 +55,15 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   def messages(entry)
     entry[:messaging].presence || entry[:standby] || []
+  end
+
+  # Verifica se a mensagem já foi processada
+  def message_processed?(message_id)
+    Redis.current.get("processed_message:#{message_id}").present?
+  end
+
+  # Registra a mensagem como processada
+  def register_message_as_processed(message_id)
+    Redis.current.setex("processed_message:#{message_id}", 24.hours, true)
   end
 end

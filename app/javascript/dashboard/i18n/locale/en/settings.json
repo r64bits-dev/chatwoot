@@ -47,7 +47,7 @@
       "MESSAGE_SIGNATURE": {
         "LABEL": "Message Signature",
         "ERROR": "Message Signature cannot be empty",
-        "PLACEHOLDER": "Insert your personal message signature here."
+        "PLACEHOLDER": "Insert your personal message signature here. If you don't fill this field, it will be filled with the user name."
       },
       "PASSWORD_SECTION": {
         "TITLE": "Password",
@@ -241,7 +241,7 @@
     "REPORTS_INVOICE": "Invoices",
     "TRIGGER_REPORTS": "Trigger",
     "REPORTS_TICKETS": "Tickets",
-    
+
     "SET_AVAILABILITY_TITLE": "Set yourself as",
     "BETA": "Beta",
     "FACEBOOK_REAUTHORIZE": "Your Facebook connection has expired, please reconnect your Facebook page to continue services",

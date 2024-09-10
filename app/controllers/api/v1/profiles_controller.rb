@@ -4,6 +4,8 @@ class Api::V1::ProfilesController < Api::BaseController
   def show; end
 
   def update
+    params[:profile][:message_signature] = @user.name if profile_params[:message_signature].blank?
+
     if password_params[:password].present?
       render_could_not_create_error('Invalid current password') and return unless @user.valid_password?(password_params[:current_password])
 
@@ -34,7 +36,7 @@ class Api::V1::ProfilesController < Api::BaseController
   private
 
   def set_user
-    @user = current_user
+    @user = User.includes(account_users: :account).find(current_user.id)
   end
 
   def availability_params

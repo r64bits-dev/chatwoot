@@ -53,11 +53,6 @@
           @select="() => {}"
         />
       </div>
-      <div class="w-full">
-        <woot-button :disabled="isCreating">
-          {{ $t('HELP_CENTER.PORTAL.ADD.TEAM_SETTINGS.FORM.SUBMIT') }}
-        </woot-button>
-      </div>
     </div>
   </div>
 </template>
@@ -72,7 +67,7 @@ export default {
     Switches,
   },
   data: () => ({
-    isPublic: false,
+    isPublic: true,
     isCreating: false,
     selectedAgents: [],
     teamList: [

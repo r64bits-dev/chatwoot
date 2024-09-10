@@ -21,6 +21,7 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
   def process_entries(entries)
     entries.each do |entry|
       entry = entry.with_indifferent_access
+      p 'message received', entry
       messages(entry).each do |messaging|
         send(@event_name, messaging) if event_name(messaging)
       end

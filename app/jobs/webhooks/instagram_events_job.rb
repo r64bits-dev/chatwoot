@@ -21,8 +21,8 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
   def process_entries(entries)
     entries.each do |entry|
       entry = entry.with_indifferent_access
-      p 'message received', entry
       messages(entry).each do |messaging|
+        p 'messing', messaging, messaging['message']['mid'], message_processed?(messaging['message']['mid'])
         next if message_processed?(messaging['message']['mid'])
 
         register_message_as_processed(messaging['message']['mid'])

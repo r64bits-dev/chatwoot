@@ -1,5 +1,8 @@
 <template>
-  <div class="wizard-body w-[75%] flex-shrink-0 flex-grow-0 max-w-[75%]">
+  <div
+    class="wizard-body w-[75%] flex-shrink-0 flex-grow-0 max-w-[75%]"
+    style="height: 500px"
+  >
     <div class="w-full">
       <h3 class="block-title text-black-900 dark:text-slate-200">
         {{ $t('HELP_CENTER.PORTAL.ADD.TEAM_SETTINGS.TITLE') }}
@@ -44,13 +47,12 @@
           label="name"
           :multiple="true"
           selected-label
-          :max-height="160"
           :placeholder="
             $t('HELP_CENTER.PORTAL.ADD.TEAM_SETTINGS.FORM.TEAMS.HELP_TEXT')
           "
           :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
           :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
-          @select="() => {}"
+          @input="handleSelect"
         />
       </div>
     </div>
@@ -75,10 +77,25 @@ export default {
         id: 1,
         name: 'Time 1',
       },
+      {
+        id: 2,
+        name: 'Time 2',
+      },
+      {
+        id: 3,
+        name: 'Time 3',
+      },
     ],
   }),
   validations: {
     isPublic: { required },
+  },
+  methods: {
+    handleSelect(selectedAgents) {
+      // eslint-disable-next-line no-console
+      console.log(selectedAgents);
+      this.selectedAgents = selectedAgents;
+    },
   },
 };
 </script>

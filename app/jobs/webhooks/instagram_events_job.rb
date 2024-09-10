@@ -19,7 +19,6 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   # @see https://developers.facebook.com/docs/messenger-platform/instagram/features/webhook
   def process_entries(entries)
-    p entries
     entries.each do |entry|
       entry = entry.with_indifferent_access
       p 'message received', entry
@@ -60,11 +59,11 @@ class Webhooks::InstagramEventsJob < MutexApplicationJob
 
   # Verifica se a mensagem já foi processada
   def message_processed?(message_id)
-    Redis.current.get("processed_message:#{message_id}").present?
+    ::Redis::Alfred.get("processed_message:#{message_id}").present?
   end
 
   # Registra a mensagem como processada
   def register_message_as_processed(message_id)
-    Redis.current.setex("processed_message:#{message_id}", 24.hours, true)
+    ::Redis::Alfred.setex("processed_message:#{message_id}", 24.hours, true)
   end
 end

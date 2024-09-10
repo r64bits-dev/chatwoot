@@ -69,7 +69,6 @@ export default {
   components: {
     Switches,
   },
-
   data: () => ({
     isPublic: true,
     isCreating: false,

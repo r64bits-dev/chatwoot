@@ -16,6 +16,12 @@ json.category do
   json.locale article.category&.locale
 end
 
+json.teams do
+  json.array! article.teams.each do |team|
+    json.partial! 'api/v1/models/team', formats: [:json], resource: team
+  end
+end
+
 json.views article.views
 
 if article.author.present?

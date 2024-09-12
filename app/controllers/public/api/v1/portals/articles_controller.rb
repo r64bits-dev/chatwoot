@@ -3,6 +3,7 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   before_action :portal
   before_action :set_category, except: [:index, :show]
   before_action :set_article, only: [:show]
+  before_action :check_permissions, only: [:show, :index]
   layout 'portal'
 
   def index
@@ -49,5 +50,13 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
 
   def render_article_content(content)
     ChatwootMarkdownRenderer.new(content).render_article
+  end
+
+  def check_permissions
+    render 'public/api/v1/portals/articles/403', status: :forbidden unless article_access?
+  end
+
+  def article_access?
+    @article.visibility_public?
   end
 end

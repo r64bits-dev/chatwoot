@@ -94,6 +94,28 @@
             @remove="removeTag"
           />
         </label>
+        <label class="mt-4">
+          {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.LABEL') }}
+          <MultiselectDropdown
+            :options="teams"
+            :selected-item="selectedTeams"
+            :multiple="true"
+            :has-thumbnail="false"
+            :multiselector-title="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.TITLE')
+            "
+            :multiselector-placeholder="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.PLACEHOLDER')
+            "
+            :no-search-result="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.NO_RESULT')
+            "
+            :input-placeholder="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.SEARCH_PLACEHOLDER')
+            "
+            @click="onSelectTeams"
+          />
+        </label>
       </div>
       <div class="action-buttons">
         <woot-button
@@ -147,12 +169,16 @@ export default {
     ...mapGetters({
       categories: 'categories/allCategories',
       agents: 'agents/getAgents',
+      teams: 'teams/getTeams',
     }),
     assignedAuthor() {
       return this.article?.author;
     },
     selectedCategory() {
       return this.article?.category;
+    },
+    selectedTeams() {
+      return this.article?.teams?.[0];
     },
     allTags() {
       return this.metaTags.map(item => item.name);
@@ -220,6 +246,10 @@ export default {
     },
     onClickAssignAuthor({ id }) {
       this.$emit('save-article', { author_id: id });
+      this.updateMeta();
+    },
+    onSelectTeams({ id }) {
+      this.$emit('save-article', { team_id: id });
       this.updateMeta();
     },
     onChangeMetaInput() {

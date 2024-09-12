@@ -56,6 +56,13 @@
           "NO_RESULT": "Nenhum autor encontrado",
           "SEARCH_PLACEHOLDER": "Pesquisar autor"
         },
+        "TEAMS": {
+          "LABEL": "Equipes", 
+          "TITLE": "Selecionar equipes", 
+          "PLACEHOLDER": "Selecionar equipes", 
+          "NO_RESULT": "Nenhuma equipe encontrada", 
+          "SEARCH_PLACEHOLDER": "Pesquisar equipes" 
+        },
         "META_TITLE": {
           "LABEL": "Meta title",
           "PLACEHOLDER": "Adicionar um meta title"

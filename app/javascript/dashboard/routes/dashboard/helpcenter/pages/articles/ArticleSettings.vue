@@ -8,6 +8,7 @@
         <label>
           {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.CATEGORY.LABEL') }}
           <multiselect-dropdown
+            class="custom-multiselect"
             :options="categories"
             :selected-item="selectedCategory"
             :has-thumbnail="false"
@@ -64,6 +65,7 @@
           {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.META_DESCRIPTION.LABEL') }}
           <textarea
             v-model="metaDescription"
+            class="custom-multiselect"
             rows="3"
             type="text"
             :placeholder="
@@ -79,6 +81,7 @@
           <multiselect
             ref="tagInput"
             v-model="metaTags"
+            class="custom-multiselect"
             :placeholder="
               $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.META_TAGS.PLACEHOLDER')
             "
@@ -280,6 +283,24 @@ export default {
 
   .action-buttons {
     @apply flex flex-col;
+  }
+}
+::v-deep .custom-multiselect {
+  .multiselect {
+    @apply mb-0;
+  }
+  .multiselect__content-wrapper {
+    @apply hidden;
+  }
+  .multiselect--active .multiselect__tags {
+    padding-right: var(--space-small) !important;
+    @apply rounded-md;
+  }
+  .multiselect__placeholder {
+    @apply text-slate-300 dark:text-slate-200 pt-2 mb-0;
+  }
+  .multiselect__select {
+    @apply hidden;
   }
 }
 </style>

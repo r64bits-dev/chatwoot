@@ -96,24 +96,17 @@
         </label>
         <label class="mt-4">
           {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.LABEL') }}
-          <MultiselectDropdown
-            :options="teams"
-            :selected-item="selectedTeams"
+          <multiselect
+            v-model="selectedTeams"
             :multiple="true"
-            :has-thumbnail="false"
-            :multiselector-title="
-              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.TITLE')
-            "
-            :multiselector-placeholder="
-              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.PLACEHOLDER')
-            "
-            :no-search-result="
-              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.NO_RESULT')
-            "
-            :input-placeholder="
+            :options="teams"
+            track-by="id"
+            label="name"
+            :placeholder="
               $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.SEARCH_PLACEHOLDER')
             "
-            @click="onSelectTeams"
+            :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
+            :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
           />
         </label>
       </div>
@@ -177,8 +170,15 @@ export default {
     selectedCategory() {
       return this.article?.category;
     },
-    selectedTeams() {
-      return this.article?.teams?.[0];
+    selectedTeams: {
+      get() {
+        return this.article?.teams;
+      },
+      set(value) {
+        this.$emit('save-article', { teams: value });
+      },
+      deep: true,
+      immediate: true,
     },
     allTags() {
       return this.metaTags.map(item => item.name);
@@ -248,10 +248,6 @@ export default {
       this.$emit('save-article', { author_id: id });
       this.updateMeta();
     },
-    onSelectTeams({ id }) {
-      this.$emit('save-article', { team_id: id });
-      this.updateMeta();
-    },
     onChangeMetaInput() {
       this.saveArticle();
     },
@@ -284,24 +280,6 @@ export default {
 
   .action-buttons {
     @apply flex flex-col;
-  }
-}
-::v-deep {
-  .multiselect {
-    @apply mb-0;
-  }
-  .multiselect__content-wrapper {
-    @apply hidden;
-  }
-  .multiselect--active .multiselect__tags {
-    padding-right: var(--space-small) !important;
-    @apply rounded-md;
-  }
-  .multiselect__placeholder {
-    @apply text-slate-300 dark:text-slate-200 pt-2 mb-0;
-  }
-  .multiselect__select {
-    @apply hidden;
   }
 }
 </style>

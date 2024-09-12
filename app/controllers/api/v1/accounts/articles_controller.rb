@@ -3,6 +3,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
   before_action :check_authorization
   before_action :fetch_article, except: [:index, :create, :reorder]
   before_action :set_current_page, only: [:index]
+  before_action :find_team_and_update, only: [:update]
 
   def index
     @portal_articles = @portal.articles
@@ -28,7 +29,6 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
 
   def update
     @article.update!(article_params) if params[:article].present?
-    @article.teams << find_teams(params[:team_id]) if params[:team_id].present?
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
   end
 
@@ -52,13 +52,14 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @portal ||= Current.account.portals.find_by!(slug: params[:portal_id])
   end
 
-  def find_teams(team_id)
-    return [] if team_id.blank?
+  def find_team_and_update
+    return if params[:teams].blank?
 
-    teams = Current.account.teams.find_by(id: team_id)
-    return [] if teams.blank?
+    teams = Current.account.teams.where(id: params[:teams].pluck(:id))
+    return if teams.blank?
 
-    teams
+    @article.teams = teams
+    @article.save!
   end
 
   def article_params

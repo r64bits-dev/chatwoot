@@ -28,6 +28,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
 
   def update
     @article.update!(article_params) if params[:article].present?
+    @article.teams << find_teams(params[:team_id]) if params[:team_id].present?
     render json: { error: @article.errors.messages }, status: :unprocessable_entity and return unless @article.valid?
   end
 
@@ -51,11 +52,21 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @portal ||= Current.account.portals.find_by!(slug: params[:portal_id])
   end
 
+  def find_teams(team_id)
+    return [] if team_id.blank?
+
+    teams = Current.account.teams.find_by(id: team_id)
+    return [] if teams.blank?
+
+    teams
+  end
+
   def article_params
     params.require(:article).permit(
-      :title, :slug, :position, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
-                                                                                                                                     :description,
-                                                                                                                                     { tags: [] }]
+      :title, :slug, :position, :content, :description, :position, :category_id, :author_id, :team_id, :associated_article_id,
+      :status, meta: [:title,
+                      :description,
+                      { tags: [] }]
     )
   end
 

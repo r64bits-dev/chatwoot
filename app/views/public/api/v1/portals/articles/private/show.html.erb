@@ -32,12 +32,10 @@
 </style>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-    const accessToken = localStorage.getItem('access-token');
-    const client = localStorage.getItem('client');
-    const uid = localStorage.getItem('uid');
-
     function showContent() {
+      const accessToken = localStorage.getItem('access-token');
+      const client = localStorage.getItem('client');
+      const uid = localStorage.getItem('uid');
       const url = window.location.href;
       return fetch(`${url}/content`, {
         method: 'GET',
@@ -51,6 +49,11 @@
     }
 
     function validateToken() {
+      const accessToken = localStorage.getItem('access-token');
+      const client = localStorage.getItem('client');
+      const uid = localStorage.getItem('uid');
+      const url = window.location.href;
+
       document.getElementById('protected-content').style.display = 'block';
       fetch('/auth/validate_token', {
         method: 'GET',
@@ -79,6 +82,9 @@
         document.getElementById('unauthorized-message').style.display = 'block';
       });
     }
+
+
+  document.addEventListener('DOMContentLoaded', function() {
     validateToken();
   });
 </script>

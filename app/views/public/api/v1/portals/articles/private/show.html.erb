@@ -15,16 +15,10 @@
     </p>
   </div>
   <div id="content-wrapper" style="display: none;">
-    <% if !@is_plain_layout_enabled %>
-      <div class="max-w-5xl px-4 md:px-8 mx-auto flex flex-col">
-        <%= render "public/api/v1/portals/articles/article_header", article: @article %>
-      </div>
-    <% else %>
-    <div class="max-w-5xl mx-auto space-y-4 w-full px-4 md:px-8 <%= @is_plain_layout_enabled ? 'py-4' : 'py-8' %>">
+    <div class="max-w-5xl mx-auto space-y-4 w-full px-4 md:px-8">
       <%= render "public/api/v1/portals/articles/article_header", article: @article %>
     </div>
-    <% end %>
-    <div class="max-w-5xl mx-auto space-y-4 w-full px-4 md:px-8">
+    <div class="max-w-5xl mx-auto w-full px-4 md:px-8">
       <article id="cw-article-content" class="article-content flex-grow flex-2 mx-auto text-slate-800 dark:text-slate-50 text-lg max-w-3xl prose-h1:text-2xl prose-h2:text-xl prose-h2:mt-0 prose-h3:text-lg prose-code:[&>p]:p-1 prose-code:[&>p]:rounded-sm prose-code:[&>p]:bg-black-100 dark:prose-code:[&>p]:bg-black-600 prose-code:after:content-none prose-code:before:content-none prose dark:prose-invert break-words w-full <%= @is_plain_layout_enabled ? 'py-4' : 'pt-8 pb-12' %>">
       </article>
     </div>

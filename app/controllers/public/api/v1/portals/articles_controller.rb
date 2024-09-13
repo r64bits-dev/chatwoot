@@ -74,7 +74,7 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   end
 
   def check_article_access
-    return if article_access?
+    return if article_private_access?
 
     render json: { error: 'You are not authorized to view this content' }, status: :forbidden
   end

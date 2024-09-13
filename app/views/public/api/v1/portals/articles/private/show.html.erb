@@ -74,12 +74,17 @@
             document.getElementById('protected-content').style.display = 'none';
             document.getElementById('content-wrapper').style.display = 'block';
             document.getElementById('cw-article-content').innerHTML = res.payload.content;
+          })
+          .catch(error => {
+            document.getElementById('content-wrapper').style.display = 'none';
+            document.getElementById('protected-content').style.display = 'block';
           });
         }else
           window.location.href = '/app/login';
       })
       .catch(error => {
-        document.getElementById('unauthorized-message').style.display = 'block';
+        document.getElementById('content-wrapper').style.display = 'none';
+        document.getElementById('protected-content').style.display = 'block';
       });
     }
 

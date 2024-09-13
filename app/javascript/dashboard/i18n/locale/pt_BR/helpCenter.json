@@ -42,6 +42,12 @@
     "ARTICLE_SETTINGS": {
       "TITLE": "Configurações de Artigo",
       "FORM": {
+        "PUBLIC": {
+          "LABEL_ENABLED": "Público",
+          "LABEL_DISABLED": "Privado",
+          "HELP_TEXT_ENABLED": "A publicação do artigo é pública para todos os usuários da organização.",
+          "HELP_TEXT_DISABLED": "A publicação do artigo é privada para todos os usuários da organização."
+        },
         "CATEGORY": {
           "LABEL": "Categoria",
           "TITLE": "Selecionar categoria",

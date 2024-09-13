@@ -49,6 +49,12 @@
     "ARTICLE_SETTINGS": {
       "TITLE": "Article Settings",
       "FORM": {
+        "PUBLIC": {
+          "LABEL_ENABLED": "Public",
+          "LABEL_DISABLED": "Private",
+          "HELP_TEXT_ENABLED": "The article is publicly available to all users in the organization.",
+          "HELP_TEXT_DISABLED": "The article is private to all users in the organization."
+        },
         "CATEGORY": {
           "LABEL": "Category",
           "TITLE": "Select category",

@@ -8,6 +8,7 @@ json.position article.position
 json.account_id article.account_id
 json.updated_at article.updated_at.to_i
 json.meta article.meta
+json.visibility article.visibility
 
 json.category do
   json.id article.category_id

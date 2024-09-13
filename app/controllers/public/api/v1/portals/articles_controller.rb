@@ -57,6 +57,10 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   end
 
   def article_access?
-    @article.visibility_public?
+    @article.visibility_public? || article_private_access?
+  end
+
+  def article_private_access?
+    @article.visibility_private? && Current.user && @article.teams.include?(Current.user.account.team)
   end
 end

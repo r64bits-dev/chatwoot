@@ -103,6 +103,18 @@ export const actions = {
   async validityCheck(context) {
     try {
       const response = await authAPI.validityCheck();
+
+      // Salvando os tokens nos headers
+      const token = response.headers['access-token'];
+      const client = response.headers.client;
+      const uid = response.headers.uid;
+
+      if (token && client && uid) {
+        localStorage.setItem('access-token', token);
+        localStorage.setItem('client', client);
+        localStorage.setItem('uid', uid);
+      }
+
       const currentUser = response.data.payload.data;
       setUser(currentUser);
       context.commit(types.SET_CURRENT_USER, currentUser);

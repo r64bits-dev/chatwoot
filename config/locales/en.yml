@@ -235,6 +235,10 @@ en:
       name: "OpenAI"
       description: "Integrate powerful AI features into Chatwoot by leveraging the GPT models from OpenAI."
   public_portal:
+    articles:
+      403:
+        title: Sem permissão
+        description: Você não tem permissão para visualizar este conteúdo. Por favor entre em contato com o administrador do portal.
     search:
       search_placeholder: Search for article by title or body...
       empty_placeholder: No results found.

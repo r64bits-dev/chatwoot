@@ -1,4 +1,6 @@
 class Public::Api::V1::Portals::BaseController < PublicController
+  include DeviseTokenAuth::Concerns::SetUserByToken
+
   before_action :show_plain_layout
   before_action :set_color_scheme
   around_action :set_locale

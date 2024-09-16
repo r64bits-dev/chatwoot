@@ -157,6 +157,9 @@
           },
           "LOCALE_SETTINGS": {
             "TITLE": "Locales"
+          },
+          "TEAM_SETTINGS": {
+            "TITLE": "Team"
           }
         },
         "CATEGORIES": {

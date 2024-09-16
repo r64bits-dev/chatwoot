@@ -224,6 +224,10 @@ pt_BR:
       name: "OpenAI"
       description: "Integre os poderosos recursos de IA ao Chatwoot aproveitando os modelos GPT da OpenAI."
   public_portal:
+    articles:
+      403:
+        title: Sem permissão
+        description: Você não tem permissão para visualizar este conteúdo. Por favor entre em contato com o administrador do portal.
     search:
       search_placeholder: Pesquisar por artigo por título ou corpo...
       empty_placeholder: Nenhum resultado encontrado.

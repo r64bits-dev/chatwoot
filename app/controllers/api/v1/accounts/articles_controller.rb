@@ -3,6 +3,7 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
   before_action :check_authorization
   before_action :fetch_article, except: [:index, :create, :reorder]
   before_action :set_current_page, only: [:index]
+  before_action :find_team_and_update, only: [:update]
 
   def index
     @portal_articles = @portal.articles
@@ -51,11 +52,22 @@ class Api::V1::Accounts::ArticlesController < Api::V1::Accounts::BaseController
     @portal ||= Current.account.portals.find_by!(slug: params[:portal_id])
   end
 
+  def find_team_and_update
+    return if params[:teams].blank?
+
+    teams = Current.account.teams.where(id: params[:teams].pluck(:id))
+    return if teams.blank?
+
+    @article.teams = teams
+    @article.save!
+  end
+
   def article_params
     params.require(:article).permit(
-      :title, :slug, :position, :content, :description, :position, :category_id, :author_id, :associated_article_id, :status, meta: [:title,
-                                                                                                                                     :description,
-                                                                                                                                     { tags: [] }]
+      :title, :slug, :position, :content, :description, :position, :category_id, :author_id, :team_id, :associated_article_id, :visibility,
+      :status, meta: [:title,
+                      :description,
+                      { tags: [] }]
     )
   end
 

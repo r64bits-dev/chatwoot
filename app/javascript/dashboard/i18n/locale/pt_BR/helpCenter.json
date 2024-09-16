@@ -42,6 +42,12 @@
     "ARTICLE_SETTINGS": {
       "TITLE": "Configurações de Artigo",
       "FORM": {
+        "PUBLIC": {
+          "LABEL_ENABLED": "Público",
+          "LABEL_DISABLED": "Privado",
+          "HELP_TEXT_ENABLED": "A publicação do artigo é pública para todos os usuários da organização.",
+          "HELP_TEXT_DISABLED": "A publicação do artigo é privada para todos os usuários da organização."
+        },
         "CATEGORY": {
           "LABEL": "Categoria",
           "TITLE": "Selecionar categoria",
@@ -55,6 +61,13 @@
           "PLACEHOLDER": "Selecionar autor",
           "NO_RESULT": "Nenhum autor encontrado",
           "SEARCH_PLACEHOLDER": "Pesquisar autor"
+        },
+        "TEAMS": {
+          "LABEL": "Equipes", 
+          "TITLE": "Selecionar equipes", 
+          "PLACEHOLDER": "Selecionar equipes", 
+          "NO_RESULT": "Nenhuma equipe encontrada", 
+          "SEARCH_PLACEHOLDER": "Pesquisar equipes" 
         },
         "META_TITLE": {
           "LABEL": "Meta title",
@@ -157,6 +170,9 @@
           },
           "LOCALE_SETTINGS": {
             "TITLE": "Localidades"
+          },
+          "TEAM_SETTINGS": {
+            "TITLE": "Equipe"
           }
         },
         "CATEGORIES": {
@@ -284,6 +300,23 @@
         "API": {
           "SUCCESS_MESSAGE": "Localidade adicionada com sucesso",
           "ERROR_MESSAGE": "Não foi possível adicionar a localidade. Tente novamente."
+        },
+        "TEAM_SETTINGS": {
+          "TITLE": "Configurações da equipe",
+          "HELP_TEXT": "A equipe será usada no portal público para categorizar artigos.",
+          "ERROR": "Equipe é necessária",
+          "FORM": {
+            "PUBLIC": {
+              "LABEL": "Público",
+              "HELP_TEXT_DISABLED": "Somente você e os administradores podem ver e responder mensagens de outros membros da equipe.",
+              "HELP_TEXT_ENABLED": "Esta opção permite que os usuários vejam e respondam mensagens de outros membros da equipe."
+            },
+            "TEAMS": {
+              "LABEL": "Equipes",
+              "HELP_TEXT": "Selecione as equipes"
+            },
+            "SUBMIT": "Atualizar equipes"
+          }
         }
       },
       "CHANGE_DEFAULT_LOCALE": {

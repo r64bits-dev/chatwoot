@@ -1,8 +1,13 @@
 class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::BaseController
-  before_action :ensure_custom_domain_request, only: [:show, :index]
+  before_action :authenticate_user!, only: [:content]
+
+  before_action :ensure_custom_domain_request, only: [:show, :index, :content]
   before_action :portal
-  before_action :set_category, except: [:index, :show]
-  before_action :set_article, only: [:show]
+  before_action :set_category, except: [:index, :show, :content]
+  before_action :set_article, only: [:show, :content]
+  before_action :check_permissions, only: [:show, :index]
+  before_action :check_article_access, only: [:content]
+
   layout 'portal'
 
   def index
@@ -13,6 +18,8 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   end
 
   def show; end
+
+  def content; end
 
   private
 
@@ -49,5 +56,26 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
 
   def render_article_content(content)
     ChatwootMarkdownRenderer.new(content).render_article
+  end
+
+  def check_permissions
+    render 'public/api/v1/portals/articles/private/show' unless article_access?
+  end
+
+  def article_access?
+    @article.visibility_public? || article_private_access?
+  end
+
+  def article_private_access?
+    return false unless @article.visibility_private?
+    return false unless current_user
+
+    @article.teams.any? { |team| current_user.teams.include?(team) }
+  end
+
+  def check_article_access
+    return if article_private_access?
+
+    render json: { error: 'You are not authorized to view this content' }, status: :forbidden
   end
 end

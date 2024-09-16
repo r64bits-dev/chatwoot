@@ -91,6 +91,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    multiselect: {
+      type: Boolean,
+      default: false,
+    },
     multiselectorTitle: {
       type: String,
       default: '',

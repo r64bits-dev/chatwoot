@@ -11,6 +11,7 @@
 #  status                :integer
 #  title                 :string
 #  views                 :integer
+#  visibility            :integer          default(0), not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  account_id            :integer          not null
@@ -29,6 +30,8 @@
 class Article < ApplicationRecord
   include PgSearch::Model
 
+  has_many :articles_teams, class_name: 'ArticlesTeam', dependent: :destroy
+  has_many :teams, through: :articles_teams
   has_many :associated_articles,
            class_name: :Article,
            foreign_key: :associated_article_id,
@@ -58,6 +61,7 @@ class Article < ApplicationRecord
   after_save :category_id_changed_action, if: :saved_change_to_category_id?
 
   enum status: { draft: 0, published: 1, archived: 2 }
+  enum visibility: { public: 0, private: 1 }, _prefix: :visibility
 
   scope :search_by_category_slug, ->(category_slug) { where(categories: { slug: category_slug }) if category_slug.present? }
   scope :search_by_category_locale, ->(locale) { where(categories: { locale: locale }) if locale.present? }

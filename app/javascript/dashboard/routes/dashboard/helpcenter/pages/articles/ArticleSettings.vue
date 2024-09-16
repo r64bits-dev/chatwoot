@@ -5,9 +5,27 @@
         {{ $t('HELP_CENTER.ARTICLE_SETTINGS.TITLE') }}
       </h3>
       <div class="form-wrap">
+        <label
+          class="text-md my-4 py-2 leading-3 font-medium text-black-900 dark:text-slate-200"
+        >
+          {{ titleVisibility }}
+          <switches
+            v-model="visibility"
+            theme="bootstrap"
+            color="primary"
+            class="text=md"
+            :text-enabled="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.PUBLIC.HELP_TEXT_ENABLED')
+            "
+            :text-disabled="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.PUBLIC.HELP_TEXT_DISABLED')
+            "
+          />
+        </label>
         <label>
           {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.CATEGORY.LABEL') }}
           <multiselect-dropdown
+            class="custom-multiselect"
             :options="categories"
             :selected-item="selectedCategory"
             :has-thumbnail="false"
@@ -64,6 +82,7 @@
           {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.META_DESCRIPTION.LABEL') }}
           <textarea
             v-model="metaDescription"
+            class="custom-multiselect"
             rows="3"
             type="text"
             :placeholder="
@@ -79,6 +98,7 @@
           <multiselect
             ref="tagInput"
             v-model="metaTags"
+            class="custom-multiselect"
             :placeholder="
               $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.META_TAGS.PLACEHOLDER')
             "
@@ -92,6 +112,21 @@
             @close="onBlur"
             @tag="addTagValue"
             @remove="removeTag"
+          />
+        </label>
+        <label v-if="!visibility" class="mt-4">
+          {{ $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.LABEL') }}
+          <multiselect
+            v-model="selectedTeams"
+            :multiple="true"
+            :options="teams"
+            track-by="id"
+            label="name"
+            :placeholder="
+              $t('HELP_CENTER.ARTICLE_SETTINGS.FORM.TEAMS.SEARCH_PLACEHOLDER')
+            "
+            :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
+            :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
           />
         </label>
       </div>
@@ -120,6 +155,7 @@
 </template>
 
 <script>
+import Switches from 'vue-switches';
 import MultiselectDropdown from 'shared/components/ui/MultiselectDropdown.vue';
 import { mapGetters } from 'vuex';
 import { debounce } from '@chatwoot/utils';
@@ -127,6 +163,7 @@ import { isEmptyObject } from 'dashboard/helper/commons.js';
 export default {
   components: {
     MultiselectDropdown,
+    Switches,
   },
   props: {
     article: {
@@ -147,12 +184,40 @@ export default {
     ...mapGetters({
       categories: 'categories/allCategories',
       agents: 'agents/getAgents',
+      teams: 'teams/getTeams',
     }),
+    titleVisibility() {
+      return this.visibility
+        ? this.$t('HELP_CENTER.ARTICLE_SETTINGS.FORM.PUBLIC.LABEL_ENABLED')
+        : this.$t('HELP_CENTER.ARTICLE_SETTINGS.FORM.PUBLIC.LABEL_DISABLED');
+    },
     assignedAuthor() {
       return this.article?.author;
     },
     selectedCategory() {
       return this.article?.category;
+    },
+    selectedTeams: {
+      get() {
+        return this.article?.teams;
+      },
+      set(value) {
+        this.$emit('save-article', { teams: value });
+      },
+      deep: true,
+      immediate: true,
+    },
+    visibility: {
+      get() {
+        return this.article?.visibility === 'public';
+      },
+      set(value) {
+        this.$emit('save-article', {
+          visibility: value ? 'public' : 'private',
+        });
+      },
+      deep: true,
+      immediate: true,
     },
     allTags() {
       return this.metaTags.map(item => item.name);
@@ -256,7 +321,7 @@ export default {
     @apply flex flex-col;
   }
 }
-::v-deep {
+::v-deep .custom-multiselect {
   .multiselect {
     @apply mb-0;
   }

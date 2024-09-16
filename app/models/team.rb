@@ -27,6 +27,8 @@ class Team < ApplicationRecord
             presence: { message: I18n.t('errors.validations.presence') },
             uniqueness: { scope: :account_id }
 
+  scope :find_id_or_title, ->(id_or_title) { where(id: id_or_title).or(where(name: id_or_title)) }
+
   before_validation do
     self.name = name.downcase if attribute_present?('name')
   end

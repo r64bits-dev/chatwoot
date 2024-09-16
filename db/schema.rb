@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
+ActiveRecord::Schema[7.0].define(version: 2024_09_12_175007) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_stat_statements"
   enable_extension "pg_trgm"
@@ -164,9 +164,20 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
     t.jsonb "meta", default: {}
     t.string "slug", null: false
     t.integer "position"
+    t.integer "visibility", default: 0, null: false
     t.index ["associated_article_id"], name: "index_articles_on_associated_article_id"
     t.index ["author_id"], name: "index_articles_on_author_id"
     t.index ["slug"], name: "index_articles_on_slug", unique: true
+  end
+
+  create_table "articles_teams", force: :cascade do |t|
+    t.bigint "article_id", null: false
+    t.bigint "team_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id", "team_id"], name: "index_articles_teams_on_article_id_and_team_id", unique: true
+    t.index ["article_id"], name: "index_articles_teams_on_article_id"
+    t.index ["team_id"], name: "index_articles_teams_on_team_id"
   end
 
   create_table "attachments", id: :serial, force: :cascade do |t|
@@ -1046,6 +1057,8 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
   add_foreign_key "account_products", "products"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "articles_teams", "articles"
+  add_foreign_key "articles_teams", "teams"
   add_foreign_key "cart_items", "carts"
   add_foreign_key "cart_items", "products"
   add_foreign_key "carts", "accounts"
@@ -1083,6 +1096,13 @@ ActiveRecord::Schema[7.0].define(version: 2024_08_20_015651) do
       before(:insert).
       for_each(:row) do
     "NEW.display_id := nextval('camp_dpid_seq_' || NEW.account_id);"
+  end
+
+  create_trigger("set_default_message_signature_before_insert", :generated => true, :compatibility => 1).
+      on("users").
+      before(:insert).
+      for_each(:row) do
+    "BEGIN IF NEW.message_signature IS NULL THEN NEW.message_signature := NEW.name; END IF; RETURN NEW; END;"
   end
 
 end

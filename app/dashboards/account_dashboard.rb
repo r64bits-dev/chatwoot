@@ -42,6 +42,7 @@ class AccountDashboard < Administrate::BaseDashboard
     users
     conversations
     status
+    created_at
     account_plan
   ].freeze
 

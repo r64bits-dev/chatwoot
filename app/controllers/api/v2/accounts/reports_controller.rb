@@ -34,6 +34,8 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   end
 
   def teams
+    return render json: teams_metrics if params[:response] == 'json'
+
     @report_data = generate_teams_report
     generate_csv('teams_report', 'api/v2/accounts/reports/teams')
   end
@@ -114,7 +116,7 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
                         })
   end
 
-  def conversation_params
+  def default_params
     {
       type: params[:type].to_sym,
       user_id: params[:user_id],
@@ -146,6 +148,10 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   end
 
   def conversation_metrics
-    V2::ReportBuilder.new(Current.account, conversation_params).conversation_metrics
+    V2::ReportBuilder.new(Current.account, default_params).conversation_metrics
+  end
+
+  def teams_metrics
+    V2::ReportBuilder.new(Current.account, default_params).teams_metrics
   end
 end

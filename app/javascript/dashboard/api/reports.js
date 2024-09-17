@@ -72,6 +72,12 @@ class ReportsAPI extends ApiClient {
     });
   }
 
+  getTeamsMetricsReport({ page }) {
+    return axios.get(`${this.url}/teams`, {
+      params: { type: 'agent', page, response: 'json' },
+    });
+  }
+
   getConversationTrafficCSV() {
     return axios.get(`${this.url}/conversation_traffic`, {
       params: { timezone_offset: getTimeOffset() },

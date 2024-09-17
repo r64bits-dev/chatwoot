@@ -460,6 +460,17 @@
         "STATUS": "SItuação"
       }
     },
+    "TEAMS_CONVERSATIONS": {
+      "HEADER": "Conversas por times",
+      "LOADING_MESSAGE": "Carregando métricas de times...",
+      "NO_TEAMS": "Não há conversas por times",
+      "TABLE_HEADER": {
+        "TEAM": "Time",
+        "OPEN": "ABERTO",
+        "UNATTENDED": "Não atendidas",
+        "RESOLVED": "Resolvido"
+      }
+    },
     "AGENT_STATUS": {
       "HEADER": "Status do agente",
       "ONLINE": "Disponível",

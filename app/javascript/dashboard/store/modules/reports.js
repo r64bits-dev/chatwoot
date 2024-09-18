@@ -46,6 +46,7 @@ const state = {
       isFetchingAccountConversationMetric: false,
       isFetchingAccountConversationsHeatmap: false,
       isFetchingAgentConversationMetric: false,
+      isFetchingTeams: false,
       isFetchingTriggers: false,
     },
     accountConversationMetric: {},
@@ -53,6 +54,7 @@ const state = {
     agentConversationMetric: [],
     triggers: [],
     triggersMetrics: {},
+    teams: [],
   },
   triggers: {
     isFetching: false,
@@ -87,6 +89,9 @@ const getters = {
   },
   getTriggersReport($state) {
     return $state.triggers;
+  },
+  getTeamsMetrics($state) {
+    return $state.overview.teams;
   },
 };
 
@@ -193,6 +198,16 @@ export const actions = {
       })
       .catch(() => {
         commit(types.default.TOGGLE_AGENT_CONVERSATION_METRIC_LOADING, false);
+      });
+  },
+  fetchTeamsMetrics({ commit }, reportObj) {
+    commit(types.default.TOGGLE_TEAMS_METRICS_LOADING, true);
+    Report.getTeamsMetricsReport(reportObj)
+      .then(response => {
+        commit(types.default.SET_TEAMS_METRICS, response.data);
+      })
+      .finally(() => {
+        commit(types.default.TOGGLE_TEAMS_METRICS_LOADING, false);
       });
   },
   downloadAgentReports(_, reportObj) {
@@ -302,6 +317,12 @@ const mutations = {
   },
   [types.default.SET_TRIGGERS_REPORTS_METRICS](_state, data) {
     _state.triggers.metrics = data;
+  },
+  [types.default.SET_TEAMS_METRICS](_state, data) {
+    _state.overview.teams = data;
+  },
+  [types.default.TOGGLE_TEAMS_METRICS_LOADING](_state, flag) {
+    _state.overview.uiFlags.isFetchingTeams = flag;
   },
   [types.default.TOGGLE_TRIGGER_REPORT_LOADING](_state, { isFetching }) {
     _state.triggers.isFetching = isFetching;

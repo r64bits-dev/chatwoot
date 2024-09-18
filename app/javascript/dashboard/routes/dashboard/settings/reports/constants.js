@@ -203,6 +203,7 @@ export const OVERVIEW_METRICS = {
   online: 'ONLINE',
   busy: 'BUSY',
   offline: 'OFFLINE',
+  resolved: 'RESOLVED',
 };
 
 export const TRIGGERS_METRICS = {

@@ -148,7 +148,7 @@ class V2::ReportBuilder
       unattended: @open_conversations.unattended.count
     }
     metric[:unassigned] = @open_conversations.unassigned.count if params[:type].equal?(:account)
-    metric[:resolved] = @open_conversations.resolved.count if params[:type].equal?(:account)
+    metric[:resolved] = scope.conversations.resolved.count if params[:type].equal?(:account)
     metric
   end
 end

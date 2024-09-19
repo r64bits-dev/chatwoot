@@ -412,7 +412,8 @@
       "LOADING_MESSAGE": "Loading conversation metrics...",
       "OPEN": "Open",
       "UNATTENDED": "Unattended",
-      "UNASSIGNED": "Unassigned"
+      "UNASSIGNED": "Unassigned",
+      "RESOLVED": "Resolved"
     },
     "CONVERSATION_HEATMAP": {
       "HEADER": "Conversation Traffic",
@@ -436,6 +437,17 @@
       "ONLINE": "Online",
       "BUSY": "Busy",
       "OFFLINE": "Offline"
+    },
+    "TEAMS_CONVERSATIONS": {
+      "HEADER": "Teams status",
+      "LOADING_MESSAGE": "Loading teams metrics...",
+      "NO_TEAMS": "There are no conversations by teams",
+      "TABLE_HEADER": {
+        "TEAM": "Team",
+        "OPEN": "OPEN",
+        "UNATTENDED": "Unattended",
+        "RESOLVED": "RESOLVED"
+      }
     }
   },
   "TRIGGER_REPORTS": {

@@ -62,6 +62,19 @@ class V2::ReportBuilder
     end
   end
 
+  def teams_metrics
+    account.teams.map do |team|
+      {
+        id: team.id,
+        name: team.name,
+        conversations_resolved_count: team.conversations.resolved.count,
+        conversations_unassigned_count: team.conversations.unassigned.count,
+        conversations_open_count: team.conversations.open.count,
+        conversations_pending_count: team.conversations.pending.count
+      }
+    end
+  end
+
   def triggers_metrics
     triggers_scope = account.triggers
     triggers_scope = triggers_scope.where(createdAt: range) if range
@@ -135,6 +148,7 @@ class V2::ReportBuilder
       unattended: @open_conversations.unattended.count
     }
     metric[:unassigned] = @open_conversations.unassigned.count if params[:type].equal?(:account)
+    metric[:resolved] = @open_conversations.resolved.count if params[:type].equal?(:account)
     metric
   end
 end

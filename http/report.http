@@ -73,3 +73,19 @@ Authorization: {{token}}
 GET {{api}}/api/v2/accounts/{{account_id}}/reports/triggers
 Content-Type: application/json
 Authorization: {{token}}
+
+### 
+
+# Path: http/conversation.http
+# @name ListAgentsReport
+GET {{api}}/api/v2/accounts/1/reports/conversations?type=agent&page=1
+Content-Type: application/json
+Authorization: {{token}}
+
+### 
+
+# Path: http/team.http
+# @name ListTeamsReport
+GET {{api}}/api/v2/accounts/1/reports/teams?type=agent&page=1&response=json
+Content-Type: application/json
+Authorization: {{token}}

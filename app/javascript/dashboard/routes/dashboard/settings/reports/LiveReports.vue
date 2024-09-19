@@ -66,11 +66,15 @@
         />
       </metric-card>
     </div>
+    <div class="row">
+      <team-table-card />
+    </div>
   </div>
 </template>
 <script>
 import { mapGetters } from 'vuex';
 import AgentTable from './components/overview/AgentTable.vue';
+import TeamTableCard from './components/overview/TeamTableCard.vue';
 import MetricCard from './components/overview/MetricCard.vue';
 import { OVERVIEW_METRICS } from './constants';
 import ReportHeatmap from './components/Heatmap.vue';
@@ -84,6 +88,7 @@ export default {
   name: 'LiveReports',
   components: {
     AgentTable,
+    TeamTableCard,
     MetricCard,
     ReportHeatmap,
   },

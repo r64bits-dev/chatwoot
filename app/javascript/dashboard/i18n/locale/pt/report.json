@@ -441,7 +441,8 @@
       "LOADING_MESSAGE": "A importar métricas de conversa...",
       "OPEN": "Abertas",
       "UNATTENDED": "Por tratar",
-      "UNASSIGNED": "Não atribuído"
+      "UNASSIGNED": "Não atribuído",
+      "RESOLVED": "Resolvida"
     },
     "CONVERSATION_HEATMAP": {
       "HEADER": "Tráfego de conversa",
@@ -458,6 +459,17 @@
         "OPEN": "ABRIR",
         "UNATTENDED": "Por tratar",
         "STATUS": "SItuação"
+      }
+    },
+    "TEAMS_CONVERSATIONS": {
+      "HEADER": "Conversas por times",
+      "LOADING_MESSAGE": "Carregando métricas de times...",
+      "NO_TEAMS": "Não há conversas por times",
+      "TABLE_HEADER": {
+        "TEAM": "Time",
+        "OPEN": "ABERTO",
+        "UNATTENDED": "Não atendidas",
+        "RESOLVED": "Resolvido"
       }
     },
     "AGENT_STATUS": {

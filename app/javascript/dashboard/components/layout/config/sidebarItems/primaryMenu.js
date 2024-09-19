@@ -19,7 +19,6 @@ const primaryMenuItems = accountId => [
     icon: 'ticket',
     key: 'tickets',
     label: 'TICKETS',
-    featureFlag: FEATURE_FLAGS.TICKETS,
     toState: frontendURL(`accounts/${accountId}/tickets`),
     toStateName: 'tickets_dashboard',
     roles: AllRoles,

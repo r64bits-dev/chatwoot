@@ -1,4 +1,5 @@
 import { frontendURL } from '../../../../helper/URLHelper';
+import { AllRoles } from '../../../../featureFlags';
 
 const tickets = accountId => ({
   parentNav: 'tickets',
@@ -11,6 +12,7 @@ const tickets = accountId => ({
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/tickets`),
       toStateName: 'tickets_dashboard',
+      roles: [AllRoles],
     },
   ],
 });

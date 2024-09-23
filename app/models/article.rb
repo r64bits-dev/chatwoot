@@ -11,7 +11,7 @@
 #  status                :integer
 #  title                 :string
 #  views                 :integer
-#  visibility            :integer          default(0), not null
+#  visibility            :integer          default("public"), not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  account_id            :integer          not null

@@ -94,6 +94,7 @@ class Account < ApplicationRecord
 
   before_validation :validate_limit_keys
   after_create_commit :notify_creation
+  after_create :set_product_basic_plan, if: -> { products.blank? }
   after_destroy :remove_account_sequences
 
   def agents
@@ -161,6 +162,13 @@ class Account < ApplicationRecord
   def remove_account_sequences
     ActiveRecord::Base.connection.exec_query("drop sequence IF EXISTS camp_dpid_seq_#{id}")
     ActiveRecord::Base.connection.exec_query("drop sequence IF EXISTS conv_dpid_seq_#{id}")
+  end
+
+  def set_product_basic_plan
+    basic_product = Product.find_or_create_by(identifier: 'standard', type: 'plan')
+    errors.add(:products, 'must be a existing plan') if basic_product.blank?
+
+    products << basic_product
   end
 end
 

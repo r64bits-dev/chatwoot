@@ -23,7 +23,7 @@ const reports = accountId => ({
       toStateName: 'account_overview_reports',
     },
     {
-      icon: 'arrow-trending-lines',
+      icon: 'triggers',
       label: 'TRIGGER_REPORTS',
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/reports/triggers`),

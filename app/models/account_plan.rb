@@ -33,6 +33,7 @@ class AccountPlan < ApplicationRecord
   private
 
   def product_must_be_plan
+    return errors.add(:product, 'be present') if product.blank?
     return if product.plan?
 
     errors.add(:product, 'must be of type "plan"')

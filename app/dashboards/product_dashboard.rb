@@ -13,7 +13,7 @@ class ProductDashboard < Administrate::BaseDashboard
     price: Field::Number,
     product_type: Field::String,
     description: Field::Text,
-    details: Field::Text,
+    details: Field::JSONB,
     created_at: Field::DateTime,
     updated_at: Field::DateTime
   }.freeze

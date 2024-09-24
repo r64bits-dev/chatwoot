@@ -17,6 +17,63 @@
 #To learn more, please read the Rails Internationalization guide
 #available at https://guides.rubyonrails.org/i18n.html.
 pt_BR:
+  administrate:
+    actions:
+      confirm: Tem certeza?
+      destroy: Excluir
+      edit: Editar
+      show: Exibir
+    controller:
+      create:
+        success: '%{resource} criado com sucesso!'
+      destroy:
+        success: '%{resource} excluído com sucesso!'
+      update:
+        success: '%{resource} atualizado com sucesso!'
+    fields:
+      has_many:
+        more: Mostrar %{count} mais
+        none: Nenhum
+      polymorphic:
+        not_supported: Não suportado
+      select:
+        prompt: Por favor selecione
+      submit:
+        create: Criar %{model}
+        submit: Salvar %{model}
+        update: Atualizar %{model}
+    form:
+      error: Ocorreu um erro, por favor verifique os campos abaixo
+      label:
+        are_you_sure: Você tem certeza?
+        back: Voltar
+        cancel: Cancelar
+        destroy: Excluir
+        detail: Detalhe
+        edit: Editar
+        new: Novo
+        submit: Salvar
+        view: Visualizar
+    inputs:
+      create:
+        submit: Criar
+      search:
+        reset: Limpar
+        submit: Buscar
+    navigation:
+      back_to_app: Voltar para a aplicação
+      back_to_collection: Voltar para a coleção
+      collection: Coleção
+      edit: Editar
+      home: Home
+      new: Novo
+      search: Buscar
+    notifications:
+      created: Criado com sucesso
+      updated: Atualizado com sucesso
+    flash:
+      created: Criado com sucesso
+      updated: Atualizado com sucesso
   hello: "Olá, mundo"
   messages:
     reset_password_success: Legal! A solicitação de alteração de senha foi bem sucedida. Verifique seu e-mail para obter instruções.

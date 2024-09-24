@@ -5,16 +5,26 @@
 
 module DateRangeHelper
   def range
-    return if params[:since].blank? || params[:until].blank?
+    since = params[:since].present? ? parse_date_time(params[:since]) : nil
+    until_date = params[:until].present? ? parse_date_time(params[:until]) : nil
+    return unless since && until_date
 
-    parse_date_time(params[:since])...parse_date_time(params[:until])
+    since...until_date
   end
 
   def parse_date_time(datetime)
-    return datetime if datetime.is_a?(DateTime)
-    return datetime.to_datetime if datetime.is_a?(Time) || datetime.is_a?(Date)
-
-    DateTime.strptime(datetime, '%s')
+    case datetime
+    when DateTime
+      datetime
+    when Time, Date
+      datetime.to_datetime
+    else
+      begin
+        DateTime.strptime(datetime.to_s, '%s')
+      rescue StandardError
+        nil
+      end
+    end
   end
 
   def periods_in_range_for_group_by(group_by, start_date, end_date)
@@ -23,8 +33,10 @@ module DateRangeHelper
       (start_date..end_date).to_a
     when 'year'
       (start_date.year..end_date.year).map { |year| Date.new(year, 1, 1) }
-    else # month
-      (start_date..end_date).select { |d| d.day == 1 }
+    else # 'month'
+      start_month = Date.new(start_date.year, start_date.month, 1)
+      end_month = Date.new(end_date.year, end_date.month, 1)
+      (start_month..end_month).select { |d| d.day == 1 }
     end
   end
 
@@ -33,8 +45,8 @@ module DateRangeHelper
     when 'day'
       period_start.strftime('%d %B %Y')
     when 'year'
-      period_start.year.to_s
-    else # month
+      period_start.strftime('%Y')
+    else # 'month'
       period_start.strftime('%B %Y')
     end
   end
@@ -45,7 +57,7 @@ module DateRangeHelper
       period_start.end_of_day
     when 'year'
       period_start.end_of_year
-    else # month
+    else # 'month'
       period_start.end_of_month
     end
   end

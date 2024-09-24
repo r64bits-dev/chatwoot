@@ -1,4 +1,9 @@
 class SuperAdmin::ProductsController < SuperAdmin::ApplicationController
+  def update
+    params[:product][:details] = JSON.parse(params[:product][:details]) if params[:product][:details].present?
+    super
+  end
+
   def destroy
     if requested_resource.destroy
       flash[:notice] = translate_with_resource('destroy.success')

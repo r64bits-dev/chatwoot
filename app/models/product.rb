@@ -26,4 +26,8 @@ class Product < ApplicationRecord
 
   validates :product_type, presence: true, inclusion: { in: product_types.keys }
   validates :identifier, presence: true, uniqueness: true
+
+  MINIMUM_PRICE = 199.0
+  MAXIMUM_CONVERSATIONS = 600
+  MAXIMUM_AGENTS = 2
 end

@@ -6,6 +6,8 @@ class V2::ReportInvoicesBuilder
   def initialize(account, params)
     @account = account
     @account_plan = @account.account_plan
+    raise 'Account plan not found' unless @account_plan
+
     @product = @account_plan.product
     @params = params
     @group_by = params[:group_by] || 'month' # default to 'month'

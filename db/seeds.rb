@@ -98,6 +98,7 @@ unless Rails.env.production?
   Product.create([
                    {
                      name: 'Standard',
+                     identifier: 'standard',
                      price: 199.00,
                      product_type: 'Plano',
                      description: 'Plano Standard',
@@ -111,6 +112,7 @@ unless Rails.env.production?
                    },
                    {
                      name: 'Scale',
+                     identifier: 'scale',
                      price: 600.00,
                      product_type: 'Plano',
                      description: 'Plano Scale',
@@ -124,6 +126,7 @@ unless Rails.env.production?
                    },
                    {
                      name: 'Pro',
+                     identifier: 'pro',
                      price: 1100.00,
                      product_type: 'Plano',
                      description: 'Plano Pro',

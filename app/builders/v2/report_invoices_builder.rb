@@ -4,6 +4,7 @@ class V2::ReportInvoicesBuilder
   attr_reader :account, :params, :product, :account_plan, :date_range, :group_by
 
   DEFAULT_GROUP_BY = 'month'.freeze
+  DEFAULT_MONTHS_IN_ADVANCE = 3
 
   def initialize(account, params)
     @account = account
@@ -86,7 +87,7 @@ class V2::ReportInvoicesBuilder
   end
 
   def default_start_date
-    Time.current.beginning_of_day - 3.months
+    Time.current.beginning_of_day - DEFAULT_MONTHS_IN_ADVANCE.months
   end
 
   def default_end_date

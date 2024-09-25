@@ -87,7 +87,10 @@ class V2::ReportInvoicesBuilder
   end
 
   def default_start_date
-    Time.current.beginning_of_day - DEFAULT_MONTHS_IN_ADVANCE.months
+    account_creation_date = account.created_at.beginning_of_day
+    start_date = Time.current.beginning_of_day - DEFAULT_MONTHS_IN_ADVANCE.months
+
+    [account_creation_date, start_date].max
   end
 
   def default_end_date

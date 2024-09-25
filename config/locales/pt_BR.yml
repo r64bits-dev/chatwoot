@@ -30,6 +30,7 @@ pt_BR:
         success: '%{resource} excluído com sucesso!'
       update:
         success: '%{resource} atualizado com sucesso!'
+        error: '%{resource} não foi atualizado!'
     fields:
       has_many:
         more: Mostrar %{count} mais

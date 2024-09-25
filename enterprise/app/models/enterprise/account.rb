@@ -13,7 +13,7 @@ module Enterprise::Account
   end
 
   def get_limits(limit_name)
-    return increase_usage(limit_name) if limit_exceeded?(limit_name)
+    increase_usage(limit_name) if limit_exceeded?(limit_name)
 
     # return self[:limits][limit_name.to_s] if self[:limits][limit_name.to_s].present?
     fetch_limit_from_config(limit_name) || ChatwootApp.max_limit
@@ -47,10 +47,10 @@ module Enterprise::Account
     case limit_name
     when :inboxes
       account_plan.update(extra_inboxes: extra_inboxes + 1)
-      create_reporting_event('extra_inboxes', extra_inboxes + 1)
+      create_reporting_event('extra_inboxes', extra_conversation_cost)
     when :agents
       account_plan.update(extra_agents: extra_agents + 1)
-      create_reporting_event('extra_agents', extra_agents + 1)
+      create_reporting_event('extra_agents', extra_agent_cost)
     end
   end
 
@@ -65,6 +65,14 @@ module Enterprise::Account
   end
 
   def product
-    @product ||= Product.joins(:accounts).find_by(accounts: { id: id }, product_type: 'plan')
+    @product ||= Current.account.account_plan.product
+  end
+
+  def extra_agent_cost
+    product.details['extra_agent_cost'].to_f || 0.0
+  end
+
+  def extra_conversation_cost
+    product.details['extra_conversation_cost'].to_f || 0.0
   end
 end

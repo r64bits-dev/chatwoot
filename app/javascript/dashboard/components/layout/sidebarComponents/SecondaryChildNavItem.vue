@@ -50,7 +50,9 @@
                 shouldTruncate,
             }"
           >
-            {{ label }} {{ formattedCount }}
+            <span :class="isTextBold ? 'font-bold' : ''">
+              {{ label }}
+            </span>
           </span>
           <span
             v-if="showChildCount"
@@ -114,9 +116,9 @@ export default {
       type: Number,
       default: 0,
     },
-    totalUsedCount: {
-      type: Number,
-      default: 0,
+    isTextBold: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -130,9 +132,6 @@ export default {
     },
     menuTitle() {
       return this.shouldTruncate ? this.label : '';
-    },
-    formattedCount() {
-      return this.totalUsedCount ? `(${this.totalUsedCount})` : '';
     },
   },
 };

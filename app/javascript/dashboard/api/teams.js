@@ -37,6 +37,10 @@ export class TeamsAPI extends CacheEnabledApiClient {
       user_ids: agentsList,
     });
   }
+
+  countConversationsUnassigned() {
+    return axios.get(`${this.url}/conversations/unassigned`);
+  }
 }
 
 export default new TeamsAPI();

@@ -18,4 +18,8 @@ class TeamPolicy < ApplicationPolicy
   def destroy?
     @account_user.administrator?
   end
+
+  def conversations_unassigned?
+    true
+  end
 end

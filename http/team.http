@@ -1,0 +1,40 @@
+# Path: http/sign.http
+# @name LOGIN
+POST {{api}}/auth/sign_in
+Content-Type: application/json
+User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36
+User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.59 Mobile Safari/537.36
+
+{
+  "email": "{{username_jonh}}",
+  "password": "{{password_jonh}}"
+}
+
+###
+@token = {{LOGIN.response.headers.Authorization}}
+
+### 
+
+# Path: http/team.http
+# @name AllTeam
+GET {{api}}/api/v1/accounts/1/teams
+Content-Type: application/json
+Authorization: {{token}}
+
+###
+
+# Path: http/team.http
+# @name GetTeam
+GET {{api}}/api/v1/accounts/1/teams/1
+Content-Type: application/json
+Authorization: {{token}}
+
+###
+
+# Path: http/team.http
+# @name ConversationsUnassigned
+GET {{api}}/api/v1/accounts/1/teams/conversations/unassigned
+Content-Type: application/json
+Authorization: {{token}}
+
+###

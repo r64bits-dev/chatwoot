@@ -53,40 +53,53 @@
     </router-link>
 
     <ul v-if="hasSubMenu" class="list-none ml-0 mb-0">
-      <secondary-child-nav-item
-        v-for="child in menuItem.children"
-        :key="child.id"
-        :to="child.toState"
-        :label="child.label"
-        :label-color="child.color"
-        :should-truncate="child.truncateLabel"
-        :icon="computedInboxClass(child)"
-        :warning-icon="computedInboxErrorClass(child)"
-        :show-child-count="showChildCount(child.count)"
-        :child-item-count="child.count"
-        :total-used-count="child.totalUsedCount"
-      />
-      <router-link
-        v-if="showItem(menuItem)"
-        v-slot="{ href, navigate }"
-        :to="menuItem.toState"
-        custom
+      <div
+        v-if="
+          menuItem.key !== 'team' ||
+          (menuItem.key === 'team' && !uiFlags.isFetchingTeams)
+        "
       >
-        <li class="pl-1">
-          <a :href="href">
-            <woot-button
-              size="tiny"
-              variant="clear"
-              color-scheme="secondary"
-              icon="add"
-              :data-testid="menuItem.dataTestid"
-              @click="e => newLinkClick(e, navigate)"
-            >
-              {{ $t(`SIDEBAR.${menuItem.newLinkTag}`) }}
-            </woot-button>
-          </a>
-        </li>
-      </router-link>
+        <secondary-child-nav-item
+          v-for="child in menuItem.children"
+          :key="child.id"
+          :to="child.toState"
+          :label="child.label"
+          :label-color="child.color"
+          :should-truncate="child.truncateLabel"
+          :icon="computedInboxClass(child)"
+          :warning-icon="computedInboxErrorClass(child)"
+          :show-child-count="showChildCount(child.count)"
+          :is-text-bold="computedIsTextBold(child)"
+          :child-item-count="computedTeamCount(child)"
+        />
+        <router-link
+          v-if="showItem(menuItem)"
+          v-slot="{ href, navigate }"
+          :to="menuItem.toState"
+          custom
+        >
+          <li class="pl-1">
+            <a :href="href">
+              <woot-button
+                size="tiny"
+                variant="clear"
+                color-scheme="secondary"
+                icon="add"
+                :data-testid="menuItem.dataTestid"
+                @click="e => newLinkClick(e, navigate)"
+              >
+                {{ $t(`SIDEBAR.${menuItem.newLinkTag}`) }}
+              </woot-button>
+            </a>
+          </li>
+        </router-link>
+      </div>
+      <div v-else>
+        <woot-loading-state
+          v-if="uiFlags.isFetchingTeams"
+          :message="$t('TEAMS.LIST.LOADING_MESSAGE')"
+        />
+      </div>
     </ul>
   </li>
 </template>
@@ -115,9 +128,14 @@ export default {
       default: () => ({}),
     },
   },
+  data: () => ({
+    isTextBold: false,
+  }),
   computed: {
     ...mapGetters({
       activeInbox: 'getSelectedInbox',
+      teamsMetrics: 'teams/getTeamsMetrics',
+      uiFlags: 'teams/getUIFlags',
       accountId: 'getCurrentAccountId',
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       globalConfig: 'globalConfig/get',
@@ -211,6 +229,17 @@ export default {
       return 'hover:text-slate-700 dark:hover:text-slate-100';
     },
   },
+  mounted() {
+    if (this.menuItem.key === 'team') {
+      this.$store.dispatch('teams/countConversationsUnassigned');
+    }
+    if (this.menuItem.key === 'tickets') {
+      this.$store.dispatch('tickets/getLabels');
+    }
+    if (this.menuItem.key === 'conversations') {
+      this.$store.dispatch('labels/updateUsageCount');
+    }
+  },
   methods: {
     computedInboxClass(child) {
       const { type, phoneNumber } = child;
@@ -226,6 +255,24 @@ export default {
         reauthorizationRequired
       );
       return warningClass;
+    },
+    computedIsTextBold(child) {
+      if (child.key === 'team') {
+        return !!this.teamsMetrics.find(
+          team =>
+            team.id === child.id && team.unassigned_conversations_count > 0
+        );
+      }
+      return false;
+    },
+    computedTeamCount(child) {
+      if (child.key === 'team') {
+        const total = this.teamsMetrics.find(
+          team => team.id === child.id
+        )?.unassigned_conversations_count;
+        return total || 0;
+      }
+      return child.count;
     },
     newLinkClick(e, navigate) {
       if (this.menuItem.newLinkRouteName) {
@@ -244,7 +291,7 @@ export default {
       this.$emit('open');
     },
     showChildCount(count) {
-      return Number.isInteger(count);
+      return Number.isInteger(count) || this.menuItem.key === 'team';
     },
   },
 };

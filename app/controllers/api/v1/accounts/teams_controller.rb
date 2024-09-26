@@ -25,6 +25,12 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
     head :ok
   end
 
+  def conversations_unassigned
+    render json: teams_with_conversation_counts.map do |team|
+      { team_name: team.name, unassigned_conversations_count: team.unassigned_conversations_count || 0 }
+    end
+  end
+
   private
 
   def fetch_team
@@ -37,5 +43,13 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
 
   def find_teams
     @teams = @user.administrator? ? Current.account.teams : Current.user.teams
+  end
+
+  def teams_with_conversation_counts
+    find_teams
+      .left_joins(:conversations) # Faz um LEFT JOIN com conversas
+      .where(conversations: { assignee_id: nil }) # Conversas não atribuídas
+      .group('teams.id', 'teams.name')
+      .select('teams.id, teams.name, COUNT(conversations.id) AS unassigned_conversations_count')
   end
 end

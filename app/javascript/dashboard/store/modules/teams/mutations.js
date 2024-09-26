@@ -6,6 +6,7 @@ import {
   SET_TEAM_ITEM,
   EDIT_TEAM,
   DELETE_TEAM,
+  SET_TEAMS_METRICS,
 } from './types';
 
 export const mutations = {
@@ -43,5 +44,10 @@ export const mutations = {
   [DELETE_TEAM]: ($state, teamId) => {
     const { [teamId]: toDelete, ...records } = $state.records;
     Vue.set($state, 'records', records);
+  },
+
+  [SET_TEAMS_METRICS]: ($state, data) => {
+    Vue.set($state.uiFlags, 'isFetchingTeams', false);
+    $state.metrics = data;
   },
 };

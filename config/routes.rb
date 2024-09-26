@@ -188,6 +188,10 @@ Rails.application.routes.draw do
           resource :notification_settings, only: [:show, :update]
 
           resources :teams do
+            collection do
+              get 'conversations/unassigned', to: 'teams#conversations_unassigned'
+            end
+
             resources :team_members, only: [:index, :create] do
               collection do
                 delete :destroy

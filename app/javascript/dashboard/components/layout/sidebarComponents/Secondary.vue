@@ -153,7 +153,7 @@ export default {
           toState: frontendURL(
             `accounts/${this.accountId}/label/${label.title}`
           ),
-          totalUsedCount: label.totalUsedCount,
+          count: label.totalUsedCount,
         })),
       };
     },
@@ -175,7 +175,7 @@ export default {
           label: label.title,
           color: label.color,
           truncateLabel: true,
-          totalUsedCount: this.findLabelTotalUsedCount(label),
+          count: this.findLabelTotalUsedCount(label),
           toState: frontendURL(
             `accounts/${this.accountId}/tickets?label=${label.title}`
           ),
@@ -220,6 +220,7 @@ export default {
           id: team.id,
           label: team.name,
           truncateLabel: true,
+          key: 'team',
           toState: frontendURL(`accounts/${this.accountId}/team/${team.id}`),
         })),
       };

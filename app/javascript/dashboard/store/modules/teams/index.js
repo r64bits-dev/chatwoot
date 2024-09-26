@@ -4,6 +4,7 @@ import { mutations } from './mutations';
 
 const state = {
   meta: {},
+  metrics: [],
   records: {},
   uiFlags: {
     isFetching: false,

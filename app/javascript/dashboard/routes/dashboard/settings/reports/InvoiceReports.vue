@@ -65,6 +65,8 @@ import { mapGetters } from 'vuex';
 import { INVOICE_SUMMARY_METRICS } from './constants';
 import GraphInvoices from './components/invoices/GraphInvoices.vue';
 
+const COLUMNS_TO_FORMAT = ['total', 'average_invoice_price'];
+
 export default {
   name: 'InvoiceReports',
   components: {
@@ -86,9 +88,9 @@ export default {
       let metric = {};
       Object.keys(this.summary || {}).forEach(key => {
         const metricName = this.$t(
-          'TICKETS_REPORTS.METRICS.' + INVOICE_SUMMARY_METRICS[key] + '.NAME'
+          'INVOICE_REPORTS.METRICS.' + INVOICE_SUMMARY_METRICS[key] + '.NAME'
         );
-        if (key === 'total') {
+        if (COLUMNS_TO_FORMAT.includes(key)) {
           metric[metricName] = this.formatCurrency(this.summary[key]);
           return;
         }

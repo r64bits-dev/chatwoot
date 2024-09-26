@@ -507,6 +507,12 @@
     "METRICS": {
       "TOTAL": {
         "NAME": "Total em R$"
+      },
+      "TOTAL_INVOICES": {
+        "NAME": "Total de faturas"
+      },
+      "AVERAGE_INVOICE_PRICE": {
+        "NAME": "Preço médio de fatura"
       }
     }
   },

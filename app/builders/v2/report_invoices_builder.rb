@@ -16,6 +16,8 @@ class V2::ReportInvoicesBuilder
     @group_by = params[:group_by] || DEFAULT_GROUP_BY
     @date_range = range
     @total = 0
+    @total_invoices = 0
+    @average_invoice_price = 0
   end
 
   def invoices_metrics
@@ -25,7 +27,9 @@ class V2::ReportInvoicesBuilder
     {
       values: values(start_date, end_date),
       summary: {
-        total: @total
+        total: @total,
+        total_invoices: @total_invoices,
+        average_invoice_price: @average_invoice_price
       }
     }
   end
@@ -55,9 +59,11 @@ class V2::ReportInvoicesBuilder
   end
 
   def values(start_date, end_date)
-    periods_in_range_for_group_by(group_by, start_date, end_date).map do |date|
+    data = periods_in_range_for_group_by(group_by, start_date, end_date).map do |date|
       calculate_summary_for_period(date)
     end
+    @average_invoice_price = @total / @total_invoices
+    data
   end
 
   def calculate_summary_for_period(date)
@@ -66,6 +72,7 @@ class V2::ReportInvoicesBuilder
     extra_agent_cost = sum_reporting_events_extra_agents(periods.period_start, periods.period_end)
     total = calculate_total_price(extra_conversation_cost, extra_agent_cost)
     @total += total
+    @total_invoices += 1
 
     build_metrics_data(date, periods, extra_conversation_cost, extra_agent_cost, total)
   end

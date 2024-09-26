@@ -15,7 +15,8 @@ class ProductDashboard < Administrate::BaseDashboard
     description: Field::Text,
     details: Field::JSONB,
     created_at: Field::DateTime,
-    updated_at: Field::DateTime
+    updated_at: Field::DateTime,
+    identifier: Field::String
   }.freeze
 
   # COLLECTION_ATTRIBUTES
@@ -29,7 +30,6 @@ class ProductDashboard < Administrate::BaseDashboard
     price
     product_type
     description
-    details
     created_at
   ].freeze
 
@@ -37,6 +37,7 @@ class ProductDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed on the model's show page.
   SHOW_PAGE_ATTRIBUTES = %i[
     id
+    identifier
     name
     price
     product_type
@@ -50,6 +51,7 @@ class ProductDashboard < Administrate::BaseDashboard
   # an array of attributes that will be displayed
   # on the model's form (`new` and `edit`) pages.
   FORM_ATTRIBUTES = %i[
+    identifier
     name
     price
     product_type
@@ -72,7 +74,7 @@ class ProductDashboard < Administrate::BaseDashboard
   # Overwrite this method to customize how products are displayed
   # across all pages of the admin dashboard.
   #
-  # def display_resource(product)
-  #   "Product ##{product.id}"
-  # end
+  def display_resource(product)
+    "Product ##{product.id}"
+  end
 end

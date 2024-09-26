@@ -1,6 +1,7 @@
 /* eslint no-plusplus: 0 */
 import AvatarUploader from './widgets/forms/AvatarUploader.vue';
 import Bar from './widgets/chart/BarChart';
+import LineChart from './widgets/chart/LineChart';
 import Button from './ui/WootButton';
 import Code from './Code';
 import ColorPicker from './widgets/ColorPicker';
@@ -41,6 +42,7 @@ const WootUIKit = {
   DropdownMenu,
   FeatureToggle,
   HorizontalBar,
+  LineChart,
   Input,
   TextArea,
   PhoneInput,

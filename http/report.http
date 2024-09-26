@@ -29,7 +29,7 @@ Authorization: {{token}}
 @type = account
 @business_hours = false
 @group_by = day
-@account_id = 2
+@account_id = 1
 
 GET {{api}}/api/v2/accounts/{{account_id}}/reports?metric=triggers&since={{since}}&until={{until}}&type={{type}}&group_by={{group_by}}&business_hours={{business_hours}}
 Content-Type: application/json
@@ -60,8 +60,9 @@ Authorization: {{token}}
 
 # Path: http/invoices.http
 # @name invoices_report
+# group_by: ['days', 'month', 'year']
 GET {{api}}/api/v2/accounts/{{account_id}}/reports/invoices
-?group_by=day
+?group_by=month
 Content-Type: application/json
 Authorization: {{token}}
 

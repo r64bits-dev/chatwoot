@@ -2,7 +2,12 @@ import * as types from '../../mutation-types';
 import ReportsAPI from '../../../api/reports';
 
 export const state = {
-  records: [],
+  data: {
+    values: [],
+    summary: {
+      total: 0,
+    },
+  },
   uiFlags: {
     isFetching: false,
     isFetchingItem: false,
@@ -14,11 +19,13 @@ export const state = {
 
 export const getters = {
   getInvoices($state) {
-    return $state.records;
+    return $state.data.values;
   },
-
+  getSummary($state) {
+    return $state.data.summary;
+  },
   getInvoice: $state => invoiceId => {
-    const [invoice] = $state.records.filter(
+    const [invoice] = $state.data.filter(
       record => record.id === Number(invoiceId)
     );
     return invoice || {};
@@ -29,12 +36,16 @@ export const getters = {
 };
 
 export const actions = {
-  get: async ({ commit }) => {
+  get: async ({ commit }, { from, to, groupBy }) => {
     commit(types.default.SET_INVOICES_UI_FLAG, { isFetching: true });
     try {
-      const response = await ReportsAPI.getInvoicesReport(true);
+      const response = await ReportsAPI.getInvoicesReport({
+        from,
+        to,
+        groupBy,
+      });
       commit(types.default.SET_INVOICES_UI_FLAG, { isFetching: false });
-      commit(types.default.SET_INBOXES, response.data.payload);
+      commit(types.default.SET_INVOICES, response.data);
     } catch (error) {
       commit(types.default.SET_INVOICES_UI_FLAG, { isFetching: false });
     }
@@ -44,6 +55,9 @@ export const actions = {
 export const mutations = {
   [types.default.SET_INVOICES_UI_FLAG]($state, uiFlag) {
     $state.uiFlags = { ...$state.uiFlags, ...uiFlag };
+  },
+  [types.default.SET_INVOICES]($state, data) {
+    $state.data = data;
   },
 };
 

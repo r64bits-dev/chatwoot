@@ -165,10 +165,22 @@ class Account < ApplicationRecord
   end
 
   def set_product_basic_plan
-    basic_product = Product.find_or_create_by(identifier: 'standard', type: 'plan')
+    basic_product = find_or_create_basic_product
     errors.add(:products, 'must be a existing plan') if basic_product.blank?
 
     products << basic_product
+  end
+
+  def find_or_create_basic_product
+    Product.find_or_create_by(identifier: 'standard', product_type: 'plan') do |product|
+      product.name = 'Standard'
+      product.price = Product::MINIMUM_PRICE
+      product.description = 'Standard plan'
+      product.details = {
+        'number_of_conversations' => Product::MAXIMUM_CONVERSATIONS,
+        'number_of_agents' => Product::MAXIMUM_AGENTS
+      }
+    end
   end
 end
 

@@ -108,9 +108,9 @@ class ReportsAPI extends ApiClient {
     });
   }
 
-  getInvoicesReport({ from: since, to: until, businessHours }) {
+  getInvoicesReport({ from: since, to: until, groupBy }) {
     return axios.get(`${this.url}/invoices`, {
-      params: { since, until, business_hours: businessHours },
+      params: { since, until, group_by: groupBy },
     });
   }
 

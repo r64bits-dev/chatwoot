@@ -13,6 +13,14 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 ###
 @token = {{LOGIN.response.headers.Authorization}}
 
+### 
+
+# Path: http/team.http
+# @name AllTeam
+GET {{api}}/api/v1/accounts/1/teams
+Content-Type: application/json
+Authorization: {{token}}
+
 ###
 
 # Path: http/team.http

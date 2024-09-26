@@ -153,7 +153,7 @@ export default {
           toState: frontendURL(
             `accounts/${this.accountId}/label/${label.title}`
           ),
-          count: label.totalUsedCount,
+          count: label.totalUsedCount || 0,
         })),
       };
     },
@@ -175,7 +175,7 @@ export default {
           label: label.title,
           color: label.color,
           truncateLabel: true,
-          count: this.findLabelTotalUsedCount(label),
+          count: this.findLabelTotalUsedCount(label) || 0,
           toState: frontendURL(
             `accounts/${this.accountId}/tickets?label=${label.title}`
           ),
@@ -221,6 +221,7 @@ export default {
           label: team.name,
           truncateLabel: true,
           key: 'team',
+          count: 0,
           toState: frontendURL(`accounts/${this.accountId}/team/${team.id}`),
         })),
       };
@@ -284,14 +285,6 @@ export default {
         tickets: [this.ticketLabelSection],
       };
     },
-  },
-  mounted() {
-    if (this.menuConfig.parentNav === 'tickets') {
-      this.$store.dispatch('tickets/getLabels');
-    }
-    if (this.menuConfig.parentNav === 'conversations') {
-      this.$store.dispatch('labels/updateUsageCount');
-    }
   },
   methods: {
     showAddLabelPopup() {

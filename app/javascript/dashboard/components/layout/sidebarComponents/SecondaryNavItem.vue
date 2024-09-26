@@ -233,6 +233,12 @@ export default {
     if (this.menuItem.key === 'team') {
       this.$store.dispatch('teams/countConversationsUnassigned');
     }
+    if (this.menuItem.key === 'tickets') {
+      this.$store.dispatch('tickets/getLabels');
+    }
+    if (this.menuItem.key === 'conversations') {
+      this.$store.dispatch('labels/updateUsageCount');
+    }
   },
   methods: {
     computedInboxClass(child) {
@@ -252,7 +258,10 @@ export default {
     },
     computedIsTextBold(child) {
       if (child.key === 'team') {
-        return !!this.teamsMetrics.find(team => team.id === child.id);
+        return !!this.teamsMetrics.find(
+          team =>
+            team.id === child.id && team.unassigned_conversations_count > 0
+        );
       }
       return false;
     },

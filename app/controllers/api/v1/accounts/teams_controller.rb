@@ -26,9 +26,7 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
   end
 
   def conversations_unassigned
-    render json: teams_with_conversation_counts.map do |team|
-      { team_name: team.name, unassigned_conversations_count: team.unassigned_conversations_count || 0 }
-    end
+    render json: all_teams_with_unassigned_conversation_counts
   end
 
   private
@@ -45,10 +43,22 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
     @teams = @user.administrator? ? Current.account.teams : Current.user.teams
   end
 
+  def all_teams_with_unassigned_conversation_counts
+    all_teams = find_teams
+    teams_with_counts = teams_with_conversation_counts.index_by(&:id)
+    all_teams.map do |team|
+      {
+        id: team.id,
+        team_name: team.name,
+        unassigned_conversations_count: teams_with_counts.dig(team.id, :unassigned_conversations_count) || 0
+      }
+    end
+  end
+
   def teams_with_conversation_counts
     find_teams
       .left_joins(:conversations)
-      .where(conversations: { assignee_id: nil })
+      .where(conversations: { assignee_id: nil, status: :open })
       .group('teams.id', 'teams.name')
       .select('teams.id, teams.name, COUNT(conversations.id) AS unassigned_conversations_count')
   end

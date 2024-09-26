@@ -47,8 +47,8 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
 
   def teams_with_conversation_counts
     find_teams
-      .left_joins(:conversations) # Faz um LEFT JOIN com conversas
-      .where(conversations: { assignee_id: nil }) # Conversas não atribuídas
+      .left_joins(:conversations)
+      .where(conversations: { assignee_id: nil })
       .group('teams.id', 'teams.name')
       .select('teams.id, teams.name, COUNT(conversations.id) AS unassigned_conversations_count')
   end

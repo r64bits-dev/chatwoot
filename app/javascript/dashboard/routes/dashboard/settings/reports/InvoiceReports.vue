@@ -2,11 +2,11 @@
   <div class="flex-1 overflow-auto p-4">
     <report-filters
       type="invoices"
-      :group-by-filter-items-list="groupByFilterItemsList"
       @date-range-change="onDateRangeChange"
       @business-hours-toggle="onBusinessHoursToggle"
-      @group-by-filter-change="onGroupByFilterChange"
     />
+
+    <!-- Seção de métricas -->
     <div class="row">
       <metric-card
         :is-live="false"
@@ -14,7 +14,7 @@
         :header="$t('INVOICE_REPORTS.SUBTITLE')"
         :loading-message="$t('REPORT.LOADING_CHART')"
       >
-        <template v-if="conversationMetrics.length > 0">
+        <template v-if="!uiFlags.isFetching">
           <div
             v-for="(metric, name, index) in conversationMetrics"
             :key="index"
@@ -33,26 +33,27 @@
         </template>
       </metric-card>
     </div>
+
+    <!-- Componente de gráfico de invoices -->
     <div class="row">
-      <metric-card :header="$t('INVOICE_REPORTS.GRAPH_TITLE')">
-        <div class="metric-content column">
+      <template v-if="!uiFlags.isFetching">
+        <graph-invoices
+          :invoices-data="invoices"
+          :is-loading="uiFlags.isFetching"
+        />
+      </template>
+      <template v-else>
+        <div class="flex items-center justify-center w-full">
+          <span class="text-sm text-slate-600">
+            {{ $t('REPORT.LOADING_CHART') }}
+          </span>
           <woot-loading-state
-            v-if="false"
+            v-if="uiFlags.isFetching"
             class="text-xs"
             :message="$t('REPORT.LOADING_CHART')"
           />
-          <div v-else class="flex items-center justify-center">
-            <woot-bar
-              v-if="chartData.datasets.length"
-              :collection="chartData"
-              class="w-full"
-            />
-            <span v-else class="text-sm text-slate-600">
-              {{ $t('REPORT.NO_ENOUGH_DATA') }}
-            </span>
-          </div>
         </div>
-      </metric-card>
+      </template>
     </div>
   </div>
 </template>
@@ -61,29 +62,40 @@
 import MetricCard from './components/overview/MetricCard.vue';
 import ReportFilters from './components/ReportFilters.vue';
 import { mapGetters } from 'vuex';
+import { INVOICE_SUMMARY_METRICS } from './constants';
+import GraphInvoices from './components/invoices/GraphInvoices.vue';
+
+const COLUMNS_TO_FORMAT = ['total', 'average_invoice_price'];
 
 export default {
   name: 'InvoiceReports',
   components: {
     MetricCard,
     ReportFilters,
+    GraphInvoices,
   },
   data: () => ({
-    chartData: {
-      labels: [],
-      datasets: [],
-    },
     from: Math.floor(new Date().setMonth(new Date().getMonth() - 6) / 1000),
     to: Math.floor(Date.now() / 1000),
-    groupBy: null,
   }),
   computed: {
-    ...mapGetters({}),
-    groupByFilterItemsList() {
-      return this.$t('REPORT.GROUP_BY_YEAR_OPTIONS');
-    },
+    ...mapGetters({
+      invoices: 'invoices/getInvoices',
+      summary: 'invoices/getSummary',
+      uiFlags: 'invoices/getUIFlags',
+    }),
     conversationMetrics() {
       let metric = {};
+      Object.keys(this.summary || {}).forEach(key => {
+        const metricName = this.$t(
+          'INVOICE_REPORTS.METRICS.' + INVOICE_SUMMARY_METRICS[key] + '.NAME'
+        );
+        if (COLUMNS_TO_FORMAT.includes(key)) {
+          metric[metricName] = this.formatCurrency(this.summary[key]);
+          return;
+        }
+        metric[metricName] = this.summary[key];
+      });
       return metric;
     },
   },
@@ -91,9 +103,11 @@ export default {
     this.fetchAllData();
   },
   methods: {
-    onGroupByFilterChange(payload) {
-      this.groupBy = payload.id;
-      this.fetchAllData();
+    formatCurrency(value) {
+      return new Intl.NumberFormat('pt-BR', {
+        style: 'currency',
+        currency: 'BRL',
+      }).format(value);
     },
     onBusinessHoursToggle(value) {
       this.businessHours = value;
@@ -106,15 +120,9 @@ export default {
       this.fetchAllData();
     },
     fetchAllData() {
-      const { from, to, groupBy } = this;
+      const { from, to } = this;
       const payload = { from, to };
-
-      if (groupBy) {
-        payload.groupBy = groupBy;
-      }
-
-      this.$store.dispatch('fetchInvoicesReport', payload);
-      this.$store.dispatch('fetchInvoicesMetric', payload);
+      this.$store.dispatch('invoices/get', payload);
     },
   },
 };

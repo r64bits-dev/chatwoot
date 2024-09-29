@@ -39,4 +39,7 @@ class ReportingEvent < ApplicationRecord
   scope :with_agents_ids, lambda { |agent_ids|
     where(user_id: agent_ids) if agent_ids.present?
   }
+
+  scope :extra_inboxes, -> { where(name: 'extra_inboxes') }
+  scope :extra_agents, -> { where(name: 'extra_agents') }
 end

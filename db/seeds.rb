@@ -98,12 +98,13 @@ unless Rails.env.production?
   Product.create([
                    {
                      name: 'Standard',
+                     identifier: 'standard',
                      price: 199.00,
                      product_type: 'Plano',
                      description: 'Plano Standard',
                      details: {
                        number_of_agents: 2,
-                       number_of_inboxes: 600,
+                       number_of_conversations: 600,
                        extra_conversation_cost: 0.40,
                        extra_agent_cost: 149.00,
                        support_type: 'Suporte por chat, Whatsapp ou e-mail'
@@ -111,12 +112,13 @@ unless Rails.env.production?
                    },
                    {
                      name: 'Scale',
+                     identifier: 'scale',
                      price: 600.00,
                      product_type: 'Plano',
                      description: 'Plano Scale',
                      details: {
                        number_of_agents: 10,
-                       number_of_inboxes: 2000,
+                       number_of_conversations: 2000,
                        extra_conversation_cost: 0.35,
                        extra_agent_cost: 129.00,
                        support_type: 'Suporte por chat, Whatsapp ou e-mail'
@@ -124,12 +126,13 @@ unless Rails.env.production?
                    },
                    {
                      name: 'Pro',
+                     identifier: 'pro',
                      price: 1100.00,
                      product_type: 'Plano',
                      description: 'Plano Pro',
                      details: {
                        number_of_agents: 20,
-                       number_of_inboxes: 4000,
+                       number_of_conversations: 4000,
                        extra_conversation_cost: 0.30,
                        extra_agent_cost: 109.00,
                        support_type: 'Suporte por chat, Whatsapp ou e-mail'

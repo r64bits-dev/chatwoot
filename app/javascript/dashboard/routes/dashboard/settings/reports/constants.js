@@ -217,3 +217,9 @@ export const TICKETS_SUMMARY_METRICS = {
   resolved: 'RESOLVED',
   unresolved: 'UNRESOLVED',
 };
+
+export const INVOICE_SUMMARY_METRICS = {
+  total: 'TOTAL',
+  total_invoices: 'TOTAL_INVOICES',
+  average_invoice_price: 'AVERAGE_INVOICE_PRICE',
+};

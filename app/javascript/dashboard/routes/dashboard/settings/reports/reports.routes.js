@@ -41,7 +41,7 @@ export default {
       component: SettingsContent,
       props: {
         headerTitle: 'TRIGGER_REPORTS.HEADER',
-        icon: 'arrow-trending-lines',
+        icon: 'triggers',
         keepAlive: false,
       },
       children: [
@@ -56,7 +56,6 @@ export default {
     {
       path: frontendURL('accounts/:accountId/reports'),
       component: SettingsContent,
-      name: 'invoice_reports',
       props: {
         headerTitle: 'INVOICE_REPORTS.HEADER',
         icon: 'invoice',
@@ -65,7 +64,7 @@ export default {
       children: [
         {
           path: 'invoices',
-          name: 'invoice_reports_dashboard',
+          name: 'invoice_reports',
           roles: AdminSupervisorRoles,
           component: InvoiceReports,
         },

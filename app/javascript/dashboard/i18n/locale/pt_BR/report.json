@@ -501,15 +501,18 @@
     "SUBTITLE": "Relatório para faturamento de conversas e agentes",
     "GRAPH_COLUMN_LABEL": "Faturas",
     "GRAPH_TITLE": "Gráfico de faturas",
+    "GRAPH": {
+      "PRICE_LABEL": "Preço"
+    },
     "METRICS": {
       "TOTAL": {
-        "NAME": "Faturas"
+        "NAME": "Total em R$"
       },
-      "PROCESSED": {
-        "NAME": "Mensagens enviadas"
+      "TOTAL_INVOICES": {
+        "NAME": "Total de faturas"
       },
-      "UNPROCESSED": {
-        "NAME": "Mensagens não processadas"
+      "AVERAGE_INVOICE_PRICE": {
+        "NAME": "Preço médio de fatura"
       }
     }
   },

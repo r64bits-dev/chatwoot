@@ -166,7 +166,7 @@
         />
       </div>
       <div
-        v-if="notLast7Days && type !== 'tickets'"
+        v-if="notLast7Days && type !== 'tickets' && type !== 'invoices'"
         class="mx-1 md:w-[240px] w-full multiselect-wrap--small"
       >
         <p class="text-xs mb-2 font-medium">

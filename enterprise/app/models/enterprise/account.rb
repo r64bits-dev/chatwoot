@@ -13,7 +13,7 @@ module Enterprise::Account
   end
 
   def get_limits(limit_name)
-    increase_usage(limit_name) if limit_exceeded?(limit_name)
+    increase_usage(limit_name) if Current.account.account_plan.present? && limit_exceeded?(limit_name)
 
     # return self[:limits][limit_name.to_s] if self[:limits][limit_name.to_s].present?
     fetch_limit_from_config(limit_name) || ChatwootApp.max_limit

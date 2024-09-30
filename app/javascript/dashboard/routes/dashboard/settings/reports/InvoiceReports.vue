@@ -75,8 +75,8 @@ export default {
     GraphInvoices,
   },
   data: () => ({
-    from: Math.floor(new Date().setMonth(new Date().getMonth() - 6) / 1000),
-    to: Math.floor(Date.now() / 1000),
+    from: null,
+    to: null,
   }),
   computed: {
     ...mapGetters({

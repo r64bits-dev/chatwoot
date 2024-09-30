@@ -27,6 +27,10 @@ module DateRangeHelper
     end
   end
 
+  def months_in_range(start_date, end_date)
+    (start_date..end_date).map { |d| Date.new(d.year, d.month, 1) }.uniq
+  end
+
   def periods_in_range_for_group_by(group_by, start_date, end_date)
     case group_by
     when 'day'

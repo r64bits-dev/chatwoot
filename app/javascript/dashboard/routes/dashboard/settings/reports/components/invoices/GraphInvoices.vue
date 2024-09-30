@@ -16,8 +16,8 @@
 </template>
 
 <script>
+import { format, utcToZonedTime } from 'date-fns-tz';
 import MetricCard from '../overview/MetricCard.vue';
-import { format } from 'date-fns';
 
 export default {
   name: 'GraphInvoices',
@@ -47,10 +47,13 @@ export default {
     },
   },
   methods: {
+    formatDate(dateString) {
+      const timeZone = 'America/Sao_Paulo'; // Fuso horário
+      const zonedDate = utcToZonedTime(dateString, timeZone);
+      return format(zonedDate, 'dd/MM/yyyy', { timeZone });
+    },
     prepareChartData(data) {
-      const labels = data.map(item =>
-        format(new Date(item.date), 'dd/MM/yyyy')
-      );
+      const labels = data.map(item => this.formatDate(item.date));
       const values = data.map(item => item.total_price);
 
       this.chartData = {

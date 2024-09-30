@@ -136,6 +136,7 @@
       </div>
 
       <div class="mx-1 md:w-[240px] w-full multiselect-wrap--small">
+        <!-- seleção de datas -->
         <p class="text-xs mb-2 font-medium">
           {{ $t('REPORT.DURATION_FILTER_LABEL') }}
         </p>
@@ -147,7 +148,7 @@
           selected-label
           :select-label="$t('FORMS.MULTISELECT.ENTER_TO_SELECT')"
           deselect-label=""
-          :options="dateRange"
+          :options="filteredDateRange"
           :searchable="false"
           :allow-empty="false"
           @select="changeDateSelection"
@@ -246,7 +247,10 @@ export default {
     return {
       excludedTypes: ['triggers', 'invoices', 'tickets'],
       currentSelectedFilter: null,
-      currentDateRangeSelection: this.$t('REPORT.DATE_RANGE')[0],
+      currentDateRangeSelection:
+        this.type === 'invoices'
+          ? this.$t('REPORT.DATE_RANGE')[1]
+          : this.$t('REPORT.DATE_RANGE')[0],
       dateRange: this.$t('REPORT.DATE_RANGE'),
       customDateRange: [new Date(), new Date()],
       currentSelectedGroupByFilter: null,
@@ -254,6 +258,12 @@ export default {
     };
   },
   computed: {
+    filteredDateRange() {
+      if (this.type === 'invoices') {
+        return this.$t('REPORT.DATE_RANGE').filter(option => option.id !== 0);
+      }
+      return this.$t('REPORT.DATE_RANGE');
+    },
     isDateRangeSelected() {
       return this.currentDateRangeSelection.id === CUSTOM_DATE_RANGE_ID;
     },
@@ -268,11 +278,11 @@ export default {
         return this.fromCustomDate(this.customDateRange[0]);
       }
       const dateRange = {
-        0: 6,
-        1: 29,
-        2: 89,
-        3: 179,
-        4: 364,
+        0: 6, // 7 dias
+        1: 29, // 30 dias
+        2: 89, // 90 dias
+        3: 179, // 180 dias
+        4: 364, // 365 dias
       };
       const diff = dateRange[this.currentDateRangeSelection.id];
       const fromDate = subDays(new Date(), diff);

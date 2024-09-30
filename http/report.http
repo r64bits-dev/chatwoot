@@ -61,7 +61,7 @@ Authorization: {{token}}
 # Path: http/invoices.http
 # @name invoices_report
 # group_by: ['days', 'month', 'year']
-GET {{api}}/api/v2/accounts/{{account_id}}/reports/invoices?since=1727146800&until=1727751599
+GET {{api}}/api/v2/accounts/{{account_id}}/reports/invoices?since=1712199600&until=1727751599
 Content-Type: application/json
 Authorization: {{token}}
 

@@ -46,9 +46,11 @@ module Enterprise::Account
   def increase_usage(limit_name)
     case limit_name
     when :inboxes
+      print('inboxes increase', extra_agents + 1)
       account_plan.update(extra_inboxes: extra_inboxes + 1)
       create_reporting_event('extra_inboxes', extra_conversation_cost)
     when :agents
+      print('agent increase', extra_agents + 1)
       account_plan.update(extra_agents: extra_agents + 1)
       create_reporting_event('extra_agents', extra_agent_cost)
     end

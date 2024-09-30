@@ -45,7 +45,9 @@ module Api::V2::Accounts::ReportsHelper
   end
 
   def generate_invoices_report
-    V2::ReportInvoicesBuilder.new(Current.account, params).invoices_metrics
+    return V2::ReportInvoicesBuilder.new(Account.all, params).invoices_metrics if current_user.superadmin?
+
+    V2::ReportInvoicesBuilder.new([Current.account], params).invoices_metrics
   end
 
   def generate_tickets_report

@@ -42,8 +42,8 @@ class V2::ReportInvoicesBuilder
   end
 
   def values(start_date, end_date)
-    accounts.flat_map do |account|
-      months_in_range(start_date, end_date).map do |date|
+    accounts.each_with_object({}) do |account, result|
+      result[account.name] = months_in_range(start_date, end_date).map do |date|
         calculate_summary_for_period(account, date)
       end
     end
@@ -90,7 +90,6 @@ class V2::ReportInvoicesBuilder
 
   def build_metrics_data(account, periods, extra_conversation_cost, extra_agent_cost, total)
     {
-      account_name: account.name, # Inclui o nome da conta
       date: periods.period_start.to_time,
       total_conversations: count_conversations(account, periods.period_start, periods.period_end),
       total_agents: count_agents(account, periods.period_start, periods.period_end),

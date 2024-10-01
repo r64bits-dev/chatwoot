@@ -1,1 +1,42 @@
-<h1>Reports#index</h1>
+<h1>Relatório de Faturas</h1>
+
+<div class="report-summary">
+  <h2>Resumo</h2>
+  <p>Total de faturas: <%= @report_data[:summary][:total_invoices] %></p>
+  <p>Total: <%= number_to_currency(@report_data[:summary][:total], unit: "R$") %></p>
+  <p>Preço médio das faturas: <%= number_to_currency(@report_data[:summary][:average_invoice_price], unit: "R$") %></p>
+</div>
+
+<div class="report-details">
+  <h2>Detalhes por Conta</h2>
+  
+  <% @report_data[:values].each do |account_name, metrics| %>
+    <h3><%= account_name %></h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Total de Conversas</th>
+          <th>Total de Agentes</th>
+          <th>Preço Base</th>
+          <th>Custo Extra por Conversa</th>
+          <th>Custo Extra por Agente</th>
+          <th>Preço Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% metrics.each do |value| %>
+          <tr>
+            <td><%= value[:date] %></td>
+            <td><%= value[:total_conversations] %></td>
+            <td><%= value[:total_agents] %></td>
+            <td><%= number_to_currency(value[:base_price], unit: "R$") %></td>
+            <td><%= number_to_currency(value[:extra_conversation_cost], unit: "R$") %></td>
+            <td><%= number_to_currency(value[:extra_agent_cost], unit: "R$") %></td>
+            <td><%= number_to_currency(value[:total_price], unit: "R$") %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

@@ -1,10 +1,15 @@
 export const isPhoneE164 = value => !!value.match(/^\+[1-9]\d{1,14}$/);
 
 export const isPhoneNumberValid = (value, dialCode) => {
+  // Remove o código do país (ex: +55) e qualquer caractere não numérico
   const number = value.replace(dialCode, '').replace(/\D/g, '');
+
   if (dialCode === '+55') {
-    return !!number.match(/^[1-9][0-9]{7,8}$/);
+    // Validação para números no Brasil: Código de área (2 dígitos) + número (8 ou 9 dígitos)
+    return !!number.match(/^(\d{2})9?\d{8}$/); // Aceita DDD + 8 ou 9 dígitos para celulares
   }
+
+  // Validação genérica para outros países
   return !!number.match(/^[0-9]{1,14}$/);
 };
 

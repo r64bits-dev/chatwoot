@@ -3,40 +3,67 @@
     <div class="phone-input" :class="{ 'has-error': error }">
       <div
         class="cursor-pointer py-2 pr-1.5 pl-2 rounded-tl-md rounded-bl-md flex items-center justify-center gap-1.5 bg-slate-25 dark:bg-slate-700 h-10 w-14"
-        @click="toggleCountryDropdown">
+        @click="toggleCountryDropdown"
+      >
         <h5 v-if="activeCountry.emoji" class="mb-0">
           {{ activeCountry.emoji }}
         </h5>
         <fluent-icon v-else icon="globe" class="fluent-icon" size="16" />
         <fluent-icon icon="chevron-down" class="fluent-icon" size="12" />
       </div>
-      <span v-if="activeDialCode"
-        class="flex bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-normal text-base leading-normal py-2 pl-2 pr-0">
+      <span
+        v-if="activeDialCode"
+        class="flex bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-100 font-normal text-base leading-normal py-2 pl-2 pr-0"
+      >
         {{ activeDialCode }}
       </span>
-      <input :value="phoneNumber" type="tel" class="phone-input--field" :placeholder="placeholder" :readonly="readonly"
-        :style="styles" @input="onChange" @blur="onBlur" />
+      <input
+        :value="phoneNumber"
+        type="tel"
+        class="phone-input--field"
+        :placeholder="placeholder"
+        :readonly="readonly"
+        :style="styles"
+        @input="onChange"
+        @blur="onBlur"
+      />
     </div>
     <div v-if="showDropdown" ref="dropdown" class="country-dropdown">
       <div class="dropdown-search--wrap">
-        <input ref="searchbar" v-model="searchCountry" type="text" placeholder="Search" class="dropdown-search" />
+        <input
+          ref="searchbar"
+          v-model="searchCountry"
+          type="text"
+          placeholder="Search"
+          class="dropdown-search"
+        />
       </div>
-      <div v-for="(country, index) in filteredCountriesBySearch" ref="dropdownItem" :key="index"
-        class="country-dropdown--item" :class="{
+      <div
+        v-for="(country, index) in filteredCountriesBySearch"
+        ref="dropdownItem"
+        :key="index"
+        class="country-dropdown--item"
+        :class="{
           active: country.id === activeCountryCode,
           focus: index === selectedIndex,
-        }" @click="onSelectCountry(country)">
+        }"
+        @click="onSelectCountry(country)"
+      >
         <span class="text-base mr-1">{{ country.emoji }}</span>
 
-        <span class="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap">
+        <span
+          class="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap"
+        >
           {{ country.name }}
         </span>
         <span class="ml-1 text-slate-300 dark:text-slate-300 text-xs">{{
           country.dial_code
-          }}</span>
+        }}</span>
       </div>
       <div v-if="filteredCountriesBySearch.length === 0">
-        <span class="flex items-center justify-center text-sm text-slate-500 dark:text-slate-300 mt-4">
+        <span
+          class="flex items-center justify-center text-sm text-slate-500 dark:text-slate-300 mt-4"
+        >
           No results found
         </span>
       </div>
@@ -71,7 +98,7 @@ export default {
     },
     styles: {
       type: Object,
-      default: () => { },
+      default: () => {},
     },
     error: {
       type: Boolean,

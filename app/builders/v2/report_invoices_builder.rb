@@ -7,7 +7,7 @@ class V2::ReportInvoicesBuilder
   DEFAULT_MONTHS_BEFORE = 3
 
   def initialize(accounts, params)
-    @accounts = accounts
+    @accounts = Array(accounts)
     @params = params
     @group_by = params[:group_by] || DEFAULT_GROUP_BY
     @date_range = range
@@ -42,9 +42,15 @@ class V2::ReportInvoicesBuilder
   end
 
   def values(start_date, end_date)
-    accounts.each_with_object({}) do |account, result|
-      result[account.name] = months_in_range(start_date, end_date).map do |date|
-        calculate_summary_for_period(account, date)
+    if accounts.size > 1
+      accounts.each_with_object({}) do |account, result|
+        result[account.name] = months_in_range(start_date, end_date).map do |date|
+          calculate_summary_for_period(account, date)
+        end
+      end
+    else
+      months_in_range(start_date, end_date).map do |date|
+        calculate_summary_for_period(accounts.first, date)
       end
     end
   end

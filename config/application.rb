@@ -47,12 +47,7 @@ module Chatwoot
 
     # Custom chatwoot configurations
     config.x = config_for(:app).with_indifferent_access
-    print('avaliable locales: ', I18n.available_locales)
-    config.i18n.default_locale = if I18n.available_locales.include?('pt-BR')
-                                   :'pt-BR'
-                                 else
-                                   :pt
-                                 end
+    config.i18n.default_locale = :pt_BR
 
     # https://stackoverflow.com/questions/72970170/upgrading-to-rails-6-1-6-1-causes-psychdisallowedclass-tried-to-load-unspecif
     # https://discuss.rubyonrails.org/t/cve-2022-32224-possible-rce-escalation-bug-with-serialized-columns-in-active-record/81017

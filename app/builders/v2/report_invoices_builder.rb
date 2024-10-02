@@ -16,6 +16,30 @@ class V2::ReportInvoicesBuilder
     @average_invoice_price = 0
   end
 
+  def invoices_metrics_admin
+    start_date, end_date = calculate_date_range
+    end_date = adjust_end_date(end_date)
+
+    total_conversations = 0
+    total_agents = 0
+
+    accounts.each do |account|
+      total_conversations += count_conversations(account, start_date, end_date)
+      total_agents += count_agents(account, start_date, end_date)
+    end
+
+    {
+      values: values(start_date, end_date),
+      summary: {
+        total: @total,
+        total_invoices: @total_invoices,
+        average_invoice_price: @average_invoice_price,
+        total_conversations: total_conversations,
+        total_agents: total_agents
+      }
+    }
+  end
+
   def invoices_metrics
     start_date, end_date = calculate_date_range
     end_date = adjust_end_date(end_date)

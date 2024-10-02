@@ -1,42 +1,176 @@
-<h1>Relatório de Faturas</h1>
+<div class="container mx-auto p-10">
+  <div class="report-header mb-6">
+    <h1 class="font-bold text-4xl">Relatório de Faturas</h1>
+    <p>Este relatório mostra os detalhes de todas as faturas que foram geradas em sua conta.</p>
+  </div>
 
-<div class="report-summary">
-  <h2>Resumo</h2>
-  <p>Total de faturas: <%= @report_data[:summary][:total_invoices] %></p>
-  <p>Total: <%= number_to_currency(@report_data[:summary][:total], unit: "R$") %></p>
-  <p>Preço médio das faturas: <%= number_to_currency(@report_data[:summary][:average_invoice_price], unit: "R$") %></p>
-</div>
+  <!-- Grid com dois cards lado a lado -->
+  <div class="grid lg:grid-cols-1 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1 gap-6">
+    <!-- Primeiro Card: Resumo -->
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="font-bold text-2xl mb-4">Resumo</h2>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <!-- Total de faturas -->
+        <div class="border-b py-4 flex flex-col justify-center items-center gap-2">
+          <p class="text-gray-500 font-semibold text-center">Total de faturas</p>
+          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_invoices] %></p>
+        </div>
 
-<div class="report-details">
-  <h2>Detalhes por Conta</h2>
-  
-  <% @report_data[:values].each do |account_name, metrics| %>
-    <h3><%= account_name %></h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Data</th>
-          <th>Total de Conversas</th>
-          <th>Total de Agentes</th>
-          <th>Preço Base</th>
-          <th>Custo Extra por Conversa</th>
-          <th>Custo Extra por Agente</th>
-          <th>Preço Total</th>
-        </tr>
-      </thead>
-      <tbody>
-        <% metrics.each do |value| %>
-          <tr>
-            <td><%= value[:date] %></td>
-            <td><%= value[:total_conversations] %></td>
-            <td><%= value[:total_agents] %></td>
-            <td><%= number_to_currency(value[:base_price], unit: "R$") %></td>
-            <td><%= number_to_currency(value[:extra_conversation_cost], unit: "R$") %></td>
-            <td><%= number_to_currency(value[:extra_agent_cost], unit: "R$") %></td>
-            <td><%= number_to_currency(value[:total_price], unit: "R$") %></td>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
-  <% end %>
+        <!-- Total -->
+        <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
+          <p class="text-gray-500 font-semibold text-center">Total</p>
+          <p class="text-2xl font-bold text-blue-600"><%= number_to_currency(@report_data[:summary][:total], unit: "R$") %></p>
+        </div>
+
+        <!-- Preço médio das faturas -->
+        <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
+          <p class="text-gray-500 font-semibold text-center">Preço médio</p>
+          <p class="text-2xl font-bold text-blue-600"><%= number_to_currency(@report_data[:summary][:average_invoice_price], unit: "R$") %></p>
+        </div>
+
+        <!-- Total de conversas -->
+        <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
+          <p class="text-gray-500 font-semibold text-center">Total de Conversas</p>
+          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_conversations] %></p>
+        </div>
+
+        <!-- Total de agentes -->
+        <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
+          <p class="text-gray-500 font-semibold text-center">Total de Agentes</p>
+          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_agents] %></p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Segundo Card: Gráfico de Faturas -->
+   <div class="bg-white shadow-lg rounded-lg p-6">
+      <h2 class="font-bold text-2xl">Gráfico de Faturas</h2>
+      <canvas id="dashboard-chart" class="mt-6" data-chart="<%= @report_data[:values].to_json %>"></canvas>
+    </div>
+  </div>
+
+  <!-- Detalhes por Conta -->
+  <div class="report-details mt-6">
+    <h2 class="font-bold text-2xl">Detalhes</h2>
+    <% @report_data[:values].each do |account_name, metrics| %>
+    <div class="bg-white shadow-lg rounded-lg p-6">
+      <h3 class="font-bold text-xl mt-4"><%= account_name %></h3>
+      <table class="min-w-full bg-white">
+  <thead>
+    <tr>
+      <th class="px-4 py-2">Data</th>
+      <th class="px-4 py-2">Total de Conversas</th>
+      <th class="px-4 py-2">Total de Agentes</th>
+      <th class="px-4 py-2">Preço Base</th>
+      <th class="px-4 py-2">Custo Extra por Conversa</th>
+      <th class="px-4 py-2">Custo Extra por Agente</th>
+      <th class="px-4 py-2">Preço Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% metrics.each do |value| %>
+      <tr>
+        <td class="border px-4 py-2"><%= value[:date].strftime("%d/%m/%Y") %></td>
+        <td class="border px-4 py-2"><%= value[:total_conversations] %></td>
+        <td class="border px-4 py-2"><%= value[:total_agents] %></td>
+        <td class="border px-4 py-2"><%= number_to_currency(value[:base_price], unit: "R$") %></td>
+        <td class="border px-4 py-2"><%= number_to_currency(value[:extra_conversation_cost], unit: "R$") %></td>
+        <td class="border px-4 py-2"><%= number_to_currency(value[:extra_agent_cost], unit: "R$") %></td>
+        <td class="border px-4 py-2"><%= number_to_currency(value[:total_price], unit: "R$") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+
+      </div>
+    <% end %>
+
+  </div>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+  const chartElement = document.getElementById('dashboard-chart');
+  const data = chartElement.dataset.chart ? JSON.parse(chartElement.dataset.chart) : [];
+  let chartLabels = [];
+  let chartDatasets = [];
+
+  function getBlueShade(index) {
+    const blueShades = [
+      '#1f77b4',
+      '#1f8cb4',
+      '#1f9fb4',
+      '#1f93ff',
+      '#3a9bdc', 
+      '#428bca',
+      '#5bc0de',
+    ];
+    return blueShades[index % blueShades.length]; 
+  }
+
+  Object.keys(data).forEach((account, index) => {
+    let dataset = {
+      label: account,
+      data: [],
+      backgroundColor: getBlueShade(index), 
+      borderColor: getBlueShade(index),
+      borderWidth: 1
+    };
+
+    data[account].forEach(entry => {
+      const formattedDate = new Date(entry.date).toLocaleDateString('pt-BR');
+      
+      if (!chartLabels.includes(formattedDate)) {
+        chartLabels.push(formattedDate);
+      }
+
+      dataset.data.push(entry.total_price);
+    });
+
+    chartDatasets.push(dataset);
+  });
+
+  if (chartDatasets.length > 0) {
+    const ctx = chartElement.getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: chartLabels, 
+        datasets: chartDatasets, 
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Data'
+            }
+          },
+          y: {
+            beginAtZero: true,
+            title: {
+              display: true,
+              text: 'Preço Total (R$)'
+            },
+            ticks: {
+              callback: function(value) {
+                return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
+              }
+            }
+          }
+        }
+      }
+    });
+  }
+});
+
+
+</script>
+
+<style>
+  td:first-child, th:first-child {
+    padding-left: 1rem; 
+  }
+</style>

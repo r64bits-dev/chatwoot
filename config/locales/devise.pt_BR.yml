@@ -1,4 +1,15 @@
 pt_BR:
+  secure_password:
+    password_has_required_content:
+      errors:
+        messages:
+          minimum_characters: "deve conter pelo menos %{count} caracteres"
+          maximum_characters: "não pode ter mais de %{count} caracteres"
+          minimum_letters: "deve conter pelo menos %{count} letras"
+          maximum_letters: "não pode ter mais de %{count} letras"
+          minimum_numbers: "deve conter pelo menos %{count} números"
+          maximum_numbers: "não pode ter mais de %{count} números"
+          minimum_symbols: "deve conter pelo menos %{count} símbolos"
   devise:
     confirmations:
       confirmed: "Seu e-mail foi confirmado com sucesso."

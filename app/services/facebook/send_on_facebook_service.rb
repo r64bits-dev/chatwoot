@@ -6,7 +6,6 @@ class Facebook::SendOnFacebookService < Base::SendOnChannelService
   end
 
   def perform_reply
-    Rails.logger.info('chamou')
     send_message_to_facebook fb_text_message_params if message.content.present?
     send_message_to_facebook fb_attachment_message_params if message.attachments.present?
   rescue Facebook::Messenger::FacebookError => e

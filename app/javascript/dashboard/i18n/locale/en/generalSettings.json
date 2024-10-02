@@ -14,6 +14,10 @@
         "TITLE": "General settings",
         "NOTE": ""
       },
+      "PLAN": {
+        "TITLE": "Account plan",
+        "NOTE": "This is the plan that your account is associated with here is the name and description"
+      },
       "ACCOUNT_ID": {
         "TITLE": "Account ID",
         "NOTE": "This ID is required if you are building an API based integration"

@@ -77,6 +77,7 @@ pt_BR:
       updated: Atualizado com sucesso
   hello: "Olá, mundo"
   messages:
+    invalid_token: Token inválido
     reset_password_success: Legal! A solicitação de alteração de senha foi bem sucedida. Verifique seu e-mail para obter instruções.
     reset_password_failure: Uh ho! Não conseguimos encontrar nenhum usuário com o e-mail especificado.
     inbox_deletetion_response: Seu pedido de exclusão da caixa de entrada será processado dentro de algum tempo.

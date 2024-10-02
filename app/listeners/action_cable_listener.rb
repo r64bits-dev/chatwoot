@@ -53,6 +53,7 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, CONVERSATION_CREATED, conversation.push_event_data)
   end
 
+  # mensagem que foi criada
   def conversation_read(event)
     conversation, account = extract_conversation_and_account(event)
     tokens = user_tokens(account, conversation.inbox.members)
@@ -67,6 +68,7 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, CONVERSATION_STATUS_CHANGED, conversation.push_event_data)
   end
 
+  # mensagem que foi editada
   def conversation_updated(event)
     conversation, account = extract_conversation_and_account(event)
     tokens = user_tokens(account, conversation.inbox.members) + contact_inbox_tokens(conversation.contact_inbox)
@@ -190,8 +192,6 @@ class ActionCableListener < BaseListener
   end
 
   def broadcast(account, tokens, event_name, data)
-    Rails.logger.info('chamou2')
-    Rails.logger.info(tokens.blank?)
     return if tokens.blank?
 
     payload = data.merge(account_id: account.id)

@@ -12,32 +12,32 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
         <!-- Total de faturas -->
         <div class="border-b py-4 flex flex-col justify-center items-center gap-2">
-          <p class="text-gray-500 font-semibold text-center">Total de faturas</p>
-          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_invoices] %></p>
+          <p class="text-2xl text-gray-200"><%= @report_data[:summary][:total_invoices] %></p>
+          <p class="text-gray-100 text-center">Total de faturas</p>
         </div>
 
         <!-- Total -->
         <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
-          <p class="text-gray-500 font-semibold text-center">Total</p>
-          <p class="text-2xl font-bold text-blue-600"><%= number_to_currency(@report_data[:summary][:total], unit: "R$") %></p>
+          <p class="text-2xl text-gray-200"><%= number_to_currency(@report_data[:summary][:total], unit: "R$") %></p>
+          <p class="text-gray-100 text-center">Total</p>
         </div>
 
         <!-- Preço médio das faturas -->
         <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
-          <p class="text-gray-500 font-semibold text-center">Preço médio</p>
-          <p class="text-2xl font-bold text-blue-600"><%= number_to_currency(@report_data[:summary][:average_invoice_price], unit: "R$") %></p>
+          <p class="text-2xl text-gray-200"><%= number_to_currency(@report_data[:summary][:average_invoice_price], unit: "R$") %></p>
+          <p class="text-gray-100 text-center">Preço médio</p>
         </div>
 
         <!-- Total de conversas -->
         <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
-          <p class="text-gray-500 font-semibold text-center">Total de Conversas</p>
-          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_conversations] %></p>
+          <p class="text-2xl text-gray-200"><%= @report_data[:summary][:total_conversations] %></p>
+          <p class="text-gray-100 text-center">Total de Conversas</p>
         </div>
 
         <!-- Total de agentes -->
         <div class="border-b py-4  flex flex-col justify-center items-center gap-2">
-          <p class="text-gray-500 font-semibold text-center">Total de Agentes</p>
-          <p class="text-2xl font-bold text-blue-600"><%= @report_data[:summary][:total_agents] %></p>
+          <p class="text-2xl text-gray-200"><%= @report_data[:summary][:total_agents] %></p>
+          <p class="text-gray-100 text-center">Total de Agentes</p>
         </div>
       </div>
     </div>

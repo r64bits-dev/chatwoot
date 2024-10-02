@@ -14,6 +14,10 @@
         "TITLE": "Configurações gerais",
         "NOTE": ""
       },
+      "PLAN": {
+        "TITLE": "Plano da Conta",
+        "NOTE": "Esse é o plano que sua conta está associada, aqui está o nome e sua descrição"
+      },
       "ACCOUNT_ID": {
         "TITLE": "ID da Conta",
         "NOTE": "Este ID é necessário se você está construindo uma integração baseada em API"

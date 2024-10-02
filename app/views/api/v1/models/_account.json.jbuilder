@@ -8,6 +8,13 @@ if resource.custom_attributes.present?
     json.subscription_ends_on resource.custom_attributes['subscription_ends_on']
   end
 end
+
+if resource.account_plan.present?
+  json.product do
+    json.partial! 'api/v1/models/product', formats: [:json], resource: resource.account_plan.product
+  end
+end
+
 json.domain @account.domain
 json.features @account.enabled_features
 json.id @account.id

@@ -103,6 +103,36 @@
           <woot-code :script="getAccountId" />
         </div>
       </div>
+
+      <!-- mostrar o plano -->
+      <div
+        v-if="product.id"
+        class="p-4 border-slate-25 dark:border-slate-700 text-slate-900 dark:text-slate-300 row"
+      >
+        <div
+          class="flex-grow-0 flex-shrink-0 flex-[25%] min-w-0 py-4 pr-6 pl-0"
+        >
+          <h4 class="block-title text-slate-900 dark:text-slate-200">
+            {{ $t('GENERAL_SETTINGS.FORM.PLAN.TITLE') }}
+          </h4>
+          <p>
+            {{ $t('GENERAL_SETTINGS.FORM.PLAN.NOTE') }}
+          </p>
+        </div>
+        <div class="p-4 flex-grow-0 flex-shrink-0 flex-[50%] bg-slate-50">
+          <div class="flex flex-col">
+            <div class="text-sm p-4">
+              <div class="block-title text-slate-900 dark:text-slate-200">
+                {{ getProductName }}
+              </div>
+              <div v-if="getProductDescription" class="mt-2">
+                {{ getProductDescription }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="text-sm text-center p-4">
         <div>{{ `v${globalConfig.appVersion}` }}</div>
         <!-- TODO: Enable this when we have a new version -->
@@ -149,6 +179,7 @@ export default {
       locale: 'en',
       domain: '',
       supportEmail: '',
+      product: {},
       features: {},
       autoResolveDuration: null,
       latestChatwootVersion: null,
@@ -219,6 +250,14 @@ export default {
     getAccountId() {
       return this.id.toString();
     },
+
+    getProductName() {
+      return this.product.name || 'Não encontrado';
+    },
+
+    getProductDescription() {
+      return this.product.description;
+    },
   },
   mounted() {
     this.initializeAccount();
@@ -234,9 +273,9 @@ export default {
           support_email,
           features,
           auto_resolve_duration,
+          product,
           latest_chatwoot_version: latestChatwootVersion,
         } = this.getAccount(this.accountId);
-
         this.$root.$i18n.locale = locale;
         this.name = name;
         this.locale = locale;
@@ -246,6 +285,7 @@ export default {
         this.features = features;
         this.autoResolveDuration = auto_resolve_duration;
         this.latestChatwootVersion = latestChatwootVersion;
+        this.product = product;
       } catch (error) {
         // Ignore error
       }

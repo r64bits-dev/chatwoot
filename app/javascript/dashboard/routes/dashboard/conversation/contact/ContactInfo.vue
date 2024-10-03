@@ -146,6 +146,17 @@
           :disabled="uiFlags.isDeleting"
           @click="toggleDeleteModal"
         />
+        <woot-button
+          v-if="isAdmin"
+          v-tooltip="$t('BLOCK_CONTACT.BUTTON_LABEL')"
+          title="$t('BLOCK_CONTACT.BUTTON_LABEL')"
+          icon="block-contact"
+          variant="smooth"
+          size="small"
+          color-scheme="alert"
+          :disabled="uiFlags.isDeleting"
+          @click="toggleBlockContactModal"
+        />
       </div>
       <edit-contact
         v-if="showEditModal"
@@ -176,6 +187,17 @@
       :message-value="confirmDeleteMessage"
       :confirm-text="$t('DELETE_CONTACT.CONFIRM.YES')"
       :reject-text="$t('DELETE_CONTACT.CONFIRM.NO')"
+    />
+    <woot-delete-modal
+      v-if="showBlockContactModal"
+      :show.sync="showBlockContactModal"
+      :on-close="closeDelete"
+      :on-confirm="blockContact"
+      :title="$t('BLOCK_CONTACT.CONFIRM.TITLE')"
+      :message="$t('BLOCK_CONTACT.CONFIRM.MESSAGE')"
+      :message-value="confirmDeleteMessage"
+      :confirm-text="$t('BLOCK_CONTACT.CONFIRM.YES')"
+      :reject-text="$t('BLOCK_CONTACT.CONFIRM.NO')"
     />
   </div>
 </template>
@@ -237,6 +259,7 @@ export default {
       showConversationModal: false,
       showMergeModal: false,
       showDeleteModal: false,
+      showBlockContactModal: false,
     };
   },
   computed: {
@@ -290,6 +313,26 @@ export default {
     toggleDeleteModal() {
       this.showDeleteModal = !this.showDeleteModal;
     },
+    toggleBlockContactModal() {
+      this.showBlockContactModal = !this.showBlockContactModal;
+    },
+    blockContact() {
+      try {
+        this.$store.dispatch('contacts/blockContact', this.contact.id);
+        this.$emit('panel-close');
+        this.showAlert(this.$t('BLOCK_CONTACT.API.SUCCESS_MESSAGE'));
+
+        this.checkForNewRoute();
+      } catch (error) {
+        this.showAlert(
+          error.message
+            ? error.message
+            : this.$t('DELETE_CONTACT.API.ERROR_MESSAGE')
+        );
+      } finally {
+        this.closeDelete();
+      }
+    },
     confirmDeletion() {
       this.deleteContact(this.contact);
       this.closeDelete();
@@ -298,6 +341,7 @@ export default {
       this.showDeleteModal = false;
       this.showConversationModal = false;
       this.showEditModal = false;
+      this.showBlockContactModal = false;
     },
     findCountryFlag(countryCode, cityAndCountry) {
       try {
@@ -313,15 +357,7 @@ export default {
         this.$emit('panel-close');
         this.showAlert(this.$t('DELETE_CONTACT.API.SUCCESS_MESSAGE'));
 
-        if (isAConversationRoute(this.$route.name)) {
-          this.$router.push({
-            name: getConversationDashboardRoute(this.$route.name),
-          });
-        } else if (this.$route.name !== 'contacts_dashboard') {
-          this.$router.push({
-            name: 'contacts_dashboard',
-          });
-        }
+        this.checkForNewRoute();
       } catch (error) {
         this.showAlert(
           error.message
@@ -332,6 +368,17 @@ export default {
     },
     openMergeModal() {
       this.toggleMergeModal();
+    },
+    checkForNewRoute() {
+      if (isAConversationRoute(this.$route.name)) {
+        this.$router.push({
+          name: getConversationDashboardRoute(this.$route.name),
+        });
+      } else if (this.$route.name !== 'contacts_dashboard') {
+        this.$router.push({
+          name: 'contacts_dashboard',
+        });
+      }
     },
   },
 };

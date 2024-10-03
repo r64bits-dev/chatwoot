@@ -145,16 +145,18 @@ export default {
         showModalForNewItem: true,
         modalName: 'AddLabel',
         dataTestid: 'sidebar-new-label-button',
-        children: this.labels.map(label => ({
-          id: label.id,
-          label: label.title,
-          color: label.color,
-          truncateLabel: true,
-          toState: frontendURL(
-            `accounts/${this.accountId}/label/${label.title}`
-          ),
-          count: label.totalUsedCount || 0,
-        })),
+        children: this.labels.map(label => {
+          return {
+            id: label.id,
+            label: label.title,
+            color: label.color,
+            truncateLabel: true,
+            toState: frontendURL(
+              `accounts/${this.accountId}/label/${label.title}`
+            ),
+            count: label.total_used_count || 0,
+          };
+        }),
       };
     },
     ticketLabelSection() {

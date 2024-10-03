@@ -58,6 +58,20 @@ class Label < ApplicationRecord
     self.title = title.downcase if attribute_present?('title')
   end
 
+  def self.with_conversations_count(account)
+    counts = account.conversations.tag_counts_on(:labels)
+
+    label_counts = counts.each_with_object({}) do |tag, hash|
+      hash[tag.name] = tag.taggings_count
+    end
+
+    where(account_id: account.id).map do |label|
+      count = label_counts[label.title] || 0
+      label.define_singleton_method(:conversations_count) { count }
+      label
+    end
+  end
+
   def conversations
     account.conversations.tagged_with(title)
   end

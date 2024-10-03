@@ -37,12 +37,13 @@ class Api::V1::Accounts::LabelsController < Api::V1::Accounts::BaseController
   end
 
   def conversations_labels_with_usage_count
-    current_account.labels.map.with_object([]) do |label, arr|
-      arr << {
+    labels = Label.with_conversations_count(current_account)
+    labels.map do |label|
+      {
         id: label.id,
         title: label.title,
         color: label.color,
-        totalUsedCount: label.conversations.count
+        total_used_count: label.conversations_count
       }
     end
   end

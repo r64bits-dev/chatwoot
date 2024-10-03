@@ -127,7 +127,9 @@ export const mutations = {
   },
   [types.SET_LABELS_USAGE_COUNT](_state, data) {
     _state.records.forEach(label => {
-      label.totalUsedCount = data.find(l => l.id === label.id)?.totalUsedCount;
+      label.total_used_count = data.find(
+        l => l.id === label.id
+      )?.total_used_count;
     });
   },
 

@@ -229,17 +229,6 @@ export default {
       return 'hover:text-slate-700 dark:hover:text-slate-100';
     },
   },
-  mounted() {
-    if (this.menuItem.key === 'team') {
-      this.$store.dispatch('teams/countConversationsUnassigned');
-    }
-    if (this.menuItem.key === 'tickets') {
-      this.$store.dispatch('tickets/getLabels');
-    }
-    if (this.menuItem.key === 'conversations') {
-      this.$store.dispatch('labels/updateUsageCount');
-    }
-  },
   methods: {
     computedInboxClass(child) {
       const { type, phoneNumber } = child;

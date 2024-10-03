@@ -288,32 +288,6 @@ export default {
       };
     },
   },
-  watch: {
-    labels: {
-      handler() {
-        if (this.menuConfig.parentNav === 'conversations')
-          this.$store.dispatch('labels/updateUsageCount');
-
-        if (this.menuConfig.parentNav === 'team')
-          this.$store.dispatch('teams/countConversationsUnassigned');
-
-        if (this.menuConfig.parentNav === 'tickets')
-          this.$store.dispatch('tickets/getLabels');
-      },
-      immediate: true,
-      deep: true,
-    },
-  },
-  mounted() {
-    const { parentNav } = this.menuConfig;
-    if (parentNav === 'conversations')
-      this.$store.dispatch('labels/updateUsageCount');
-
-    if (parentNav === 'team')
-      this.$store.dispatch('teams/countConversationsUnassigned');
-
-    if (parentNav === 'tickets') this.$store.dispatch('tickets/getLabels');
-  },
   methods: {
     showAddLabelPopup() {
       this.$emit('add-label');

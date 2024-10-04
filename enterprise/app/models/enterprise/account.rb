@@ -71,7 +71,9 @@ module Enterprise::Account
   end
 
   def product_details
-    @product_details ||= JSON.parse(product.details)
+    return {} if product.blank? || product.details.blank?
+
+    @product_details ||= product.details.is_a?(String) ? JSON.parse(product.details) : product.details
   end
 
   def extra_agent_cost

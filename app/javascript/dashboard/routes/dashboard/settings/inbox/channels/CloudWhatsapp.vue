@@ -95,7 +95,7 @@ import { mapGetters } from 'vuex';
 import alertMixin from 'shared/mixins/alertMixin';
 import { required } from 'vuelidate/lib/validators';
 import router from '../../../../index';
-import { isPhoneE164OrEmpty, isNumber } from 'shared/helpers/Validators';
+import { isPhoneNumberValid, isNumber } from 'shared/helpers/Validators';
 
 export default {
   mixins: [alertMixin],
@@ -113,7 +113,7 @@ export default {
   },
   validations: {
     inboxName: { required },
-    phoneNumber: { required, isPhoneE164OrEmpty },
+    phoneNumber: { required, isPhoneNumberValid },
     apiKey: { required },
     phoneNumberId: { required, isNumber },
     businessAccountId: { required, isNumber },

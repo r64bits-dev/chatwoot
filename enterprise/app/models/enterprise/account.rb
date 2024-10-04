@@ -21,8 +21,8 @@ module Enterprise::Account
 
   def limit_exceeded?(limit_name)
     product.present? &&
-      product.details[name_of(limit_name)].present? &&
-      send(limit_name).count > product.details[name_of(limit_name)]
+      product_details[name_of(limit_name)].present? &&
+      send(limit_name).count > product_details[name_of(limit_name)]
   end
 
   def fetch_limit_from_config(limit_name)
@@ -68,6 +68,10 @@ module Enterprise::Account
 
   def product
     @product ||= Current.account.account_plan.product
+  end
+
+  def product_details
+    @product_details ||= JSON.parse(product.details)
   end
 
   def extra_agent_cost

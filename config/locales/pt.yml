@@ -57,6 +57,11 @@ pt:
     slack:
       invalid_channel_id: "Canal de slack inválido. Por favor, tente novamente"
     inboxes:
+      integrations:
+        whatsapp:
+          invalid_phone_number: ': Número de telefone inválido'
+          invalid_api_key: ': Chave de API inválida'
+          invalid_provider_config: ': Configuração de provedor inválida'
       imap:
         socket_error: Por favor, verifique a ligação à rede, endereço IMAP e tente novamente.
         no_response_error: Por favor, verifique as credenciais do IMAP e tente novamente.

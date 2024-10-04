@@ -34,4 +34,10 @@ module CustomExceptions::Account
       I18n.t 'errors.plan_upgrade_required.failed'
     end
   end
+
+  class InvalidProviderConfig < CustomExceptions::Base
+    def message
+      I18n.t 'errors.inboxes.integrations.whatsapp.invalid_provider_config'
+    end
+  end
 end

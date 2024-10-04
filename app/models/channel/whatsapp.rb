@@ -70,5 +70,7 @@ class Channel::Whatsapp < ApplicationRecord
 
   def validate_provider_config
     errors.add(:provider_config, 'Invalid Credentials') unless provider_service.validate_provider_config?
+  rescue StandardError => e
+    errors.add(:provider_config, e.message)
   end
 end

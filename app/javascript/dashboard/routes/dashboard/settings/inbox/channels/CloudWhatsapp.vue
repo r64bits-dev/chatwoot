@@ -152,7 +152,9 @@ export default {
           },
         });
       } catch (error) {
-        this.showAlert(this.$t('INBOX_MGMT.ADD.WHATSAPP.API.ERROR_MESSAGE'));
+        if (error.message) this.showAlert(error.message);
+        else
+          this.showAlert(this.$t('INBOX_MGMT.ADD.WHATSAPP.API.ERROR_MESSAGE'));
       }
     },
   },

@@ -3,6 +3,7 @@ class Webhooks::WhatsappEventsJob < ApplicationJob
 
   def perform(params = {})
     channel = find_channel_from_whatsapp_business_payload(params)
+    p "find a channel, #{channel.inspect}"
     return raise('Channel is inactive') if channel_is_inactive?(channel)
 
     case channel.provider

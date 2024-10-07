@@ -6,10 +6,14 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
   end
 
   def perform_reply
+    p '---- perform reply ----'
     should_send_template_message = template_params.present? || !message.conversation.can_reply?
+    p 'should send template message', should_send_template_message
     if should_send_template_message
+      p 'send template message'
       send_template_message
     else
+      p 'send session message'
       send_session_message
     end
   end
@@ -92,7 +96,9 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
   end
 
   def send_session_message
+    p 'function', channel.send_message
     message_id = channel.send_message(message.conversation.contact_inbox.source_id, message)
+    p 'send session message', message_id
     message.update!(source_id: message_id) if message_id.present?
   end
 

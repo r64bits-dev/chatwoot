@@ -88,6 +88,8 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
+    p 'send text message', response.inspect
+
     process_response(response)
   end
 

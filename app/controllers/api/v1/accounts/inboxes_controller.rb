@@ -1,7 +1,9 @@
 class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   include Api::V1::InboxesHelper
+  include PhoneHelper
   before_action :fetch_inbox, except: [:index, :create]
   before_action :fetch_agent_bot, only: [:set_agent_bot]
+  before_action :change_phone_number, only: [:create]
   before_action :validate_limit, only: [:create]
   # we are already handling the authorization in fetch inbox
   before_action :check_authorization, except: [:show]
@@ -155,6 +157,10 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
     else
       []
     end
+  end
+
+  def change_phone_number
+    params[:channel][:phone_number] = format_phone_number(params[:channel][:phone_number])
   end
 end
 

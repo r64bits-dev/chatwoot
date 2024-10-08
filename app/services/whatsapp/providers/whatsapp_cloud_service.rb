@@ -33,6 +33,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def fetch_whatsapp_templates(url)
     response = HTTParty.get(url)
+    p 'fetch whatsapp templates', response
     return [] unless response.success?
 
     next_url = next_url(response)

@@ -10,6 +10,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def send_template(phone_number, template_info)
+    p 'whatsapp template cloud service', template_info
     response = HTTParty.post(
       "#{phone_id_path}/messages",
       headers: api_headers,
@@ -20,6 +21,8 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         type: 'template'
       }.to_json
     )
+
+    p response
 
     process_response(response)
   end

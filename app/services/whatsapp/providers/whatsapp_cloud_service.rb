@@ -11,7 +11,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def send_template(phone_number, template_info)
     p 'whatsapp template cloud service', template_info
-    request_payload =  {
+    request_payload = {
       messaging_product: 'whatsapp',
       to: phone_number,
       template: template_body_parameters(template_info),
@@ -24,7 +24,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       body: request_payload
     )
 
-    p "response: #{response.inspect} request payload: #{reque st_payload}"
+    p "response: #{response.inspect} request payload: #{request_payload}"
 
     process_response(response)
   end

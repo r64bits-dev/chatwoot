@@ -102,6 +102,7 @@ class Whatsapp::Providers::Whatsapp360DialogService < Whatsapp::Providers::BaseS
   end
 
   def template_body_parameters(template_info)
+    p 'template_info', template_info
     {
       name: template_info[:name],
       namespace: template_info[:namespace],

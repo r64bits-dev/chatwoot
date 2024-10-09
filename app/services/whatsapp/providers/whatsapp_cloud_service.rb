@@ -148,11 +148,12 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
+    p template_info
     {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
-        code: template_info[:locale]
+        code: template_info[:locale] || 'pt_BR'
       },
       components: build_components(template_info)
     }

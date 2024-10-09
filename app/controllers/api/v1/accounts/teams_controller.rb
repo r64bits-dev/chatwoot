@@ -50,7 +50,7 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
       {
         id: team.id,
         team_name: team.name,
-        unassigned_conversations_count: teams_with_counts.dig(team.id, :unassigned_conversations_count) || 0
+        unassigned_conversations_count: teams_with_counts&.dig(team.id, :unassigned_conversations_count) || 0
       }
     end
   end

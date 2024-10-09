@@ -121,6 +121,23 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     process_response(response)
   end
 
+  def send_interactive_text_message(phone_number, message)
+    payload = create_payload_based_on_items(message)
+
+    response = HTTParty.post(
+      "#{phone_id_path}/messages",
+      headers: api_headers,
+      body: {
+        messaging_product: 'whatsapp',
+        to: phone_number,
+        interactive: payload,
+        type: 'interactive'
+      }.to_json
+    )
+
+    process_response(response)
+  end
+
   def process_response(response)
     if response.success?
       response['messages'].first['id']
@@ -143,7 +160,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def build_components(template_info)
     components = [build_body_component(template_info[:parameters])]
-    components << build_button_component(template_info[:buttons]) if template_info[:buttons].present?
+    components.concat(template_info[:buttons]) if template_info[:buttons].present?
     components
   end
 
@@ -154,15 +171,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     }
   end
 
-  def build_button_component(buttons)
-    {
-      type: 'button',
-      sub_type: 'URL',
-      index: buttons[:index],
-      parameters: buttons[:parameters].map { |param| { type: 'text', text: param } }
-    }
-  end
-
   def whatsapp_reply_context(message)
     reply_to = message.content_attributes[:in_reply_to_external_id]
     return nil if reply_to.blank?
@@ -170,33 +178,5 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     {
       message_id: reply_to
     }
-  end
-
-  def send_interactive_text_message(phone_number, message)
-    payload = create_payload_based_on_items(message)
-
-    response = HTTParty.post(
-      "#{phone_id_path}/messages",
-      headers: api_headers,
-      body: {
-        messaging_product: 'whatsapp',
-        to: phone_number,
-        interactive: payload,
-        type: 'interactive'
-      }.to_json
-    )
-
-    process_response(response)
-  end
-
-  def template_info_button(template_info)
-    template_info[:buttons]&.map do |button|
-      {
-        type: 'button',
-        parameters: button[:parameters],
-        sub_type: button[:sub_type],
-        index: button[:index]
-      }
-    end
   end
 end

@@ -37,9 +37,7 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
         template_params['language'],
         template_params['processed_params']&.map { |_, value| { type: 'text', text: value } },
         template_params['buttons']&.map&.with_index do |button, index|
-          { type: 'button', sub_type: button['type'], index: index, parameters: [
-            { type: 'text', text: button['text'] }
-          ] }
+          { type: 'button', sub_type: button['type'], index: index, parameters: button['parameters'] }
         end
       ]
     end

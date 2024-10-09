@@ -160,15 +160,27 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def build_components(template_info)
-    components = [build_body_component(template_info[:parameters])]
-    components.concat(template_info[:buttons]) if template_info[:buttons].present?
+    components = build_body_component(template_info[:parameters])
+    components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
+    p components
     components
   end
 
   def build_body_component(parameters)
-    {
+    [{
       type: 'body',
-      parameters: parameters.map { |param| { type: 'text', text: param } }
+      parameters: parameters.map do |param|
+        { type: 'text', text: param[:text] }
+      end
+    }]
+  end
+
+  def build_button_component(buttons)
+    {
+      type: 'button',
+      sub_type: 'URL',
+      index: buttons[:index].t,
+      parameters: buttons[:parameters].map { |param| { type: param[:type], text: param[:text] } }
     }
   end
 

@@ -131,21 +131,35 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
-    components = [{
-      type: 'body',
-      parameters: template_info[:parameters]
-    }]
-
-    buttons = template_info_button(template_info)
-    components.concat(buttons) if buttons.present?
-
     {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
-        code: template_info[:lang_code]
+        code: template_info[:locale]
       },
-      components: components
+      components: build_components(template_info)
+    }
+  end
+
+  def build_components(template_info)
+    components = [build_body_component(template_info[:parameters])]
+    components << build_button_component(template_info[:buttons]) if template_info[:buttons].present?
+    components
+  end
+
+  def build_body_component(parameters)
+    {
+      type: 'body',
+      parameters: parameters.map { |param| { type: 'text', text: param } }
+    }
+  end
+
+  def build_button_component(buttons)
+    {
+      type: 'button',
+      sub_type: 'URL',
+      index: buttons[:index],
+      parameters: buttons[:parameters].map { |param| { type: 'text', text: param } }
     }
   end
 

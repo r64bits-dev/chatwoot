@@ -121,6 +121,7 @@ pt_BR:
           invalid_phone_number: ': Número de telefone inválido'
           invalid_api_key: ': Chave de API inválida'
           invalid_provider_config: ': Configuração de provedor inválida'
+          error_reply: ': Não foi possível enviar mensagem de resposta'
       imap:
         socket_error: Por favor, verifique a conexão de rede, endereço IMAP e tente novamente.
         no_response_error: Por favor, verifique as credenciais de IMAP e tente novamente.

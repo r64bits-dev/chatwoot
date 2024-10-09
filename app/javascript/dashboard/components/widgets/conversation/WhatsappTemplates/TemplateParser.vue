@@ -11,7 +11,7 @@
         {{ $t('WHATSAPP_TEMPLATES.PARSER.VARIABLES_LABEL') }}
       </p>
       <div
-        v-for="(variable, key) in processedParams"
+        v-for="(variable, key) in processedParams.variables"
         :key="key"
         class="template__variable-item"
       >
@@ -19,7 +19,7 @@
           {{ key }}
         </span>
         <woot-input
-          v-model="processedParams[key]"
+          v-model="processedParams.variables[key]"
           type="text"
           class="variable-input"
           :styles="{ marginBottom: 0 }"
@@ -28,6 +28,41 @@
       <p v-if="$v.$dirty && $v.$invalid" class="error">
         {{ $t('WHATSAPP_TEMPLATES.PARSER.FORM_ERROR_MESSAGE') }}
       </p>
+    </div>
+    <div v-if="buttons.length" class="template__buttons-container">
+      <p class="variables-label">
+        {{ $t('WHATSAPP_TEMPLATES.PARSER.BUTTONS_LABEL') }}
+      </p>
+      <div
+        v-for="(button, index) in buttons"
+        :key="index"
+        class="template__button-item"
+      >
+        <p class="button-label">{{ button.text }}</p>
+        <div
+          v-if="
+            button.type === 'URL' &&
+            processedParams.buttons &&
+            processedParams.buttons[index]
+          "
+          class="button-variable-inputs"
+        >
+          <p>{{ $t('WHATSAPP_TEMPLATES.PARSER.BUTTON_VARIABLES_LABEL') }}</p>
+          <div
+            v-for="(value, key) in processedParams.buttons[index]"
+            :key="key"
+            class="template__variable-item"
+          >
+            <span class="variable-label">{{ key }}</span>
+            <woot-input
+              v-model="processedParams.buttons[index][key]"
+              type="text"
+              class="variable-input"
+              :styles="{ marginBottom: 0 }"
+            />
+          </div>
+        </div>
+      </div>
     </div>
     <footer>
       <woot-button variant="smooth" @click="$emit('resetTemplate')">
@@ -54,16 +89,32 @@ export default {
     },
   },
   validations: {
-    processedParams: {
-      requiredIfKeysPresent: requiredIf('variables'),
-      allKeysRequired,
+    'processedParams.variables': {
+      requiredIfKeysPresent() {
+        return (
+          requiredIf(this.processedParams.variables) &&
+          allKeysRequired(this.processedParams.variables)
+        );
+      },
+    },
+    'processedParams.buttons': {
+      allButtonVariablesFilled(value) {
+        if (!value) return true;
+        return Object.values(value).every(buttonVars => {
+          return Object.values(buttonVars).every(v => !!v);
+        });
+      },
     },
   },
   data() {
     return {
-      processedParams: {},
+      processedParams: {
+        variables: {},
+        buttons: {},
+      },
     };
   },
+
   computed: {
     variables() {
       const variables = this.templateString.match(/{{([^}]+)}}/g);
@@ -77,17 +128,52 @@ export default {
     processedString() {
       return this.templateString.replace(/{{([^}]+)}}/g, (match, variable) => {
         const variableKey = this.processVariable(variable);
-        return this.processedParams[variableKey] || `{{${variable}}}`;
+        return this.processedParams.variables[variableKey] || `{{${variable}}}`;
       });
+    },
+    buttonsComponent() {
+      return this.template.components.find(
+        component => component.type === 'BUTTONS'
+      );
+    },
+    buttons() {
+      if (!this.buttonsComponent) return [];
+      return this.buttonsComponent.buttons || [];
     },
   },
   mounted() {
     this.generateVariables();
+    this.processButtonVariables();
   },
   methods: {
     sendMessage() {
       this.$v.$touch();
       if (this.$v.$invalid) return;
+
+      let buttonsPayload = [];
+      if (this.buttons.length) {
+        buttonsPayload = this.buttons.map((button, index) => {
+          const buttonPayload = { type: button.type, text: button.text };
+          if (button.type === 'URL') {
+            let url = button.url;
+            if (
+              this.processedParams.buttons &&
+              this.processedParams.buttons[index]
+            ) {
+              // Substituir variáveis na URL
+              Object.keys(this.processedParams.buttons[index]).forEach(
+                varKey => {
+                  const varValue = this.processedParams.buttons[index][varKey];
+                  url = url.replace(`{{${varKey}}}`, varValue);
+                }
+              );
+            }
+            buttonPayload.url = url;
+          }
+          return buttonPayload;
+        });
+      }
+
       const payload = {
         message: this.processedString,
         templateParams: {
@@ -95,7 +181,8 @@ export default {
           category: this.template.category,
           language: this.template.language,
           namespace: this.template.namespace,
-          processed_params: this.processedParams,
+          processed_params: this.processedParams.variables,
+          buttons: buttonsPayload,
         },
       };
       this.$emit('sendMessage', payload);
@@ -108,10 +195,30 @@ export default {
       if (!matchedVariables) return;
 
       const variables = matchedVariables.map(i => this.processVariable(i));
-      this.processedParams = variables.reduce((acc, variable) => {
+      this.processedParams.variables = variables.reduce((acc, variable) => {
         acc[variable] = '';
         return acc;
       }, {});
+    },
+    processButtonVariables() {
+      if (!this.buttons.length) return;
+      this.buttons.forEach((button, index) => {
+        if (button.type === 'URL') {
+          const matchedVariables = button.url.match(/{{([^}]+)}}/g);
+          if (matchedVariables) {
+            const variables = matchedVariables.map(v =>
+              this.processVariable(v)
+            );
+            this.processedParams.buttons[index] = variables.reduce(
+              (acc, variable) => {
+                acc[variable] = '';
+                return acc;
+              },
+              {}
+            );
+          }
+        }
+      });
     },
   },
 };

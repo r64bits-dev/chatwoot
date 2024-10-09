@@ -487,7 +487,11 @@ export default {
         inboxId: this.targetInbox.id,
         sourceId: this.targetInbox.sourceId,
         contactId: this.contact.id,
-        message: { content, template_params: templateParams },
+        message: {
+          content,
+          template_params: templateParams,
+          buttons: templateParams.buttons,
+        },
         assigneeId: this.currentUser.id,
       };
       return payload;

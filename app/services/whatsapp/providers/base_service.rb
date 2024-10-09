@@ -9,6 +9,8 @@
 ######################################
 
 class Whatsapp::Providers::BaseService
+  include PhoneHelper
+
   pattr_initialize [:whatsapp_channel!]
 
   def send_message(_phone_number, _message)

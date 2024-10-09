@@ -179,7 +179,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     {
       type: 'button',
       sub_type: 'URL',
-      index: buttons[:index].t,
+      index: buttons[:index],
       parameters: buttons[:parameters].map { |param| { type: param[:type], text: param[:text] } }
     }
   end

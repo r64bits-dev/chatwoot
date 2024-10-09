@@ -19,7 +19,9 @@
             "VARIABLE_PLACEHOLDER": "Insira o valor para %{variable}",
             "GO_BACK_LABEL": "Voltar",
             "SEND_MESSAGE_LABEL": "Enviar mensagem",
-            "FORM_ERROR_MESSAGE": "Por favor, preencha todas as variáveis antes de enviar"
+            "FORM_ERROR_MESSAGE": "Por favor, preencha todas as variáveis antes de enviar",
+            "BUTTONS_LABEL": "Botões",
+            "BUTTON_VARIABLES_LABEL": "Variáveis"
         }
     }
 }

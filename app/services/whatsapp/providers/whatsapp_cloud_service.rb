@@ -10,10 +10,9 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def send_template(phone_number, template_info)
-    p 'whatsapp template cloud service', template_info
     request_payload = {
       messaging_product: 'whatsapp',
-      to: phone_number,
+      to: format_phone_number(phone_number),
       template: template_body_parameters(template_info),
       type: 'template'
     }.to_json
@@ -23,8 +22,8 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: request_payload
     )
-
     p "response: #{response.inspect} request payload: #{request_payload}"
+    raise CustomExceptions::Account::ErrorReply unless response.success?
 
     process_response(response)
   end
@@ -88,7 +87,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       body: {
         messaging_product: 'whatsapp',
         context: whatsapp_reply_context(message),
-        to: phone_number,
+        to: format_phone_number(phone_number),
         text: { body: message.content },
         type: 'text'
       }.to_json
@@ -141,7 +140,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       components: [{
         type: 'body',
         parameters: template_info[:parameters]
-      }]
+      }, template_info_button(template_info)]
     }
   end
 
@@ -169,5 +168,16 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     )
 
     process_response(response)
+  end
+
+  def template_info_button(template_info)
+    template_info[:buttons]&.map do |button|
+      {
+        type: 'button',
+        parameters: button[:parameters],
+        sub_type: button[:sub_type],
+        index: button[:index]
+      }
+    end
   end
 end

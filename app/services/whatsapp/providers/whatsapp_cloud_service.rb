@@ -131,16 +131,21 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
+    components = [{
+      type: 'body',
+      parameters: template_info[:parameters]
+    }]
+
+    buttons = template_info_button(template_info)
+    components.concat(buttons) if buttons.present?
+
     {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
         code: template_info[:lang_code]
       },
-      components: [{
-        type: 'body',
-        parameters: template_info[:parameters]
-      }, template_info_button(template_info)]
+      components: components
     }
   end
 

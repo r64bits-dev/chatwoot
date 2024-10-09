@@ -153,23 +153,17 @@ export default {
       let buttonsPayload = [];
       if (this.buttons.length) {
         buttonsPayload = this.buttons.map((button, index) => {
-          const buttonPayload = { type: button.type, text: button.text };
-          if (button.type === 'URL') {
-            let url = button.url;
-            if (
-              this.processedParams.buttons &&
-              this.processedParams.buttons[index]
-            ) {
-              // Substituir variáveis na URL
-              Object.keys(this.processedParams.buttons[index]).forEach(
-                varKey => {
-                  const varValue = this.processedParams.buttons[index][varKey];
-                  url = url.replace(`{{${varKey}}}`, varValue);
-                }
-              );
-            }
-            buttonPayload.url = url;
-          }
+          const buttonPayload = {
+            type: button.type,
+            sub_type: button.sub_type,
+            index: index,
+            parameters: [
+              {
+                type: 'text',
+                text: this.processedParams.buttons[index][1],
+              },
+            ],
+          };
           return buttonPayload;
         });
       }

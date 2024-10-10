@@ -38,7 +38,19 @@
         :key="index"
         class="template__button-item"
       >
-        <p class="button-label">{{ button.text }}</p>
+        <woot-button
+          v-tooltip.top-end="
+            $t('WHATSAPP_TEMPLATES.PARSER.BUTTON_TOOLTIP', {
+              url: button.example,
+            })
+          "
+          :variant="button.type === 'URL' ? 'primary' : 'secondary'"
+          size="small"
+          >{{ button.text }}
+        </woot-button>
+        <p v-if="button.type == 'URL'" class="text-xs mt-1">
+          Exemplo da url: {{ button.example }}
+        </p>
         <div
           v-if="
             button.type === 'URL' &&
@@ -219,7 +231,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.template__variables-container {
+.template__variables-container,
+.template__buttons-container {
   @apply p-2.5;
 }
 

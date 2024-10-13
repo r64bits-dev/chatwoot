@@ -1,7 +1,7 @@
 import { createConsumer } from '@rails/actioncable';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
 
-const PRESENCE_INTERVAL = 20000;
+const PRESENCE_INTERVAL = 1 * 60 * 60 * 60; // 1 hour
 const RECONNECT_INTERVAL = 1000;
 
 class BaseActionCableConnector {

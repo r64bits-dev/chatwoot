@@ -479,6 +479,7 @@ Rails.application.routes.draw do
       end
 
       resources :products, only: [:index, :new, :create, :show, :edit, :update, :destroy]
+      resources :reports, only: [:index]
 
       resources :access_tokens, only: [:index, :show]
       resources :response_sources, only: [:index, :show, :new, :create, :edit, :update, :destroy]

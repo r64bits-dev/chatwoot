@@ -28,6 +28,9 @@ module DateRangeHelper
   end
 
   def months_in_range(start_date, end_date)
+    start_date = start_date.to_date
+    end_date = end_date.to_date
+
     (start_date..end_date).map { |d| Date.new(d.year, d.month, 1) }.uniq
   end
 

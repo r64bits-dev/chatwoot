@@ -47,6 +47,8 @@ module Chatwoot
 
     # Custom chatwoot configurations
     config.x = config_for(:app).with_indifferent_access
+
+    # default locale
     config.i18n.default_locale = :pt_BR
 
     # https://stackoverflow.com/questions/72970170/upgrading-to-rails-6-1-6-1-causes-psychdisallowedclass-tried-to-load-unspecif

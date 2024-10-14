@@ -25,12 +25,12 @@ pt_BR:
       show: Exibir
     controller:
       create:
-        success: '%{resource} criado com sucesso!'
+        success: "%{resource} criado com sucesso!"
       destroy:
-        success: '%{resource} excluído com sucesso!'
+        success: "%{resource} excluído com sucesso!"
       update:
-        success: '%{resource} atualizado com sucesso!'
-        error: '%{resource} não foi atualizado!'
+        success: "%{resource} atualizado com sucesso!"
+        error: "%{resource} não foi atualizado!"
     fields:
       has_many:
         more: Mostrar %{count} mais
@@ -85,7 +85,7 @@ pt_BR:
     agent_offline:
       failed: Agente não encontrado online
     unprocessable_entity: Não foi possível processar o pedido
-    not_found: '%{resource} não encontrado'
+    not_found: "%{resource} não encontrado"
     unauthorized: Você não está autorizado a fazer esta ação
     validations:
       presence: não pode ficar em branco
@@ -115,13 +115,16 @@ pt_BR:
       invalid_message_type: "Tipo de mensagem inválido. Ação não permitida"
     slack:
       invalid_channel_id: "Canal de slack inválido. Por favor, tente novamente"
+    conversations:
+      need_team_assignee: Você precisa atribuir um time para a conversa antes de atribuir um agente
+      invalid_attributes: Atributos inválidos
     inboxes:
       integrations:
         whatsapp:
-          invalid_phone_number: ': Número de telefone inválido'
-          invalid_api_key: ': Chave de API inválida'
-          invalid_provider_config: ': Configuração de provedor inválida'
-          error_reply: ': Não foi possível enviar mensagem de resposta'
+          invalid_phone_number: ": Número de telefone inválido"
+          invalid_api_key: ": Chave de API inválida"
+          invalid_provider_config: ": Configuração de provedor inválida"
+          error_reply: ": Não foi possível enviar mensagem de resposta"
       imap:
         socket_error: Por favor, verifique a conexão de rede, endereço IMAP e tente novamente.
         no_response_error: Por favor, verifique as credenciais de IMAP e tente novamente.
@@ -132,11 +135,11 @@ pt_BR:
         name: 'não deve iniciar ou terminar com símbolos e não deve ter os caracteres: < > / \ @.'
     custom_filters:
       number_of_records: Limite atingido. O número máximo de filtros personalizados permitidos para um usuário por conta é de 50.
-  
+
   activerecord:
     errors:
       messages:
-        record_invalid: 'A validação falhou: %{errors}'
+        record_invalid: "A validação falhou: %{errors}"
       models:
         ticket:
           errors:
@@ -148,8 +151,8 @@ pt_BR:
               blank: obrigatório
               required: obrigatório
             description:
-              blank:  é obrigatório
-              required:  é obrigatória
+              blank: é obrigatório
+              required: é obrigatória
             conversation:
               blank: é obrigatório
               required: é obrigatória
@@ -226,9 +229,9 @@ pt_BR:
         auto_resolved: "Conversa foi marcada como resolvida pelo sistema por ter %{duration} dias de inatividade"
         system_auto_open: O sistema reabriu a conversa devido a uma nova mensagem recebida.
       priority:
-        added: '%{user_name} definiu a prioridade para %{new_priority}'
-        updated: '%{user_name} mudou a prioridade de %{old_priority} para %{new_priority}'
-        removed: '%{user_name} removeu a prioridade'
+        added: "%{user_name} definiu a prioridade para %{new_priority}"
+        updated: "%{user_name} mudou a prioridade de %{old_priority} para %{new_priority}"
+        removed: "%{user_name} removeu a prioridade"
       assignee:
         self_assigned: "%{user_name} atribuiu a si mesmo essa conversa"
         assigned: "Atribuído a %{assignee_name} por %{user_name}"
@@ -298,7 +301,7 @@ pt_BR:
       empty_placeholder: Nenhum resultado encontrado.
       loading_placeholder: Procurando...
       results_title: Resultados de pesquisa
-    toc_header: 'Nesta página'
+    toc_header: "Nesta página"
     hero:
       sub_title: Pesquise os artigos aqui ou navegue pelas categorias abaixo.
     common:

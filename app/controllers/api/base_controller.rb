@@ -15,6 +15,7 @@ class Api::BaseController < ApplicationController
               CustomExceptions::Agent::AgentNotFoundError,
               CustomExceptions::Agent::UserExists,
               CustomExceptions::Agent::UserErrors,
+              CustomExceptions::Conversation::NeedTeamAssignee,
               with: :render_error_response
 
   def render_error_response(exception = nil)

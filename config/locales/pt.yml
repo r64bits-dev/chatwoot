@@ -26,7 +26,7 @@ pt:
     agent_offline:
       failed: Agente não encontrado online
     unprocessable_entity: Não foi possível processar o pedido
-    not_found: '%{resource} não encontrado'
+    not_found: "%{resource} não encontrado"
     unauthorized: Você não está autorizado a fazer esta ação
     validations:
       presence: não pode estar vazio
@@ -56,6 +56,9 @@ pt:
       invalid_message_type: "Tipo de mensagem inválido. Ação não permitida"
     slack:
       invalid_channel_id: "Canal de slack inválido. Por favor, tente novamente"
+    conversations:
+      need_team_assignee: Você precisa atribuir um time para a conversa antes de atribuir um Agente
+      invalid_attributes: Atributos inválidos
     inboxes:
       integrations:
         whatsapp:
@@ -72,11 +75,11 @@ pt:
         name: não deve iniciar ou terminar com símbolos, nem deve ter < > / \ @ caracteres.
     custom_filters:
       number_of_records: Limite atingido. O número máximo de filtros personalizados permitidos para um utilizador por conta é de 50.
-  
+
   activerecord:
     errors:
       messages:
-        record_invalid: 'A validação falhou: %{errors}'
+        record_invalid: "A validação falhou: %{errors}"
       models:
         ticket:
           errors:
@@ -99,7 +102,7 @@ pt:
             user:
               blank: é obrigatório
               required: é obrigatório
-  
+
   reports:
     period: Período do relatório de %{since} a %{until}
     utc_warning: O relatório gerado está no fuso horário UTC
@@ -163,9 +166,9 @@ pt:
         auto_resolved: "Conversa auto-resolvida pelo sistema por causa dos %{duration} dias sem inatividade"
         system_auto_open: O sistema reabriu a conversa por ter sido recebida uma nova mensagem.
       priority:
-        added: '%{user_name} definiu a prioridade para %{new_priority}'
-        updated: '%{user_name} mudou a prioridade de %{old_priority} para %{new_priority}'
-        removed: '%{user_name} removeu a prioridade'
+        added: "%{user_name} definiu a prioridade para %{new_priority}"
+        updated: "%{user_name} mudou a prioridade de %{old_priority} para %{new_priority}"
+        removed: "%{user_name} removeu a prioridade"
       assignee:
         self_assigned: "%{user_name} auto-atribuída esta conversa"
         assigned: "Atribuído a %{assignee_name} por %{user_name}"
@@ -215,7 +218,7 @@ pt:
       description: "Os eventos Webhook fornecem informações em tempo real sobre o que está a acontecer na sua conta Chatwoot. Pode utilizar os Webhooks para comunicar eventos com as suas aplicações favoritas como o Slack ou o Github. Clique em Configurar para configurar os seus Webhooks."
     dialogflow:
       name: "Dialogflow"
-      description: "Construa chatbots utilizando o Dialogflow e ligue-os rapidamente à sua caixa de entrada. Deixe os robost \"bots\" tratarem das consultas dos seus contatos antes de as entregar aos seus agentes de atendimento."
+      description: 'Construa chatbots utilizando o Dialogflow e ligue-os rapidamente à sua caixa de entrada. Deixe os robost "bots" tratarem das consultas dos seus contatos antes de as entregar aos seus agentes de atendimento.'
     fullcontact:
       name: "Fullcontact"
       description: "A integração com o FullContact ajuda a enriquecer os perfis dos seus visitantes. Identifica os utilizadores assim que eles partilham o seu endereço de e-mail e ofereça um atendimento ao cliente mais personalizado. Ligue a sua conta ao FullContact utilizando apenas a sua chave API."
@@ -231,7 +234,7 @@ pt:
       empty_placeholder: Nenhum resultado encontrado.
       loading_placeholder: A pesquisar...
       results_title: Resultados da pesquisa
-    toc_header: 'Nesta página'
+    toc_header: "Nesta página"
     hero:
       sub_title: Pesquise aqui os artigos ou procure as categorias abaixo.
     common:
@@ -247,7 +250,7 @@ pt:
       go_to_homepage: Ir para o site principal
   slack_unfurl:
     fields:
-      name: 'Nome:'
+      name: "Nome:"
       email: e-mail
       phone_number: Telefone
       company_name: Empresa

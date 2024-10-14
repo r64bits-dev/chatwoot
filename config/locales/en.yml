@@ -40,7 +40,7 @@ en:
     agent_offline:
       failed: Agent not found online
     unprocessable_entity: Could not process the request
-    not_found: '%{resource} not found'
+    not_found: "%{resource} not found"
     unauthorized: You are not authorized to do this action
     validations:
       presence: must not be blank
@@ -70,6 +70,9 @@ en:
       invalid_message_type: "Invalid message type. Action not permitted"
     slack:
       invalid_channel_id: "Invalid slack channel. Please try again"
+    conversations:
+      need_team_assignee: You need to assign a team to the conversation before assigning an agent
+      invalid_attributes: Invalid attributes
     inboxes:
       integrations:
         whatsapp:
@@ -90,7 +93,7 @@ en:
   activerecord:
     errors:
       messages:
-        record_invalid: 'A validação falhou: %{errors}'
+        record_invalid: "A validação falhou: %{errors}"
       models:
         ticket:
           errors:
@@ -177,9 +180,9 @@ en:
         auto_resolved: "Conversation was marked resolved by system due to %{duration} days of inactivity"
         system_auto_open: System reopened the conversation due to a new incoming message.
       priority:
-        added: '%{user_name} set the priority to %{new_priority}'
-        updated: '%{user_name} changed the priority from %{old_priority} to %{new_priority}'
-        removed: '%{user_name} removed the priority'
+        added: "%{user_name} set the priority to %{new_priority}"
+        updated: "%{user_name} changed the priority from %{old_priority} to %{new_priority}"
+        removed: "%{user_name} removed the priority"
       assignee:
         self_assigned: "%{user_name} self-assigned this conversation"
         assigned: "Assigned to %{assignee_name} by %{user_name}"
@@ -249,7 +252,7 @@ en:
       empty_placeholder: No results found.
       loading_placeholder: Searching...
       results_title: Search results
-    toc_header: 'On this page'
+    toc_header: "On this page"
     hero:
       sub_title: Search for the articles here or browse the categories below.
     common:
@@ -280,12 +283,12 @@ en:
       back_to_home: Go to home page
   slack_unfurl:
     fields:
-     name: Name
-     email: Email
-     phone_number: Phone
-     company_name: Company
-     inbox_name: Inbox
-     inbox_type: Inbox Type
+      name: Name
+      email: Email
+      phone_number: Phone
+      company_name: Company
+      inbox_name: Inbox
+      inbox_type: Inbox Type
     button: Open conversation
   integrations:
     openai:

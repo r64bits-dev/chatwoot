@@ -168,6 +168,10 @@ class User < ApplicationRecord
     }
   end
 
+  def superadmin?
+    type == 'SuperAdmin'
+  end
+
   private
 
   def remove_macros

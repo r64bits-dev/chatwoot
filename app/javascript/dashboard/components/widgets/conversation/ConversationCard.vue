@@ -50,6 +50,9 @@
           <priority-mark :priority="chat.priority" />
         </div>
       </div>
+      <div v-if="chat.team_name" class="flex flex-col gap-1">
+        <team-name :team="{ name: chat.team_name }" />
+      </div>
       <h4
         class="conversation--user text-sm my-0 mx-2 capitalize pt-0.5 text-ellipsis overflow-hidden whitespace-nowrap w-[60%] text-slate-900 dark:text-slate-100"
       >
@@ -125,6 +128,7 @@ import alertMixin from 'shared/mixins/alertMixin';
 import TimeAgo from 'dashboard/components/ui/TimeAgo.vue';
 import CardLabels from './conversationCardComponents/CardLabels.vue';
 import PriorityMark from './PriorityMark.vue';
+import TeamName from '../TeamName.vue';
 
 export default {
   components: {
@@ -135,6 +139,7 @@ export default {
     TimeAgo,
     MessagePreview,
     PriorityMark,
+    TeamName,
   },
 
   mixins: [inboxMixin, timeMixin, conversationMixin, alertMixin],
@@ -158,6 +163,10 @@ export default {
     teamId: {
       type: [String, Number],
       default: 0,
+    },
+    teamName: {
+      type: String,
+      default: '',
     },
     foldersId: {
       type: [String, Number],

@@ -25,7 +25,7 @@ export default {
     },
     dynamicTime(time) {
       const unixTime = fromUnixTime(time);
-      return formatDistanceToNow(unixTime, { addSuffix: true });
+      return formatDistanceToNow(unixTime, { addSuffix: true, locale: ptBR });
     },
     dateFormat(time, dateFormat = 'MMM d, yyyy') {
       const unixTime = fromUnixTime(time);
@@ -47,22 +47,22 @@ export default {
     shortTimestamp(time) {
       const convertToShortTime = time
         .replace(/about|over|almost|/g, '')
-        .replace('less than a minute ago', 'now')
-        .replace(' minute ago', 'm')
-        .replace(' minutes ago', 'm')
-        .replace('a minute ago', 'm')
-        .replace('an hour ago', 'h')
+        .replace('less than a minute ago', 'agora')
+        .replace(' minute ago', 'min')
+        .replace(' minutes ago', 'min')
+        .replace('a minute ago', '1 min')
+        .replace('an hour ago', '1 h')
         .replace(' hour ago', 'h')
         .replace(' hours ago', 'h')
         .replace(' day ago', 'd')
-        .replace('a day ago', 'd')
+        .replace('a day ago', '1 d')
         .replace(' days ago', 'd')
-        .replace('a month ago', 'mo')
-        .replace(' months ago', 'mo')
-        .replace(' month ago', 'mo')
-        .replace('a year ago', 'y')
-        .replace(' year ago', 'y')
-        .replace(' years ago', 'y');
+        .replace('a month ago', '1 mês')
+        .replace(' months ago', 'meses')
+        .replace(' month ago', 'mês')
+        .replace('a year ago', '1 ano')
+        .replace(' year ago', 'ano')
+        .replace(' years ago', 'anos');
       return convertToShortTime;
     },
   },

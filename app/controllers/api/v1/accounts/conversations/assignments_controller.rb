@@ -14,7 +14,7 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
 
   def set_agent
     @agent = find_and_validate_agent(params[:assignee_id])
-    return raise CustomExceptions::Conversation::NeedTeamAssignee if @agent.nil? || @conversation.team.blank?
+    return raise CustomExceptions::Conversation::NeedTeamAssignee if @agent.present? && @conversation.team.blank?
 
     @conversation.assignee = @agent
     @conversation.save!

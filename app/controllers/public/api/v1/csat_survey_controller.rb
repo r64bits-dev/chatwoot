@@ -2,6 +2,10 @@ class Public::Api::V1::CsatSurveyController < PublicController
   before_action :set_conversation
   before_action :set_message, except: [:create]
 
+  def index
+    @csat_surveys = @conversation.messages.where(content_type: 'input_csat').order(created_at: :desc)
+  end
+
   def show; end
 
   def create

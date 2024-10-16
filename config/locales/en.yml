@@ -30,6 +30,65 @@
 # available at https://guides.rubyonrails.org/i18n.html.
 
 en:
+  administrate:
+    actions:
+      confirm: Are you sure?
+      destroy: Delete
+      edit: Edit
+      show: Show
+    controller:
+      create:
+        success: "%{resource} created with success!"
+      destroy:
+        success: "%{resource} deleted with success!"
+      update:
+        success: "%{resource} updated with success!"
+        error: "%{resource} not updated!"
+    fields:
+      has_many:
+        more: Show %{count} more
+        none: None
+      polymorphic:
+        not_supported: Not supported
+      select:
+        prompt: Please select
+      submit:
+        create: Create %{model}
+        submit: Save %{model}
+        update: Update %{model}
+    form:
+      required_keys: "%{errors} are missing"
+      error: Something went wrong, please try again below
+      label:
+        are_you_sure: Are you sure?
+        back: Back
+        cancel: Cancel
+        destroy: Delete
+        detail: Detail
+        edit: Edit
+        new: New
+        submit: Save
+        view: View
+    inputs:
+      create:
+        submit: Create
+      search:
+        reset: Reset
+        submit: Search
+    navigation:
+      back_to_app: Back to application
+      back_to_collection: Back to collection
+      collection: Collection
+      edit: Edit
+      home: Home
+      new: New
+      search: Search
+    notifications:
+      created: Created successfully
+      updated: Updated successfully
+    flash:
+      created: Created successfully
+      updated: Updated successfully
   hello: "Hello world"
   messages:
     reset_password_success: Woot! Request for password reset is successful. Check your mail for instructions.

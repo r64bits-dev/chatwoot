@@ -140,6 +140,8 @@ pt_BR:
         connection_closed_error: Conexão fechada.
       validations:
         name: 'não deve iniciar ou terminar com símbolos e não deve ter os caracteres: < > / \ @.'
+    csat_survey:
+      token_error: Token inválido
     custom_filters:
       number_of_records: Limite atingido. O número máximo de filtros personalizados permitidos para um usuário por conta é de 50.
 
@@ -340,6 +342,7 @@ pt_BR:
       inbox_type: Tipo de Caixa de Entrada
     button: Abrir conversa
   csat_survey:
+
     create:
       success: CSAT criada com sucesso
     update:

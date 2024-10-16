@@ -1,10 +1,7 @@
 class Public::Api::V1::CsatSurveyController < PublicController
-  before_action :set_conversation
+  before_action :set_conversation, only: %i[show create update]
   before_action :set_message, except: [:create]
-
-  def index
-    @csat_surveys = @conversation.messages.where(content_type: 'input_csat').order(created_at: :desc)
-  end
+  before_action :check_token, only: %i[create]
 
   def show; end
 
@@ -87,5 +84,14 @@ class Public::Api::V1::CsatSurveyController < PublicController
 
   def check_csat_locked
     (Time.zone.now.to_date - @message.created_at.to_date).to_i > 14
+  end
+
+  def check_token
+    if request.headers['public-key'].blank? || request.headers['public-key'] != ENV.fetch(
+      'PUBLIC_KEY', nil
+    )
+      render json: { error: CustomExceptions::CsatSurvey::TokenError.new.message },
+             status: :unprocessable_entity
+    end
   end
 end

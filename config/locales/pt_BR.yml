@@ -339,6 +339,11 @@ pt_BR:
       inbox_name: Caixa de Entrada
       inbox_type: Tipo de Caixa de Entrada
     button: Abrir conversa
+  csat_survey:
+    create:
+      success: CSAT criada com sucesso
+    update:
+      error: Você não pode atualizar a pesquisa CSAT após 14 dias
   integrations:
     openai:
       error:

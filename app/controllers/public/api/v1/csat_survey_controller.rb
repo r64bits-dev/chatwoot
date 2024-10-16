@@ -74,8 +74,7 @@ class Public::Api::V1::CsatSurveyController < PublicController
   def set_message
     @message = @conversation.messages
                             .where(content_type: 'input_csat')
-                            .order(created_at: :desc)
-                            .first!
+                            .last
   end
 
   def message_update_params

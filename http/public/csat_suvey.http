@@ -1,0 +1,22 @@
+
+# Path: http/csat_survey.http
+# @name create-csat-survey
+
+POST {{api}}/public/api/v1/csat_survey/dc5f1cbe-1136-4dbe-bd01-75b3f3ee5570
+Content-Type: application/json
+token: {{supper_token}}
+
+{
+  "message": {
+    "content": "Teste",
+    "rating": 5
+  }
+}
+
+###
+
+# Path: http/csat_survey.http
+# @name show-csat-survey
+GET {{api}}/public/api/v1/csat_survey/dc5f1cbe-1136-4dbe-bd01-75b3f3ee5570
+
+###

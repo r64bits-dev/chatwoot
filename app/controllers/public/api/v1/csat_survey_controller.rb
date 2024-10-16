@@ -1,11 +1,47 @@
 class Public::Api::V1::CsatSurveyController < PublicController
   before_action :set_conversation
-  before_action :set_message
+  before_action :set_message, except: [:create]
 
   def show; end
 
+  def create
+    ActiveRecord::Base.transaction do
+      message = @conversation.messages.create!(
+        {
+          message_type: 'incoming',
+          content_type: 'input_csat',
+          content_attributes: {
+            csat_survey_response: {
+              rating: params[:message][:rating],
+              feedback_message: params[:message][:content]
+            }
+          },
+          account_id: @conversation.account_id,
+          inbox_id: @conversation.inbox_id
+        }
+      )
+
+      CsatSurveyResponse.create!(
+        feedback_message: params[:message][:content],
+        rating: params[:message][:rating],
+        account_id: @conversation.account_id,
+        contact_id: @conversation.contact_id,
+        conversation_id: @conversation.id,
+        message_id: message.id,
+        assigned_agent_id: @conversation.assignee_id # Associa o agente responsável pela conversa
+      )
+    end
+
+    render json: { message: 'CSAT survey and response created successfully' }, status: :created
+  rescue ActiveRecord::RecordInvalid => e
+    render json: { error: e.message }, status: :unprocessable_entity
+  end
+
   def update
-    render json: { error: 'You cannot update the CSAT survey after 14 days' }, status: :unprocessable_entity and return if check_csat_locked
+    if check_csat_locked
+      render json: { error: 'Você não pode atualizar a pesquisa CSAT após 14 dias' }, status: :unprocessable_entity
+      return
+    end
 
     @message.update!(message_update_params[:message])
   end
@@ -19,7 +55,9 @@ class Public::Api::V1::CsatSurveyController < PublicController
   end
 
   def set_message
-    @message = @conversation.messages.find_by!(content_type: 'input_csat')
+    @message = @conversation.messages
+                            .where(content_type: 'input_csat')
+                            .last
   end
 
   def message_update_params

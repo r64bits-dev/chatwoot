@@ -404,7 +404,11 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :csat_survey, only: [:show, :update]
+        resources :csat_survey, only: [:show, :update] do
+          member do
+            post :create
+          end
+        end
       end
     end
   end

@@ -82,6 +82,13 @@ pt_BR:
     reset_password_failure: Uh ho! Não conseguimos encontrar nenhum usuário com o e-mail especificado.
     inbox_deletetion_response: Seu pedido de exclusão da caixa de entrada será processado dentro de algum tempo.
   errors:
+    attributes:
+      account_id:
+        blank: "Conta não pode ficar em branco"
+        required: "Conta é obrigatória"
+      inbox_id:
+        blank: "Caixa de entrada não pode ficar em branco"
+        required: "Caixa de entrada é obrigatória"
     agent_offline:
       failed: Agente não encontrado online
     unprocessable_entity: Não foi possível processar o pedido
@@ -141,6 +148,14 @@ pt_BR:
       messages:
         record_invalid: "A validação falhou: %{errors}"
       models:
+        message:
+          attributes:
+            account_id:
+              blank: "Conta é obrigatória"
+              required: "Conta é obrigatória"
+            inbox_id:
+              blank: "Caixa de entrada é obrigatória"
+              required: "Caixa de entrada é obrigatória"
         ticket:
           errors:
             already_resolved: Ticket já resolvido

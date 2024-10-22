@@ -8,7 +8,18 @@
     >
       {{ buttonText }}
     </woot-button>
+    <woot-button
+      color-scheme="success"
+      class-names="button--fixed-top-left"
+      icon="add-circle"
+      @click="openAddPopup"
+    >
+      CRIAR INTEGRAÇÃO COM O WHATSAPP
+    </woot-button>
     <campaign />
+    <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">
+      <add-campaign @on-close="hideAddPopup" />
+    </woot-modal>
     <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">
       <add-campaign @on-close="hideAddPopup" />
     </woot-modal>

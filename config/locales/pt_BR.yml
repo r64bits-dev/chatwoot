@@ -167,6 +167,11 @@ pt_BR:
           attributes:
             title:
               taken: já existe
+        contact:
+          attributes:
+            phone_number:
+              invalid: não é um número de telefone válido
+              taken: já existe
   reports:
     period: Reportando o período %{since} a %{until}
     utc_warning: O relatório gerado está em fuso horário UTC

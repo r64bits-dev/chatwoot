@@ -34,6 +34,7 @@ class Contact < ApplicationRecord
   include Avatarable
   include AvailabilityStatusable
   include Labelable
+  include PhoneHelper
 
   validates :account_id, presence: true
   validates :email, allow_blank: true, uniqueness: { scope: [:account_id], case_sensitive: false },
@@ -173,7 +174,12 @@ class Contact < ApplicationRecord
   def phone_number_format
     return if phone_number.blank?
 
-    self.phone_number = phone_number_was unless phone_number.match?(/\+[1-9]\d{1,14}\z/)
+    formatted_phone_number = format_phone_number(phone_number)
+    self.phone_number = if formatted_phone_number.match?(/\+[1-9]\d{1,14}\z/)
+                          formatted_phone_number
+                        else
+                          phone_number_was # Reverter se não for válido
+                        end
   end
 
   def email_format
@@ -185,6 +191,7 @@ class Contact < ApplicationRecord
   def prepare_contact_attributes
     prepare_email_attribute
     prepare_jsonb_attributes
+    phone_number_format
   end
 
   def prepare_email_attribute

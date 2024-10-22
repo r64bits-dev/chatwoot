@@ -1,7 +1,18 @@
 class SuperAdmin::ProductsController < SuperAdmin::ApplicationController
   def update
-    if params[:product][:details].present?
-      validate_details!(params[:product][:details])
+    if parse_details.present?
+      required_keys = %w[number_of_conversations number_of_agents extra_conversation_cost extra_agent_cost]
+
+      missing_keys = required_keys.select { |key| @parsed_details[key].blank? }
+      if missing_keys.any?
+        flash[:error] = I18n.t('administrate.form.required_keys', errors: missing_keys.join(', '))
+        return redirect_to edit_super_admin_product_path(requested_resource)
+      end
+
+      @product = requested_resource
+      @product.details = parse_details
+      @product.save!
+
       params[:product].delete(:details)
     end
 
@@ -10,21 +21,15 @@ class SuperAdmin::ProductsController < SuperAdmin::ApplicationController
 
   private
 
-  def validate_details!(details_param)
-    json_details = JSON.parse(details_param)
-    required_keys = %w[number_of_conversations number_of_agents extra_conversation_cost extra_agent_cost]
+  def parse_details
+    return @passed_details if @passed_details
 
-    missing_keys = required_keys.select { |key| json_details[key].blank? }
-    if missing_keys.any?
-      flash[:error] = translate_with_resource('update.error')
-      nil
-    else
-      @product = requested_resource
-      @product.details = json_details
-      @product.save!
+    if params[:product][:details]
+      details = params[:product][:details]
+      @parsed_details = JSON.parse(details)
+      @parsed_details
     end
   rescue JSON::ParserError
-    flash[:error] = translate_with_resource('update.error')
     nil
   end
 end

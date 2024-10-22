@@ -44,6 +44,7 @@ pt_BR:
         submit: Salvar %{model}
         update: Atualizar %{model}
     form:
+      required_keys: "%{errors} estão faltando"
       error: Ocorreu um erro, por favor verifique os campos abaixo
       label:
         are_you_sure: Você tem certeza?

@@ -28,6 +28,14 @@ const campaigns = accountId => ({
       toState: frontendURL(`accounts/${accountId}/campaigns/app_integration`),
       toStateName: 'app_integration',
     },
+    {
+      key: 'fileImports',
+      icon: 'file-import',
+      label: 'FILE_IMPORT',
+      hasSubMenu: false,
+      toState: frontendURL(`accounts/${accountId}/campaigns/file_imports`),
+      toStateName: 'file_imports',
+    },
   ],
 });
 

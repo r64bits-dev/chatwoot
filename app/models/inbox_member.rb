@@ -25,6 +25,8 @@ class InboxMember < ApplicationRecord
   after_create :add_agent_to_round_robin
   after_destroy :remove_agent_from_round_robin
 
+  scope :non_administrators, -> { where.not(user_id: AccountUser.non_administrators.pluck(:id)) }
+
   private
 
   def add_agent_to_round_robin

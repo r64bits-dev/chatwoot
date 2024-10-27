@@ -27,6 +27,7 @@ import SubmitButton from './buttons/FormSubmitButton';
 import Tabs from './ui/Tabs/Tabs';
 import TabsItem from './ui/Tabs/TabsItem';
 import Thumbnail from './widgets/Thumbnail.vue';
+import InputFile from './widgets/forms/InputFile';
 
 const WootUIKit = {
   AvatarUploader,
@@ -57,6 +58,7 @@ const WootUIKit = {
   Tabs,
   TabsItem,
   Thumbnail,
+  InputFile,
   install(Vue) {
     const keys = Object.keys(this);
     keys.pop(); // remove 'install' from keys

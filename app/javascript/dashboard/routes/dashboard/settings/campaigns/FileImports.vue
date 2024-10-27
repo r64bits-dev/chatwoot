@@ -1,9 +1,7 @@
 <template>
   <div class="flex-1 overflow-auto p-4">
-    <p>File Imports</p>
     <form @submit.prevent="uploadFile">
-      <input type="file" @change="handleFileChange" />
-      <woot-button type="submit" color-scheme="primary">Upload</woot-button>
+      <woot-input-file @files-selected="handleFilesSelected" />
     </form>
   </div>
 </template>
@@ -13,21 +11,23 @@ export default {
   name: 'FileImports',
   data() {
     return {
-      selectedFile: null,
+      selectedFiles: [],
     };
   },
   methods: {
-    handleFileChange(event) {
-      this.selectedFile = event.target.files[0];
+    handleFilesSelected(files) {
+      this.selectedFiles = files;
     },
     async uploadFile() {
-      if (!this.selectedFile) {
-        alert('Please select a file first.');
+      if (this.selectedFiles.length === 0) {
+        bus.$emit('newToastMessage', 'Por favor, selecione um arquivo.');
         return;
       }
 
       const formData = new FormData();
-      formData.append('file', this.selectedFile);
+      this.selectedFiles.forEach((file, index) => {
+        formData.append(`file${index}`, file); // Adiciona cada arquivo
+      });
 
       try {
         const response = await fetch('/api/upload', {
@@ -42,9 +42,9 @@ export default {
         const result = await response.json();
         // eslint-disable-next-line no-console
         console.log(result);
-        alert('File uploaded successfully');
+        bus.$emit('newToastMessage', 'Arquivos enviados com sucesso');
       } catch (error) {
-        alert('Error uploading file');
+        bus.$emit('newToastMessage', 'Erro ao enviar arquivo');
       }
     },
   },

@@ -59,16 +59,16 @@ export default {
       ],
     },
     {
-      path: frontendURL('accounts/:accountId/campaigns/file_imports'),
+      path: frontendURL('accounts/:accountId/campaigns'),
       component: SettingsContent,
       props: {
         headerTitle: 'CAMPAIGN.FILE_IMPORT.HEADER',
-        icon: 'file-import',
+        icon: 'download',
       },
       children: [
         {
-          path: '',
-          name: 'file_imports',
+          path: 'file_import',
+          name: 'file_import',
           roles: ['administrator'],
           component: FileImports,
         },

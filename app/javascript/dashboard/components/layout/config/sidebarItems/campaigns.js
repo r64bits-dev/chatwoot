@@ -30,11 +30,11 @@ const campaigns = accountId => ({
     },
     {
       key: 'fileImports',
-      icon: 'file-import',
+      icon: 'download',
       label: 'FILE_IMPORT',
       hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/campaigns/file_imports`),
-      toStateName: 'file_imports',
+      toState: frontendURL(`accounts/${accountId}/campaigns/file_import`),
+      toStateName: 'file_import',
     },
   ],
 });

@@ -2,7 +2,12 @@ import { frontendURL } from '../../../../helper/URLHelper';
 
 const campaigns = accountId => ({
   parentNav: 'campaigns',
-  routes: ['settings_account_campaigns', 'one_off', 'app_integration'],
+  routes: [
+    'settings_account_campaigns',
+    'one_off',
+    'app_integration',
+    'file_import',
+  ],
   menuItems: [
     {
       icon: 'arrow-swap',

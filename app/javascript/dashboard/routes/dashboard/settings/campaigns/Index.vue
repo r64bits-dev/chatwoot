@@ -9,10 +9,10 @@
       {{ buttonText }}
     </woot-button>
     <woot-button
-      color-scheme="success"
+      color-scheme="secondary"
       class-names="button--fixed-top-left"
       icon="add-circle"
-      @click="openAddPopup"
+      @click="openFileImports"
     >
       CRIAR INTEGRAÇÃO COM O WHATSAPP
     </woot-button>
@@ -57,6 +57,12 @@ export default {
     },
     hideAddPopup() {
       this.showAddPopup = false;
+    },
+    openFileImports() {
+      this.$router.push({
+        name: 'settings_campaigns_file_imports_index',
+        params: { accountId: this.accountId },
+      });
     },
   },
 };

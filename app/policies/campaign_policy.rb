@@ -18,4 +18,8 @@ class CampaignPolicy < ApplicationPolicy
   def destroy?
     @account_user.administrator?
   end
+
+  def file_import?
+    true
+  end
 end

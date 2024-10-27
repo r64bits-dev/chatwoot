@@ -59,10 +59,13 @@ export default {
       this.showAddPopup = false;
     },
     openFileImports() {
-      this.$router.push({
-        name: 'settings_campaigns_file_imports_index',
-        params: { accountId: this.accountId },
-      });
+      const accountId = this.accountId || this.$route.params.accountId;
+      if (accountId) {
+        this.$router.push({
+          name: 'file_import',
+          params: { accountId },
+        });
+      }
     },
   },
 };

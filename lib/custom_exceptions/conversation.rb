@@ -12,4 +12,10 @@ module CustomExceptions::Conversation
       I18n.t('errors.conversations.invalid_attributes')
     end
   end
+
+  class DifferentTeam < CustomExceptions::Base
+    def message
+      I18n.t('errors.conversations.different_team')
+    end
+  end
 end

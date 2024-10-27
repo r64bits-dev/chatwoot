@@ -109,6 +109,7 @@ class User < ApplicationRecord
   has_many :assigned_tickets, class_name: 'Ticket', foreign_key: 'assigned_to', inverse_of: :assignee
 
   scope :order_by_full_name, -> { order('lower(name) ASC') }
+  scope :non_administrator, -> { where.not(type: 'SuperAdmin') }
 
   before_validation do
     self.email = email.try(:downcase)

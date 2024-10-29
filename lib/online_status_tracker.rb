@@ -69,5 +69,8 @@ class OnlineStatusTracker
     without_admin_ids = account.account_users.where(user_id: user_ids.map(&:to_i)).non_administrators
     without_admin_ids += account.account_users.non_administrators.where(auto_offline: false)&.map(&:user_id)&.map(&:to_s)
     without_admin_ids.uniq
+  rescue StandardError => e
+    Rails.logger.error "Online status tracker error: #{e.message} #{e.backtrace}"
+    []
   end
 end

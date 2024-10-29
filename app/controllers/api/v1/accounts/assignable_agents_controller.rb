@@ -12,15 +12,17 @@ class Api::V1::Accounts::AssignableAgentsController < Api::V1::Accounts::BaseCon
     agent_ids = agent_ids.inject(:&)
 
     # Filtra os usuários que pertencem ao mesmo time que o usuário atual
-    if current_user.administrator?
-      agents = Current.account.users.where(id: agent_ids)
-      agents = (agents + Current.account.administrators)
-    else
-      user_team_ids = current_user.teams.pluck(:id)
-      agents = Current.account.users.non_administrator.joins(:teams).where(id: agent_ids, teams: { id: user_team_ids })
-    end
+    # if current_user.administrator?
+    #   agents = Current.account.users.where(id: agent_ids)
+    #   agents = (agents + Current.account.administrators)
+    # else
+    #   user_team_ids = current_user.teams.pluck(:id)
+    #   agents = Current.account.users.non_administrator.joins(:teams).where(id: agent_ids, teams: { id: user_team_ids })
+    # end
 
-    @assignable_agents = agents.uniq
+    # @assignable_agents = agents.uniq
+    agents = Current.account.users.where(id: agent_ids)
+    @assignable_agents = (agents + Current.account.administrators).uniq
   end
 
   private

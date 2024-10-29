@@ -33,6 +33,8 @@ class RoomChannel < ApplicationCable::Channel
   def update_subscription
     return if @current_account.blank?
 
+    p "current class name: #{@current_user.class.name}, current id: #{@current_user.id}"
+
     ::OnlineStatusTracker.update_presence(@current_account.id, @current_user.class.name, @current_user.id)
   end
 

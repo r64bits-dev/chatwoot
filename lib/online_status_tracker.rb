@@ -58,6 +58,9 @@ class OnlineStatusTracker
 
     user_availabilities = ::Redis::Alfred.hmget(status_key(account_id), user_ids)
     user_ids.map.with_index { |id, index| [id, user_availabilities[index] || 'online'] }.to_h
+  rescue StandardError => e
+    Rails.logger.error "get_available_users: #{e.message} #{e.backtrace}"
+    []
   end
 
   def self.get_available_user_ids(account_id)

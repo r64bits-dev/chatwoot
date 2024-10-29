@@ -24,7 +24,7 @@ class RoomChannel < ApplicationCable::Channel
     data[:contacts] = ::OnlineStatusTracker.get_available_contacts(@current_account.id) if @current_user.is_a? User
     ActionCable.server.broadcast(@pubsub_token, { event: 'presence.update', data: data })
   rescue StandardError => e
-    Rails.logger.error e
+    Rails.logger.error "Presence broadcast error: #{e.message} #{e.backtrace}"
   end
 
   def ensure_stream
@@ -39,7 +39,7 @@ class RoomChannel < ApplicationCable::Channel
 
     ::OnlineStatusTracker.update_presence(@current_account.id, @current_user.class.name, @current_user.id)
   rescue StandardError => e
-    Rails.logger.error e
+    Rails.logger.error "Online status tracker error: #{e.message} #{e.backtrace}"
   end
 
   def current_user

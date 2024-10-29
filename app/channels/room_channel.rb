@@ -17,10 +17,19 @@ class RoomChannel < ApplicationCable::Channel
 
   private
 
+  # RoomChannel
   def broadcast_presence
     return if @current_account.blank?
 
-    data = { account_id: @current_account.id, users: ::OnlineStatusTracker.get_available_users(@current_account.id) }
+    # Extrai os dados serializáveis dos usuários disponíveis
+    if @current_user.is_a? AccountUser
+      available_users = ::OnlineStatusTracker.get_available_users(@current_account.id).map do |user|
+        { user_id: user[:user_id], availability: user[:availability] }
+      end
+      data = { account_id: @current_account.id, users: available_users }
+    else
+      data = { account_id: @current_account.id, users: ::OnlineStatusTracker.get_available_users(@current_account.id) }
+    end
     data[:contacts] = ::OnlineStatusTracker.get_available_contacts(@current_account.id) if @current_user.is_a? User
     ActionCable.server.broadcast(@pubsub_token, { event: 'presence.update', data: data })
   rescue StandardError => e

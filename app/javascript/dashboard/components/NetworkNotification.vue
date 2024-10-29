@@ -39,7 +39,7 @@
 import globalConfigMixin from 'shared/mixins/globalConfigMixin';
 import { mapGetters } from 'vuex';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
-// const TIME_TO_DISCONNECT = 20 * 60 * 1000; // 10 minute
+const TIME_TO_DISCONNECT = 20 * 60 * 1000; // 10 minute
 
 export default {
   mixins: [globalConfigMixin],
@@ -62,7 +62,7 @@ export default {
       // THE CABLE IS FIRING IS VERY COMMON AND THUS INTERFERING USER EXPERIENCE
       setTimeout(() => {
         this.updateOnlineStatus({ type: 'offline' });
-      }, 4000);
+      }, TIME_TO_DISCONNECT);
     });
   },
 

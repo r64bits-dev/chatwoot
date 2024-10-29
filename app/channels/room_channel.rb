@@ -24,6 +24,7 @@ class RoomChannel < ApplicationCable::Channel
     data = {}
     # Extrai os dados serializáveis dos usuários disponíveis
     if @current_user.is_a? AccountUser
+      p 'find available users by type account user'
       available_users = ::OnlineStatusTracker.get_available_users(@current_account.id).map do |user|
         { user_id: user[:user_id], availability: user[:availability] }
       end

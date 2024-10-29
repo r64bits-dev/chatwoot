@@ -21,6 +21,7 @@ class RoomChannel < ApplicationCable::Channel
   def broadcast_presence
     return if @current_account.blank?
 
+    data = {}
     # Extrai os dados serializáveis dos usuários disponíveis
     if @current_user.is_a? AccountUser
       available_users = ::OnlineStatusTracker.get_available_users(@current_account.id).map do |user|

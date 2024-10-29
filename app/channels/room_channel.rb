@@ -23,6 +23,8 @@ class RoomChannel < ApplicationCable::Channel
     data = { account_id: @current_account.id, users: ::OnlineStatusTracker.get_available_users(@current_account.id) }
     data[:contacts] = ::OnlineStatusTracker.get_available_contacts(@current_account.id) if @current_user.is_a? User
     ActionCable.server.broadcast(@pubsub_token, { event: 'presence.update', data: data })
+  rescue StandardError => e
+    Rails.logger.error e
   end
 
   def ensure_stream
@@ -36,6 +38,8 @@ class RoomChannel < ApplicationCable::Channel
     p "current class name: #{@current_user.class.name}, current id: #{@current_user.id}"
 
     ::OnlineStatusTracker.update_presence(@current_account.id, @current_user.class.name, @current_user.id)
+  rescue StandardError => e
+    Rails.logger.error e
   end
 
   def current_user

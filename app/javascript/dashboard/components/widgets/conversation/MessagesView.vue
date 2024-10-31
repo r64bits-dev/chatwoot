@@ -7,6 +7,11 @@
       :href-link="replyWindowLink"
       :href-link-text="replyWindowLinkText"
     />
+    <div class="flex justify-center w-full">
+      <woot-button size="tiny" icon="arrow-up">
+        carregar conversas anteriores
+      </woot-button>
+    </div>
     <div class="flex justify-end">
       <woot-button
         variant="smooth"
@@ -23,6 +28,18 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
+      <!-- <message
+        v-for="message in getReadMessages"
+        :key="message.id"
+        class="message--read ph-no-capture"
+        data-clarity-mask="True"
+        :data="message"
+        :is-a-tweet="isATweet"
+        :is-a-whatsapp-channel="isAWhatsAppChannel"
+        :is-web-widget-inbox="isAWebWidgetInbox"
+        :inbox-supports-reply-to="inboxSupportsReplyTo"
+        :in-reply-to="getInReplyToMessage(message)"
+      /> -->
       <message
         v-for="message in getReadMessages"
         :key="message.id"

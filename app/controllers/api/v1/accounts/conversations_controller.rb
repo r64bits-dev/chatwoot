@@ -27,7 +27,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @attachments = @conversation.attachments
   end
 
-  def show; end
+  def show
+    raise CustomExceptions::Conversation::AuthenticationRequired if current_user.agent? && (current_user.id != @conversation.assignee_id)
+  end
 
   def create
     ActiveRecord::Base.transaction do

@@ -133,6 +133,7 @@ en:
       different_team: You cannot assign an agent to a conversation that does not belong to your team
       need_team_assignee: You need to assign a team to the conversation before assigning an agent
       invalid_attributes: Invalid attributes
+      authentication_required: You need to be the assigned agent for the conversation
     inboxes:
       integrations:
         whatsapp:

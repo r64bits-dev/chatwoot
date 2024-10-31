@@ -4,6 +4,28 @@
     <div class="multiselect-wrap--small">
       <contact-details-item
         compact
+        :title="$t('CONVERSATION_SIDEBAR.TEAM_LABEL')"
+      />
+      <multiselect-dropdown
+        :options="teamsList"
+        :selected-item="assignedTeam"
+        :multiselector-title="$t('AGENT_MGMT.MULTI_SELECTOR.TITLE.TEAM')"
+        :multiselector-placeholder="$t('AGENT_MGMT.MULTI_SELECTOR.PLACEHOLDER')"
+        :no-search-result="
+          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.NO_RESULTS.TEAM')
+        "
+        :input-placeholder="
+          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.PLACEHOLDER.INPUT')
+        "
+        @click="onClickAssignTeam"
+      />
+    </div>
+    <div
+      v-if="assignedTeam || teamsList.length == 0"
+      class="multiselect-wrap--small"
+    >
+      <contact-details-item
+        compact
         :title="$t('CONVERSATION_SIDEBAR.ASSIGNEE_LABEL')"
       >
         <template v-slot:button>
@@ -19,7 +41,7 @@
         </template>
       </contact-details-item>
       <multiselect-dropdown
-        :options="agentsList"
+        :options="assignableAgents"
         :selected-item="assignedAgent"
         :multiselector-title="$t('AGENT_MGMT.MULTI_SELECTOR.TITLE.AGENT')"
         :multiselector-placeholder="$t('AGENT_MGMT.MULTI_SELECTOR.PLACEHOLDER')"
@@ -30,25 +52,6 @@
           $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.PLACEHOLDER.AGENT')
         "
         @click="onClickAssignAgent"
-      />
-    </div>
-    <div class="multiselect-wrap--small">
-      <contact-details-item
-        compact
-        :title="$t('CONVERSATION_SIDEBAR.TEAM_LABEL')"
-      />
-      <multiselect-dropdown
-        :options="teamsList"
-        :selected-item="assignedTeam"
-        :multiselector-title="$t('AGENT_MGMT.MULTI_SELECTOR.TITLE.TEAM')"
-        :multiselector-placeholder="$t('AGENT_MGMT.MULTI_SELECTOR.PLACEHOLDER')"
-        :no-search-result="
-          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.NO_RESULTS.TEAM')
-        "
-        :input-placeholder="
-          $t('AGENT_MGMT.MULTI_SELECTOR.SEARCH.PLACEHOLDER.INPUT')
-        "
-        @click="onClickAssignTeam"
       />
     </div>
     <div class="multiselect-wrap--small">
@@ -143,6 +146,8 @@ export default {
     ...mapGetters({
       currentChat: 'getSelectedChat',
       currentUser: 'getCurrentUser',
+      teamAgents: 'teamMembers/getTeamMembers',
+      allAgents: 'agents/getAgents',
     }),
     assignedAgent: {
       get() {
@@ -162,6 +167,13 @@ export default {
           .catch(e => this.showAlert(e.message));
       },
     },
+    assignableAgents() {
+      if (this.assignedTeam) {
+        return this.teamAgents(this.assignedTeam.id);
+      }
+
+      return this.allAgents;
+    },
     assignedTeam: {
       get() {
         return this.currentChat.meta.team;
@@ -174,6 +186,10 @@ export default {
           .dispatch('assignTeam', { conversationId, teamId })
           .then(() => {
             this.showAlert(this.$t('CONVERSATION.CHANGE_TEAM'));
+            // Busca os membros da equipe quando uma equipe é selecionada
+            if (teamId) {
+              this.$store.dispatch('teamMembers/get', { teamId });
+            }
           });
       },
     },

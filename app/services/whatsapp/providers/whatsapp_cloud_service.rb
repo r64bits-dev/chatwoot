@@ -37,7 +37,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def fetch_whatsapp_templates(url)
     response = HTTParty.get(url)
-    p 'fetch whatsapp templates', response
+    Rails.logger.info response.body
     return [] unless response.success?
 
     next_url = next_url(response)
@@ -93,8 +93,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
-    p 'send text message', response.inspect
-
+    Rails.logger.info response.inspect
     process_response(response)
   end
 

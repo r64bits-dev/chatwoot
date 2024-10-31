@@ -7,11 +7,7 @@
       :href-link="replyWindowLink"
       :href-link-text="replyWindowLinkText"
     />
-    <div class="flex justify-center w-full">
-      <woot-button size="tiny" icon="arrow-up">
-        carregar conversas anteriores
-      </woot-button>
-    </div>
+
     <div class="flex justify-end">
       <woot-button
         variant="smooth"
@@ -40,6 +36,16 @@
         :inbox-supports-reply-to="inboxSupportsReplyTo"
         :in-reply-to="getInReplyToMessage(message)"
       /> -->
+      <div class="flex justify-center w-full">
+        <woot-button size="tiny" icon="arrow-up">
+          carregar conversas anteriores
+        </woot-button>
+      </div>
+      <woot-division-line
+        text="Protocolo Id: 12"
+        color-schema="primary"
+        height="10px"
+      />
       <message
         v-for="message in getReadMessages"
         :key="message.id"

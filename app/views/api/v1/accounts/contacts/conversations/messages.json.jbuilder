@@ -20,7 +20,6 @@ json.meta do
   )
 end
 
-# Dados de paginação para as mensagens da conversa atual (ou valores padrão se @messages estiver vazio)
 json.pagination do
   if @messages.present?
     json.current_page @messages.current_page

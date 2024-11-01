@@ -20,10 +20,7 @@
         @click="onClickAssignTeam"
       />
     </div>
-    <div
-      v-if="assignedTeam || teamsList.length == 0"
-      class="multiselect-wrap--small"
-    >
+    <div class="multiselect-wrap--small">
       <contact-details-item
         compact
         :title="$t('CONVERSATION_SIDEBAR.ASSIGNEE_LABEL')"
@@ -168,11 +165,9 @@ export default {
       },
     },
     assignableAgents() {
-      if (this.assignedTeam) {
-        return this.teamAgents(this.assignedTeam.id);
-      }
-
-      return this.allAgents;
+      return this.assignedTeam
+        ? this.teamAgents(this.assignedTeam.id)
+        : this.allAgents;
     },
     assignedTeam: {
       get() {
@@ -186,7 +181,6 @@ export default {
           .dispatch('assignTeam', { conversationId, teamId })
           .then(() => {
             this.showAlert(this.$t('CONVERSATION.CHANGE_TEAM'));
-            // Busca os membros da equipe quando uma equipe é selecionada
             if (teamId) {
               this.$store.dispatch('teamMembers/get', { teamId });
             }
@@ -237,6 +231,16 @@ export default {
       return false;
     },
   },
+  watch: {
+    assignedTeam(newTeam, oldTeam) {
+      if (newTeam && newTeam.id !== oldTeam?.id) {
+        this.$store.dispatch('teamMembers/get', { teamId: newTeam.id });
+      }
+    },
+  },
+  mounted() {
+    this.fetchAgents();
+  },
   methods: {
     onSelfAssign() {
       const {
@@ -283,6 +287,13 @@ export default {
         this.assignedPriority.id === selectedPriorityItem.id;
 
       this.assignedPriority = isSamePriority ? null : selectedPriorityItem;
+    },
+    fetchAgents() {
+      if (this.assignedTeam) {
+        this.$store.dispatch('teamMembers/get', {
+          teamId: this.assignedTeam.id,
+        });
+      } else this.$store.dispatch('agents/get');
     },
   },
 };

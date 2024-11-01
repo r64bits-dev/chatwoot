@@ -13,10 +13,11 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
 
   def set_agent
     @agent = find_and_validate_agent(params[:assignee_id])
+
     return raise CustomExceptions::Conversation::NeedTeamAssignee if @agent.present? && @conversation.team.blank?
 
     @conversation.assignee = @agent
-    @conversation.assignee_id = @agent.id
+    @conversation.assignee_id = @agent&.id
     @conversation.save!
     render_agent
   end

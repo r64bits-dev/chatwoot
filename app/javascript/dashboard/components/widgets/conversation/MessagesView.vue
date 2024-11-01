@@ -24,28 +24,7 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
-      <!-- <message
-        v-for="message in getReadMessages"
-        :key="message.id"
-        class="message--read ph-no-capture"
-        data-clarity-mask="True"
-        :data="message"
-        :is-a-tweet="isATweet"
-        :is-a-whatsapp-channel="isAWhatsAppChannel"
-        :is-web-widget-inbox="isAWebWidgetInbox"
-        :inbox-supports-reply-to="inboxSupportsReplyTo"
-        :in-reply-to="getInReplyToMessage(message)"
-      /> -->
-      <div class="flex justify-center w-full">
-        <woot-button size="tiny" icon="arrow-up">
-          carregar conversas anteriores
-        </woot-button>
-      </div>
-      <woot-division-line
-        text="Protocolo Id: 12"
-        color-schema="primary"
-        height="10px"
-      />
+      <messages-previous-view />
       <message
         v-for="message in getReadMessages"
         :key="message.id"
@@ -116,6 +95,7 @@ import ReplyBox from './ReplyBox.vue';
 import Message from './Message.vue';
 import ConversationLabelSuggestion from './conversation/LabelSuggestion.vue';
 import Banner from 'dashboard/components/ui/Banner.vue';
+import MessagesPreviousView from './MessagesPreviousView.vue';
 
 // stores and apis
 import { mapGetters } from 'vuex';
@@ -147,6 +127,7 @@ export default {
     ReplyBox,
     Banner,
     ConversationLabelSuggestion,
+    MessagesPreviousView,
   },
   mixins: [
     conversationMixin,

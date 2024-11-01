@@ -1,9 +1,10 @@
 <template>
   <div
-    class="w-full border-b border-gray-200 dark:border-gray-700 my-4"
-    :style="divisionLineStyle"
+    class="relative flex items-center w-full my-4"
+    :class="colorSchemaClass + ' ' + padding"
+    :style="{ height: height }"
   >
-    <span class="text-xs text-center text-white">{{ text }}</span>
+    <slot>{{ text }}</slot>
   </div>
 </template>
 
@@ -17,22 +18,23 @@ export default {
     },
     colorSchema: {
       type: String,
-      default: '',
+      default: 'bg-gray-800',
     },
     height: {
       type: String,
-      default: '1px',
+      default: '2px',
+    },
+    padding: {
+      type: String,
+      default: '',
     },
   },
   computed: {
-    divisionLineStyle() {
-      return {
-        height: this.height,
-        backgroundColor: this.colorSchema,
-      };
+    colorSchemaClass() {
+      return this.colorSchema;
     },
   },
 };
 </script>
 
-<style></style>
+<style scoped></style>

@@ -169,6 +169,25 @@ export const actions = {
     }
   },
 
+  fetchPreviousMessagesConversations: async (
+    { commit },
+    { contactId, conversationBefore, page }
+  ) => {
+    try {
+      const response = await ContactAPI.fetchPreviousMessages({
+        contactId,
+        before: conversationBefore,
+        page,
+      });
+      commit(types.SET_PREVIOUS_CONVERSATIONS_CONTACTS, {
+        id: contactId,
+        data: response,
+      });
+    } catch (error) {
+      // Handle error
+    }
+  },
+
   deleteCustomAttributes: async ({ commit }, { id, customAttributes }) => {
     try {
       const response = await ContactAPI.destroyCustomAttributes(

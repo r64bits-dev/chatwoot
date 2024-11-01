@@ -17,7 +17,7 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 # @name IndexConversation
 
 GET {{api}}/api/v1/accounts/1/contacts/1/conversations/messages
-?page=1
+?page=1&conversation_offset=0
 Content-Type: application/json
 Authorization: {{token}}
 

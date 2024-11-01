@@ -90,6 +90,18 @@ class ContactAPI extends ApiClient {
   exportContacts() {
     return axios.get(`${this.url}/export`);
   }
+
+  fetchPreviousMessages({ contactId, before, page }) {
+    const params = { page };
+
+    if (before) {
+      params.conversation_offset = before;
+    }
+
+    return axios.get(`${this.url}/${contactId}/conversations/messages`, {
+      params,
+    });
+  }
 }
 
 export default new ContactAPI();

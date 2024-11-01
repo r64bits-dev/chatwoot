@@ -47,7 +47,7 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
   end
 
   def permission_to_assign_agent?
-    raise CustomExceptions::Conversation::DifferentTeam if !current_user.administrator? && same_team?
+    # raise CustomExceptions::Conversation::DifferentTeam if !current_user.administrator? && same_team?
   end
 
   def same_team?

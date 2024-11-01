@@ -1,7 +1,4 @@
 class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Accounts::Conversations::BaseController
-  before_action :permission_to_assign_agent?, only: [:create]
-
-  # assigns agent/team to a conversation
   def create
     if params.key?(:assignee_id)
       set_agent
@@ -44,13 +41,5 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
     raise CustomExceptions::Agent::AgentOfflineError unless agent.online?
 
     agent
-  end
-
-  def permission_to_assign_agent?
-    # raise CustomExceptions::Conversation::DifferentTeam if !current_user.administrator? && same_team?
-  end
-
-  def same_team?
-    current_user.teams.any? { |team| team.id == @conversation.team_id }
   end
 end

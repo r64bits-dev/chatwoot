@@ -10,7 +10,7 @@ class CustomFilterPolicy < ApplicationPolicy
   end
 
   def index?
-    @account_user.administrator? || can_access?(FEATURE)
+    true
   end
 
   def update?

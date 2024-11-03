@@ -20,3 +20,12 @@ GET {{api}}/api/v1/accounts/1/conversations
 # ?status=open&assignee_type=me&page=1&sort_by=last_activity_at_desc
 Content-Type: application/json
 Authorization: {{token}}
+
+###
+
+# Path: http/conversation
+# @name AssignAgent
+
+POST {{api}}/api/v1/accounts/1/conversations/8/assignments?assignee_id=null
+Content-Type: application/json
+Authorization: {{token}}

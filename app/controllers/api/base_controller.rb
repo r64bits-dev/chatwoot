@@ -16,6 +16,7 @@ class Api::BaseController < ApplicationController
               CustomExceptions::Agent::UserExists,
               CustomExceptions::Agent::UserErrors,
               CustomExceptions::Conversation::NeedTeamAssignee,
+              CustomExceptions::Conversation::AuthenticationRequired,
               with: :render_error_response
 
   def render_error_response(exception = nil)

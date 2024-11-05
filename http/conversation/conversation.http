@@ -29,3 +29,12 @@ Authorization: {{token}}
 POST {{api}}/api/v1/accounts/1/conversations/8/assignments?assignee_id=null
 Content-Type: application/json
 Authorization: {{token}}
+
+###
+
+# Path: http/conversation
+# @name Messages
+
+GET {{api}}/api/v1/accounts/1/conversations/8/messages
+Content-Type: application/json
+Authorization: {{token}}

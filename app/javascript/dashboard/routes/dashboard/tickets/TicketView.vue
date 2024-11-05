@@ -143,8 +143,6 @@ export default {
     },
     loadMoreTickets() {
       if (!this.ticketListLoading.isFetching) {
-        // eslint-disable-next-line no-console
-        console.log('load more');
         //   this.fetchTickets();
       }
     },

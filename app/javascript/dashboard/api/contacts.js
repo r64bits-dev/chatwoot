@@ -91,16 +91,10 @@ class ContactAPI extends ApiClient {
     return axios.get(`${this.url}/export`);
   }
 
-  fetchPreviousMessages({ contactId, before, page }) {
-    const params = { page };
-
-    if (before) {
-      params.conversation_offset = before;
-    }
-
-    return axios.get(`${this.url}/${contactId}/conversations/messages`, {
-      params,
-    });
+  fetchPreviousMessages({ contactId, conversationId, page }) {
+    return axios.get(
+      `${this.url}/${contactId}/conversations/${conversationId}/messages?page=${page}`
+    );
   }
 }
 

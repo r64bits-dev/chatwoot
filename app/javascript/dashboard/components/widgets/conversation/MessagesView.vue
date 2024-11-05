@@ -24,7 +24,22 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
-      <messages-previous-view />
+      <messages-previous-view
+        v-if="contact"
+        :contact-id="contact.id"
+        :current-conversation-id="currentChat.id"
+      />
+      <woot-division-line
+        color-schema="bg-woot-300"
+        height="20px"
+        padding="py-2"
+      >
+        <div class="flex w-full justify-end text-white">
+          <span class="px-2 text-xs bold space-x-1 ml-2 font-bold">
+            Protocolo Id: {{ currentChat.id }}
+          </span>
+        </div>
+      </woot-division-line>
       <message
         v-for="message in getReadMessages"
         :key="message.id"
@@ -168,6 +183,12 @@ export default {
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       currentAccountId: 'getCurrentAccountId',
     }),
+    contact() {
+      return this.$store.getters['contacts/getContact'](this.contactId);
+    },
+    contactId() {
+      return this.currentChat.meta?.sender?.id;
+    },
     isOpen() {
       return this.currentChat?.status === wootConstants.STATUS_TYPE.OPEN;
     },

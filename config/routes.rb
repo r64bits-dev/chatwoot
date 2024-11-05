@@ -132,7 +132,7 @@ Rails.application.routes.draw do
             end
             scope module: :contacts do
               resources :conversations, only: [:index] do
-                collection do
+                member do
                   get :messages
                 end
               end

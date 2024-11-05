@@ -7,6 +7,7 @@
       :href-link="replyWindowLink"
       :href-link-text="replyWindowLinkText"
     />
+
     <div class="flex justify-end">
       <woot-button
         variant="smooth"
@@ -23,6 +24,22 @@
           <span v-if="shouldShowSpinner" class="spinner message" />
         </li>
       </transition>
+      <messages-previous-view
+        v-if="contact"
+        :contact-id="contact.id"
+        :current-conversation-id="currentChat.id"
+      />
+      <woot-division-line color-schema="bg-woot-300" height="20px">
+        <span
+          class="text-xs text-white bold space-x-1 mr-2 px-5 font-bold w-full text-end"
+        >
+          {{
+            $t('CONVERSATION.PREVIOUS_CONVERSATIONS.DIVIDER_TITLE', {
+              conversationId: currentChat.id,
+            })
+          }}
+        </span>
+      </woot-division-line>
       <message
         v-for="message in getReadMessages"
         :key="message.id"
@@ -93,6 +110,7 @@ import ReplyBox from './ReplyBox.vue';
 import Message from './Message.vue';
 import ConversationLabelSuggestion from './conversation/LabelSuggestion.vue';
 import Banner from 'dashboard/components/ui/Banner.vue';
+import MessagesPreviousView from './MessagesPreviousView.vue';
 
 // stores and apis
 import { mapGetters } from 'vuex';
@@ -124,6 +142,7 @@ export default {
     ReplyBox,
     Banner,
     ConversationLabelSuggestion,
+    MessagesPreviousView,
   },
   mixins: [
     conversationMixin,
@@ -164,6 +183,12 @@ export default {
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       currentAccountId: 'getCurrentAccountId',
     }),
+    contact() {
+      return this.$store.getters['contacts/getContact'](this.contactId);
+    },
+    contactId() {
+      return this.currentChat.meta?.sender?.id;
+    },
     isOpen() {
       return this.currentChat?.status === wootConstants.STATUS_TYPE.OPEN;
     },

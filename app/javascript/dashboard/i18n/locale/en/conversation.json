@@ -226,6 +226,10 @@
         "DELETE": "Delete",
         "CANCEL": "Cancel"
       }
+    },
+    "PREVIOUS_CONVERSATIONS": {
+      "BUTTON": "See previous conversations",
+      "DIVIDER_TITLE": "Conversation Id: %{conversationId}"
     }
   },
   "EMAIL_TRANSCRIPT": {

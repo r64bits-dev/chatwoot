@@ -11,6 +11,7 @@ import ContextMenu from './ui/ContextMenu.vue';
 import DeleteModal from './widgets/modal/DeleteModal.vue';
 import DropdownItem from 'shared/components/ui/dropdown/DropdownItem';
 import DropdownMenu from 'shared/components/ui/dropdown/DropdownMenu';
+import DivisionLine from './widgets/DivisionLine';
 import FeatureToggle from './widgets/FeatureToggle';
 import HorizontalBar from './widgets/chart/HorizontalBarChart';
 import Input from './widgets/forms/Input.vue';
@@ -38,6 +39,7 @@ const WootUIKit = {
   ConfirmModal,
   ContextMenu,
   DeleteModal,
+  DivisionLine,
   DropdownItem,
   DropdownMenu,
   FeatureToggle,

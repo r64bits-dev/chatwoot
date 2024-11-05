@@ -16,25 +16,7 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 # Path: http/conversation.http
 # @name IndexConversation
 
-GET {{api}}/api/v1/accounts/1/conversations
-# ?status=open&assignee_type=me&page=1&sort_by=last_activity_at_desc
+GET {{api}}/api/v1/accounts/1/contacts/1/conversations/1/messages
 Content-Type: application/json
 Authorization: {{token}}
 
-###
-
-# Path: http/conversation
-# @name AssignAgent
-
-POST {{api}}/api/v1/accounts/1/conversations/8/assignments?assignee_id=null
-Content-Type: application/json
-Authorization: {{token}}
-
-###
-
-# Path: http/conversation
-# @name Messages
-
-GET {{api}}/api/v1/accounts/1/conversations/8/messages
-Content-Type: application/json
-Authorization: {{token}}

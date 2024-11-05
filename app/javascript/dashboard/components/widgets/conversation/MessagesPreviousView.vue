@@ -25,7 +25,9 @@
         height="20px"
         padding="py-2"
       >
-        <span class="px-2 text-xs text-white bold space-x-1 ml-2 font-bold">
+        <span
+          class="text-xs text-white bold space-x-1 mr-2 px-5 font-bold w-full text-end"
+        >
           {{
             $t('CONVERSATION.PREVIOUS_CONVERSATIONS.DIVIDER_TITLE', {
               conversationId: conversation.conversation_id,

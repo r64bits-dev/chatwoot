@@ -30,7 +30,9 @@
         :current-conversation-id="currentChat.id"
       />
       <woot-division-line color-schema="bg-woot-300" height="20px">
-        <span class="text-xs text-white bold space-x-1 ml-2 px-2 font-bold">
+        <span
+          class="text-xs text-white bold space-x-1 mr-2 px-5 font-bold w-full text-end"
+        >
           {{
             $t('CONVERSATION.PREVIOUS_CONVERSATIONS.DIVIDER_TITLE', {
               conversationId: currentChat.id,

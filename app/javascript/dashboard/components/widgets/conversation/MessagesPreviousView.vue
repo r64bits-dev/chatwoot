@@ -170,6 +170,7 @@ export default {
       const conversation = this.conversations[this.currentConversationIndex];
       if (!conversation || conversation.page === null) {
         this.hasMoreMessages = false;
+        this.isLoading = false;
         return;
       }
 
@@ -184,7 +185,6 @@ export default {
           ? response.payload.messages
           : [];
 
-        // Ordena as mensagens por created_at em ordem crescente (mais antigas primeiro)
         conversation.messages = [...messages, ...conversation.messages].sort(
           (a, b) => a.created_at - b.created_at
         );
@@ -202,7 +202,6 @@ export default {
       }
     },
 
-    // Método para ordenar as mensagens de cada conversa por created_at de forma crescente
     orderedMessages(messages) {
       return [...messages].sort((a, b) => a.created_at - b.created_at);
     },

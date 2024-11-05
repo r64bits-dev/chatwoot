@@ -15,10 +15,12 @@ class Api::V1::Accounts::Contacts::ConversationsController < Api::V1::Accounts::
   private
 
   def find_conversation
+    search_column = Rails.env.development? ? :id : :display_id
+
     @conversation = Current.account.conversations.includes(:inbox)
-                           .where(inbox_id: inbox_ids, contact_id: @contact.id)
+                           .where(:inbox_id => inbox_ids, :contact_id => @contact.id, search_column => params[:id])
                            .order(created_at: :desc)
-                           .find(params[:id])
+                           .first
   end
 
   def load_messages

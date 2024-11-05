@@ -13,7 +13,7 @@
         icon="arrow-up"
         @click="loadNextConversation"
       >
-        carregar mais mensagens
+        {{ $t('CONVERSATION.PREVIOUS_CONVERSATIONS.BUTTON') }}
       </woot-button>
     </div>
     <div
@@ -26,7 +26,11 @@
         padding="py-2"
       >
         <span class="px-2 text-xs text-white bold space-x-1 ml-2 font-bold">
-          Protocolo Id: {{ conversation.conversation_id }}
+          {{
+            $t('CONVERSATION.PREVIOUS_CONVERSATIONS.DIVIDER_TITLE', {
+              conversationId: conversation.conversation_id,
+            })
+          }}
         </span>
       </woot-division-line>
 

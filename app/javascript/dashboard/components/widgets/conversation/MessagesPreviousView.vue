@@ -1,6 +1,15 @@
 <template>
   <div class="mt-4 mb-10">
-    <!-- Exibe cada conversa apenas se houver mensagens carregadas -->
+    <div class="flex justify-center w-full my-4">
+      <woot-button
+        v-if="hasMoreMessages"
+        size="tiny"
+        icon="arrow-up"
+        @click="loadNextConversation"
+      >
+        carregar mais mensagens
+      </woot-button>
+    </div>
     <div
       v-for="conversation in groupedConversations"
       :key="conversation.conversation_id"
@@ -17,25 +26,12 @@
         </div>
       </woot-division-line>
 
-      <!-- Exibe as mensagens de baixo para cima, ordenadas por created_at -->
       <div
         v-for="message in orderedMessages(conversation.messages)"
         :key="message.id"
       >
         <message :data="message" />
       </div>
-    </div>
-
-    <!-- Botão para carregar mais mensagens -->
-    <div class="flex justify-center w-full my-4">
-      <woot-button
-        v-if="hasMoreMessages"
-        size="tiny"
-        icon="arrow-up"
-        @click="loadNextConversation"
-      >
-        carregar mais mensagens
-      </woot-button>
     </div>
   </div>
 </template>
@@ -68,10 +64,11 @@ export default {
   },
   computed: {
     groupedConversations() {
-      // Ordena os conversation_id's em ordem decrescente
       return this.conversations
         .filter(conversation => conversation.messages.length > 0)
-        .sort((a, b) => b.conversation_id - a.conversation_id);
+        .sort((a, b) => b.conversation_id - a.conversation_id)
+        .slice()
+        .reverse();
     },
   },
   created() {

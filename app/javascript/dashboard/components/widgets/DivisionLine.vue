@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="relative flex items-center w-full my-4"
-    :class="colorSchemaClass + ' ' + padding"
-    :style="{ height: height }"
-  >
+  <div :class="getClassName" :style="{ height: height }">
     <slot>{{ text }}</slot>
   </div>
 </template>
@@ -28,10 +24,23 @@ export default {
       type: String,
       default: '',
     },
+    className: {
+      type: String,
+      default: '',
+    },
   },
   computed: {
     colorSchemaClass() {
       return this.colorSchema;
+    },
+    getClassName() {
+      const classList = [this.colorSchemaClass, this.padding];
+
+      if (this.className) {
+        classList.push(this.className);
+      } else classList.push('relative flex items-center w-full my-4');
+
+      return classList.join(' ');
     },
   },
 };

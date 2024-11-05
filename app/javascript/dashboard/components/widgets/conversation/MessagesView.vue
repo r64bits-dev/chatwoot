@@ -29,16 +29,10 @@
         :contact-id="contact.id"
         :current-conversation-id="currentChat.id"
       />
-      <woot-division-line
-        color-schema="bg-woot-300"
-        height="20px"
-        padding="py-2"
-      >
-        <div class="flex w-full justify-end text-white">
-          <span class="px-2 text-xs bold space-x-1 ml-2 font-bold">
-            Protocolo Id: {{ currentChat.id }}
-          </span>
-        </div>
+      <woot-division-line color-schema="bg-woot-300" height="20px">
+        <span class="text-xs text-white bold space-x-1 ml-2 px-2 font-bold">
+          Protocolo Id: {{ currentChat.id }}
+        </span>
       </woot-division-line>
       <message
         v-for="message in getReadMessages"

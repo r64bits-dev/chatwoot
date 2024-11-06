@@ -39,7 +39,7 @@
 import globalConfigMixin from 'shared/mixins/globalConfigMixin';
 import { mapGetters } from 'vuex';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
-const TIME_TO_DISCONNECT = 20 * 60 * 1000; // 10 minute
+const TIME_TO_DISCONNECT = 4000; // 4 second
 
 export default {
   mixins: [globalConfigMixin],

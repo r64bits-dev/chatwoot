@@ -225,6 +225,10 @@
         "DELETE": "Excluir",
         "CANCEL": "Cancelar"
       }
+    },
+    "PREVIOUS_CONVERSATIONS": {
+      "BUTTON": "Ver conversas anteriores",
+      "DIVIDER_TITLE": "Protocolo Id: %{conversationId}"
     }
   },
   "EMAIL_TRANSCRIPT": {

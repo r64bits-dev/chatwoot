@@ -62,6 +62,11 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     @ticket.labels.delete(Label.find(params[:label_id]))
   end
 
+  def export
+    @tickets = current_account.tickets.order(created_at: :desc)
+    send_data @tickets.to_csv, filename: 'tickets.csv', type: 'text/csv'
+  end
+
   private
 
   def fetch_conversation

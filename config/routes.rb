@@ -258,6 +258,7 @@ Rails.application.routes.draw do
             end
 
             collection do
+              get :export
               get :search
               get 'labels', action: :labels
               get 'conversations/:conversation_id', action: :conversations

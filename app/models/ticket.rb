@@ -99,6 +99,18 @@ class Ticket < ApplicationRecord
     self.custom_attributes = (custom_attributes || {}).merge(key.to_s => value)
   end
 
+  def self.to_csv
+    attributes = %w[id title description status created_at]
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.find_each do |ticket|
+        csv << attributes.map { |attr| ticket.send(attr) }
+      end
+    end
+  end
+
   private
 
   def set_resolved_at

@@ -113,3 +113,10 @@ Authorization: {{token}}
 # @name TicketLabels
 GET {{api}}/api/v1/accounts/1/tickets/labels
 Authorization: {{token}}
+
+###
+
+# Path: http/ticket.http
+# @name export
+GET {{api}}/api/v1/accounts/{{account_id}}/tickets/export
+Authorization: {{token}}

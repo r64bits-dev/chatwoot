@@ -9,8 +9,9 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   RESULTS_PER_PAGE = 10
 
   def index
-    @tickets = find_tickets
-               .search(params)
+    @all_tickets = find_tickets
+    @tickets = @all_tickets
+               .search_by_status(params[:status])
                .order(created_at: :desc)
                .page(params[:page] || 1)
                .per(params[:per_page] || RESULTS_PER_PAGE)
@@ -69,5 +70,13 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
 
   def fetch_ticket
     @ticket = current_account.tickets.find(params[:id])
+  end
+
+  def find_tickets
+    if current_user.administrator?
+      current_account.tickets
+    else
+      current_account.tickets.assigned_to(current_user.id)
+    end
   end
 end

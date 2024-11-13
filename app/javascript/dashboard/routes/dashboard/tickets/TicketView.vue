@@ -140,6 +140,9 @@ export default {
           title: 'Status',
           key: 'status',
           sortable: true,
+          renderBodyCell: ({ row }) => {
+            return this.translateStatusText(row.status);
+          },
         },
         {
           field: 'assigned_to',
@@ -195,19 +198,24 @@ export default {
     },
     updateAssigneeTab(selectedTab) {
       this.activeAssigneeTab = selectedTab;
-      this.fetchTickets(this.currentPage);
+      this.fetchTickets(
+        this.currentPage,
+        null,
+        this.translateStatus(selectedTab)
+      );
     },
     updateItemsPerPage(newPageSize) {
       this.itemsPerPage = newPageSize;
       this.fetchTickets(this.currentPage);
     },
-    fetchTickets(page, label = null) {
+    fetchTickets(page, label = null, status = null) {
       this.currentPage = page;
       this.$store.dispatch('tickets/getAllTickets', {
+        status,
+        label,
         search: this.search,
         page: this.currentPage,
         per_page: this.itemsPerPage,
-        label: label,
       });
     },
     formatDate(date) {
@@ -220,6 +228,32 @@ export default {
       debounce(() => {
         this.fetchTickets(this.currentPage);
       }, 500)();
+    },
+    translateStatus(status) {
+      switch (status) {
+        case 'open':
+          return 'pending';
+        case 'closed':
+          return 'resolved';
+        case 'all':
+          return null;
+        default:
+          return status;
+      }
+    },
+    translateStatusText(status) {
+      switch (status) {
+        case 'open':
+          return this.$t('TICKETS.STATUS.OPEN');
+        case 'pending':
+          return this.$t('TICKETS.STATUS.PENDING');
+        case 'resolved':
+          return this.$t('TICKETS.STATUS.RESOLVED');
+        case 'all':
+          return this.$t('TICKETS.STATUS.ALL');
+        default:
+          return status;
+      }
     },
   },
 };

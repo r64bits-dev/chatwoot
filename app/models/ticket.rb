@@ -62,6 +62,11 @@ class Ticket < ApplicationRecord
       CAST(tickets.id AS TEXT) ILIKE :search
     ', search: "%#{search_term}%")
   }
+  scope :search_by_status, lambda { |status|
+                             return all if status.blank?
+
+                             where(status: status)
+                           }
 
   scope :only_custom_attributes, ->(custom_attributes) { custom_attributes.map { |key| with_filled_custom_attribute(key) }.reduce(:or) }
   scope :with_filled_custom_attribute, lambda { |key|

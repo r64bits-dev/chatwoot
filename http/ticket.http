@@ -17,7 +17,7 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 
 # Path: http/ticket.http
 # @name ticket
-GET {{api}}/api/v1/accounts/{{account_id}}/tickets?label=open&page=1
+GET {{api}}/api/v1/accounts/{{account_id}}/tickets?status=pending&page=1
 Authorization: {{token}}
 
 ###

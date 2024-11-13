@@ -17,7 +17,7 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 
 # Path: http/ticket.http
 # @name ticket
-GET {{api}}/api/v1/accounts/{{account_id}}/tickets
+GET {{api}}/api/v1/accounts/{{account_id}}/tickets?label=open&page=1
 Authorization: {{token}}
 
 ###
@@ -32,10 +32,10 @@ Authorization: {{token}}
 # Path: http/ticket.http
 # @name ticket
 
-@account_id = 2
+@account_id = 1
 POST {{api}}/api/v1/accounts/{{account_id}}/tickets
 Content-Type: application/json
-api_access_token: {{api_access_token}}
+Authorization: {{token}}
 
 {
   "title": "Test ticket",

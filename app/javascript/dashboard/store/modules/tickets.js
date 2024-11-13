@@ -3,6 +3,13 @@ import TicketsAPI from '../../api/tickets';
 
 const state = {
   records: [],
+  pagination: {
+    current_page: 1,
+    next_page: null,
+    prev_page: null,
+    total_pages: 0,
+    total_count: 0,
+  },
   labels: [],
   selectedTicket: null,
   customAttributes: {},
@@ -43,6 +50,9 @@ export const getters = {
   getCustomAttributes($state) {
     return $state.customAttributes;
   },
+  getPagination($state) {
+    return $state.pagination;
+  },
 };
 
 export const actions = {
@@ -74,15 +84,16 @@ export const actions = {
       });
     }
   },
-  getAllTickets: async ({ commit }, label = null) => {
+  getAllTickets: async ({ commit }, { search, label, page, per_page }) => {
     commit(types.default.SET_TICKETS_UI_FLAG_PAGE, { isFetching: true });
     try {
-      const response = await TicketsAPI.get({ label });
+      const response = await TicketsAPI.get({ search, label, page, per_page });
       commit(types.default.SET_TICKETS, response.data.payload);
       commit(types.default.SET_TICKETS_STATS, response.data.meta);
       commit(types.default.SET_TICKETS_UI_FLAG_PAGE, {
         isFetching: false,
       });
+      commit(types.default.SET_TICKETS_PAGINATION, response.data.meta);
     } catch (error) {
       commit(types.default.SET_TICKETS_UI_FLAG_PAGE, {
         isFetching: false,
@@ -266,6 +277,9 @@ export const mutations = {
   },
   [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
     $state.customAttributes = customAttributes;
+  },
+  [types.default.SET_TICKETS_PAGINATION]($state, pagination) {
+    $state.pagination = pagination;
   },
 };
 

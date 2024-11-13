@@ -1,42 +1,44 @@
 <template>
-  <section class="ticket-page bg-white dark:bg-slate-900">
+  <section class="ticket-page bg-white dark:bg-slate-900 flex flex-col">
     <div class="flex flex-row w-full">
       <div class="flex-col w-full" :class="{ 'w-[70%]': !!ticket }">
-        <div class="flex px-3">
-          <ticket-type-tabs
-            :tabs="assigneeTabItems"
-            :active-tab="activeAssigneeTab"
-            @tab-change="updateAssigneeTab"
-          />
-        </div>
-        <div class="flex flex-col w-full h-5/6">
-          <virtual-list
-            v-if="ticketList.length > 0"
-            ref="ticketVirtualList"
-            class="w-full overflow-y-scroll h-full"
-            footer-tag="div"
-            :data-key="'id'"
-            :data-sources="ticketList"
-            :data-component="itemComponent"
-          >
-            <template #footer>
-              <div v-if="ticketListLoading.isFetching" class="text-center">
-                <span class="spinner mt-4 mb-4" />
-              </div>
-              <p v-if="showEndOfListMessage" class="text-center text-muted p-4">
-                {{ $t('TICKETS.LIST.EOF') }}
-              </p>
-              <intersection-observer
-                v-if="!showEndOfListMessage && !ticketListLoading.isFetching"
-                :options="infiniteLoaderOptions"
-                @observed="loadMoreTickets"
+        <div class="flex p-4">
+          <div class="flex flex-row w-full">
+            <div class="flex-1">
+              <ticket-type-tabs
+                :tabs="assigneeTabItems"
+                :active-tab="activeAssigneeTab"
+                @tab-change="updateAssigneeTab"
               />
-            </template>
-          </virtual-list>
-          <p v-else class="text-center text-muted p-4">
-            {{ $t('TICKETS.LIST.NO_TICKETS') }}
-          </p>
+            </div>
+            <div class="flex-1">
+              <woot-input
+                v-model="search"
+                type="search"
+                placeholder="Pesquisar por Ticket"
+                class="w-full"
+                @input="handleSearch"
+              />
+            </div>
+          </div>
         </div>
+        <ve-table
+          :fixed-header="true"
+          :columns="columns"
+          :table-data="tableData"
+          :event-custom-option="eventCustomOption"
+          max-height="calc(100vh - 15rem)"
+        />
+
+        <ve-pagination
+          class="!flex w-full justify-center !mt-8"
+          :total="pagination.total_count"
+          :page-index="pagination.current_page"
+          :page-size="itemsPerPage"
+          :page-size-option="[10, 20, 30, 40, 50]"
+          @on-page-number-change="fetchTickets"
+          @on-page-size-change="updateItemsPerPage"
+        />
       </div>
       <div
         v-if="ticket"
@@ -47,46 +49,49 @@
     </div>
   </section>
 </template>
-
 <script>
 import { mapGetters } from 'vuex';
-import VirtualList from 'vue-virtual-scroll-list';
+import { formatUnixDate } from 'shared/helpers/DateHelper';
 import TicketTypeTabs from './components/TicketTypeTabs.vue';
-import TicketItemComponent from './components/TicketItemComponent.vue';
-import IntersectionObserver from 'dashboard/components/IntersectionObserver.vue';
 import TicketDetails from './components/TicketDetails.vue';
+import { VeTable, VePagination } from 'vue-easytable';
+import TimeAgo from 'dashboard/components/ui/TimeAgo.vue';
+import { debounce } from '@chatwoot/utils';
 
 export default {
   name: 'TicketView',
   components: {
-    // eslint-disable-next-line vue/no-unused-components
-    TicketItemComponent,
     TicketTypeTabs,
     TicketDetails,
-    IntersectionObserver,
-    VirtualList,
+    VeTable,
+    VePagination,
+    // eslint-disable-next-line vue/no-unused-components
+    TimeAgo,
   },
   data() {
     return {
-      itemComponent: TicketItemComponent,
+      eventCustomOption: {
+        bodyRowEvents: ({ row }) => ({
+          click: () => {
+            this.$store.dispatch('tickets/get', row.id);
+          },
+        }),
+      },
       activeAssigneeTab: 'open',
       activeStatus: 'open',
-      infiniteLoaderOptions: {
-        root: null,
-        rootMargin: '100px 0px 100px 0px',
-      },
+      hasPagination: false,
+      itemsPerPage: 30,
+      search: '',
     };
   },
   computed: {
     ...mapGetters({
-      ticketListLoading: 'tickets/getUIFlagsPage',
       ticketStats: 'tickets/getStats',
       ticketLists: 'tickets/getTickets',
       ticket: 'tickets/getTicket',
+      pagination: 'tickets/getPagination',
+      currentUserId: 'getCurrentUserID',
     }),
-    selectedLabel() {
-      return this.$route.query.label || null;
-    },
     assigneeTabItems() {
       return [
         {
@@ -106,23 +111,63 @@ export default {
         },
       ];
     },
-    ticketList() {
-      let ticketList = [];
-      if (this.activeAssigneeTab === 'open') {
-        ticketList = this.ticketLists.filter(
-          ticket => ticket.status === 'pending'
-        );
-      } else if (this.activeAssigneeTab === 'closed') {
-        ticketList = this.ticketLists.filter(
-          ticket => ticket.status === 'resolved'
-        );
-      } else {
-        ticketList = this.ticketLists;
-      }
-      return ticketList;
+    columns() {
+      return [
+        {
+          field: 'id',
+          title: 'Número do Ticket',
+          key: 'id',
+          sortable: true,
+          renderBodyCell: ({ row }) => (
+            <woot-button variant="clear">{row.id}</woot-button>
+          ),
+        },
+        {
+          field: 'created_at',
+          title: 'Data de Abertura',
+          key: 'created_at',
+          sortable: true,
+          renderBodyCell: ({ row }) => this.formatDate(row.created_at),
+        },
+        {
+          field: 'description',
+          title: 'Descrição',
+          key: 'description',
+          sortable: true,
+        },
+        {
+          field: 'status',
+          title: 'Status',
+          key: 'status',
+          sortable: true,
+        },
+        {
+          field: 'assigned_to',
+          title: 'Atribuído',
+          key: 'assigned_to',
+          sortable: true,
+          renderBodyCell: ({ row }) => {
+            return this.getTextAssignee(row);
+          },
+        },
+        {
+          field: 'resolved_at',
+          title: 'Tempo de Conclusão',
+          key: 'resolved_at',
+          sortable: true,
+          renderBodyCell: ({ row }) => {
+            return (
+              <TimeAgo
+                last-activity-timestamp={this.getTimestamp(row.resolved_at)}
+                created-at-timestamp={this.getTimestamp(row.created_at)}
+              />
+            );
+          },
+        },
+      ];
     },
-    showEndOfListMessage() {
-      return this.ticketList.length && !this.ticketListLoading.isFetching;
+    tableData() {
+      return this.ticketLists;
     },
   },
   watch: {
@@ -134,17 +179,47 @@ export default {
     this.fetchTickets(this.selectedLabel);
   },
   methods: {
+    getTextAssignee(ticket) {
+      if (!ticket.assigned_to) {
+        return this.$t('TICKETS.ASSIGNEE_FILTER.UNASSIGNED');
+      }
+      if (ticket.assigned_to.id === this.currentUserId) {
+        return this.$t('TICKETS.ASSIGNEE_FILTER.ME');
+      }
+      return ticket.assigned_to.name;
+    },
+    getTimestamp(dateString) {
+      return dateString
+        ? Math.floor(new Date(dateString).getTime() / 1000)
+        : Math.floor(Date.now() / 1000);
+    },
     updateAssigneeTab(selectedTab) {
       this.activeAssigneeTab = selectedTab;
-      // this.fetchTickets();
+      this.fetchTickets(this.currentPage);
     },
-    fetchTickets(label) {
-      this.$store.dispatch('tickets/getAllTickets', label);
+    updateItemsPerPage(newPageSize) {
+      this.itemsPerPage = newPageSize;
+      this.fetchTickets(this.currentPage);
     },
-    loadMoreTickets() {
-      if (!this.ticketListLoading.isFetching) {
-        //   this.fetchTickets();
-      }
+    fetchTickets(page, label = null) {
+      this.currentPage = page;
+      this.$store.dispatch('tickets/getAllTickets', {
+        search: this.search,
+        page: this.currentPage,
+        per_page: this.itemsPerPage,
+        label: label,
+      });
+    },
+    formatDate(date) {
+      return date ? formatUnixDate(date, 'dd/MM/yyyy') : '';
+    },
+    formatTime(time) {
+      return time ? formatUnixDate(time, 'HH:mm') : '';
+    },
+    handleSearch() {
+      debounce(() => {
+        this.fetchTickets(this.currentPage);
+      }, 500)();
     },
   },
 };

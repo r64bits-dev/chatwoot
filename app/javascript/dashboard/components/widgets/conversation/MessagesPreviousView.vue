@@ -130,10 +130,15 @@ export default {
       return { incoming, outgoing };
     },
   },
+  watch: {
+    contactId() {
+      this.conversations = [];
+      this.currentConversationIndex = 0;
+      this.hasMoreMessages = true;
+      this.loadConversations();
+    },
+  },
   created() {
-    this.conversations = [];
-    this.currentConversationIndex = 0;
-    this.hasMoreMessages = true;
     this.loadConversations();
   },
   methods: {

@@ -1,8 +1,5 @@
 <template>
   <div class="mt-4 mb-10">
-    <li v-if="isLoading" class="min-h-[4rem] flex self-center">
-      <span class="spinner message" />
-    </li>
     <div
       v-if="conversations.length > 0"
       class="flex justify-center w-full my-4"
@@ -11,10 +8,14 @@
         v-if="hasMoreMessages"
         size="tiny"
         icon="arrow-up"
+        :is-loading="isLoading"
         @click="loadNextConversation"
       >
         {{ $t('CONVERSATION.PREVIOUS_CONVERSATIONS.BUTTON') }}
       </woot-button>
+      <div v-else>
+        <p>Não há mais mensagens anteriores.</p>
+      </div>
     </div>
     <div
       v-for="conversation in groupedConversations"
@@ -84,15 +85,16 @@ export default {
       type: Number,
       required: true,
     },
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
-  data() {
-    return {
-      conversations: [],
-      currentConversationIndex: 0,
-      hasMoreMessages: true,
-      isLoading: false,
-    };
-  },
+  data: () => ({
+    conversations: [],
+    currentConversationIndex: 0,
+    hasMoreMessages: true,
+  }),
   computed: {
     ...mapGetters({
       currentChat: 'getSelectedChat',
@@ -129,6 +131,9 @@ export default {
     },
   },
   created() {
+    this.conversations = [];
+    this.currentConversationIndex = 0;
+    this.hasMoreMessages = true;
     this.loadConversations();
   },
   methods: {
@@ -152,8 +157,12 @@ export default {
       }
       return 'w-full message--read ph-no-capture';
     },
+    setLoadingStatus(status) {
+      this.$store.commit('SET_ALL_MESSAGES_PREVIOUS_LOADED', status);
+      this.$emit('loading-status', status);
+    },
     async loadConversations() {
-      this.isLoading = true;
+      this.setLoadingStatus(true);
       const { data: response } = await ContactAPI.getConversations(
         this.contactId
       );
@@ -168,15 +177,15 @@ export default {
           conversation =>
             conversation.conversation_id !== this.currentConversationId
         );
-      this.isLoading = false;
+      this.setLoadingStatus(false);
     },
 
     async loadNextConversation() {
-      this.isLoading = true;
+      this.setLoadingStatus(true);
       const conversation = this.conversations[this.currentConversationIndex];
       if (!conversation || conversation.page === null) {
         this.hasMoreMessages = false;
-        this.isLoading = false;
+        this.setLoadingStatus(false);
         return;
       }
 
@@ -201,9 +210,9 @@ export default {
           conversation.page = null;
           this.currentConversationIndex += 1;
         }
-        this.isLoading = false;
+        this.setLoadingStatus(false);
       } catch (error) {
-        this.isLoading = false;
+        this.setLoadingStatus(false);
         this.hasMoreMessages = false;
       }
     },

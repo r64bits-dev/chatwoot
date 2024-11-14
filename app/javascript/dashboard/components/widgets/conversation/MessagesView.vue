@@ -26,8 +26,10 @@
       </transition>
       <messages-previous-view
         v-if="contact"
+        :is-loading="isLoadingPrevious"
         :contact-id="contact.id"
         :current-conversation-id="currentChat.id"
+        @loading-status="isLoadingPrevious = $event"
       />
       <woot-division-line color-schema="bg-woot-300" height="20px">
         <span

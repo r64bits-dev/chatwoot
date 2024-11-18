@@ -6,8 +6,8 @@ User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Geck
 User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.59 Mobile Safari/537.36
 
 {
-  "email": "{{username}}",
-  "password": "{{password}}"
+  "email": "john@acme.inc",
+  "password": "Password1!"
 }
 
 ### 
@@ -23,3 +23,29 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 GET {{api}}/api/v1/accounts/{{accountId}}/inboxes
 Content-Type: application/json
 Authorization: {{token}}
+
+###
+
+# Path: http/inbox.http
+# @name inbox
+
+@accountId = 2
+
+POST {{api}}/api/v1/accounts/{{accountId}}/inboxes
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "Channel",
+  "channel": {
+    "type": "whatsapp",
+    "provider": "qrcode",
+    "provider_config": {
+      "url": "evolutionapi2",
+      "qrcode": true,
+      "chatwoot_reopen_conversation": false,
+      "chatwoot_conversation_pending": false,
+      "apiKey": ""
+    }
+  }
+}

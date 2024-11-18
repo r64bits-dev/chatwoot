@@ -22,6 +22,6 @@ class QrCodeService
   private
 
   def headers
-    { 'apikey' => 'B6D711FCDE4D4FD5936544120E713976', 'Content-Type' => 'application/json' }
+    { 'apikey' => ENV['EVOLUTION_API_TOKEN'], 'Content-Type' => 'application/json' }
   end
 end

@@ -23,3 +23,29 @@ User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) Appl
 GET {{api}}/api/v1/accounts/{{accountId}}/inboxes
 Content-Type: application/json
 Authorization: {{token}}
+
+###
+
+# Path: http/inbox.http
+# @name inbox
+
+@accountId = 2
+
+POST {{api}}/api/v1/accounts/{{accountId}}/inboxes
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "Channel",
+  "channel": {
+    "type": "whatsapp",
+    "provider": "qrcode",
+    "provider_config": {
+      "url": "",
+      "qrcode": true,
+      "chatwoot_reopen_conversation": false,
+      "chatwoot_conversation_pending": false,
+      "apiKey": ""
+    }
+  }
+}

@@ -156,6 +156,15 @@
           "ERROR_MESSAGE": "We were not able to authenticate Twilio credentials, please try again"
         }
       },
+      "QRCODE": {
+        "URL": {
+          "LABEL": "Subdomain",
+          "PLACEHOLDER": "Please enter the Subdomain",
+          "ERROR": "This field is required"
+        },
+        "USE_REOPEN_CONVERSATION": "Reopen closed conversations",
+        "USE_CONVERSATION_PENDING": "Use pending conversations"
+      },
       "SMS": {
         "TITLE": "SMS Channel",
         "DESC": "Start supporting your customers via SMS.",
@@ -215,7 +224,8 @@
           "LABEL": "API Provider",
           "TWILIO": "Twilio",
           "WHATSAPP_CLOUD": "WhatsApp Cloud",
-          "360_DIALOG": "360Dialog"
+          "360_DIALOG": "360Dialog",
+          "QR_CODE": "QR Code"
         },
         "INBOX_NAME": {
           "LABEL": "Inbox Name",

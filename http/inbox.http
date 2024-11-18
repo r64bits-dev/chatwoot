@@ -6,8 +6,8 @@ User-Agent: Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Geck
 User-Agent-Mobile: Mozilla/5.0 (Linux; Android 4.2.2; GT-I9505 Build/JDQ39) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/31.0.1650.59 Mobile Safari/537.36
 
 {
-  "email": "john@acme.inc",
-  "password": "Password1!"
+  "email": "{{username}}",
+  "password": "{{password}}"
 }
 
 ### 
@@ -41,7 +41,7 @@ Authorization: {{token}}
     "type": "whatsapp",
     "provider": "qrcode",
     "provider_config": {
-      "url": "evolutionapi2",
+      "url": "",
       "qrcode": true,
       "chatwoot_reopen_conversation": false,
       "chatwoot_conversation_pending": false,

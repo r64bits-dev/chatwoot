@@ -47,6 +47,10 @@ export const mutations = {
     const [chat] = getSelectedChatConversation(_state);
     Vue.set(chat, 'allMessagesLoaded', false);
   },
+  [types.SET_ALL_MESSAGES_PREVIOUS_LOADED](_state, status) {
+    const [chat] = getSelectedChatConversation(_state);
+    Vue.set(chat, 'allMessagesLoaded', status);
+  },
   [types.CLEAR_CURRENT_CHAT_WINDOW](_state) {
     _state.selectedChatId = null;
   },

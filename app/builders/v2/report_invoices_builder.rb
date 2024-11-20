@@ -115,7 +115,7 @@ class V2::ReportInvoicesBuilder
   end
 
   def calculate_total_price(account, extra_conversation_cost, extra_agent_cost)
-    account.account_plan.product.price.to_f + extra_conversation_cost + extra_agent_cost
+    account.account_plan&.product&.price.to_f + extra_conversation_cost + extra_agent_cost
   end
 
   def build_metrics_data(account, periods, extra_conversation_cost, extra_agent_cost, total)
@@ -123,7 +123,7 @@ class V2::ReportInvoicesBuilder
       date: periods.period_start.to_time,
       total_conversations: count_conversations(account, periods.period_start, periods.period_end),
       total_agents: count_agents(account, periods.period_start, periods.period_end),
-      base_price: account.account_plan.product.price.to_f,
+      base_price: account.account_plan&.product&.price.to_f,
       extra_conversation_cost: extra_conversation_cost,
       extra_agent_cost: extra_agent_cost,
       total_price: total

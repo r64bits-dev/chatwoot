@@ -173,6 +173,10 @@ class User < ApplicationRecord
     type == 'SuperAdmin'
   end
 
+  def ultra_admin?
+    (ENV.fetch('ULTRA_ADMINS', nil) || []).include?(email)
+  end
+
   private
 
   def remove_macros

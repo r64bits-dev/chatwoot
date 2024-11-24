@@ -81,6 +81,7 @@ Rails.application.routes.draw do
               get :meta
               get :search
               post :filter
+              get 'need_to_assign_agent', to: 'conversations#need_to_assign_agent'
             end
             scope module: :conversations do
               resources :messages, only: [:index, :create, :destroy] do

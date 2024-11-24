@@ -22,6 +22,7 @@
         </div>
       </div>
       <ve-table
+        v-if="!showEmpty"
         :fixed-header="true"
         :columns="columns"
         :table-data="tableData"
@@ -29,7 +30,10 @@
         max-height="calc(100vh - 15rem)"
       />
 
+      <div v-else class="empty-data">Nenhum ticket disponível.</div>
+
       <ve-pagination
+        v-if="!showEmpty"
         class="!flex w-full justify-center !mt-8"
         :total="pagination.total_count"
         :page-index="pagination.current_page"
@@ -90,6 +94,9 @@ export default {
       pagination: 'tickets/getPagination',
       currentUserId: 'getCurrentUserID',
     }),
+    showEmpty() {
+      return !this.tableData || this.tableData.length === 0;
+    },
     assigneeTabItems() {
       return [
         {
@@ -257,4 +264,16 @@ export default {
 };
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+.empty-data {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  color: #666;
+  font-size: 16px;
+  border: 1px solid #eee;
+  border-top: 0;
+}
+</style>

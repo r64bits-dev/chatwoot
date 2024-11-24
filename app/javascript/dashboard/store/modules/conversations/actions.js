@@ -206,6 +206,20 @@ const actions = {
     }
   },
 
+  // eslint-disable-next-line no-empty-pattern
+  checkNeedToAssignAgent: async ({}, { userId }) => {
+    try {
+      await ConversationApi.checkNeedToAssignAgent({
+        userId,
+      });
+    } catch (error) {
+      if (error.response?.data?.error) {
+        throw new Error(error.response.data.error);
+      }
+      throw error.message;
+    }
+  },
+
   setCurrentChatAssignee({ commit }, assignee) {
     commit(types.ASSIGN_AGENT, assignee);
   },

@@ -1,9 +1,22 @@
 module Enterprise::Account
+  COST_MAPPING = {
+    'sent' => 'extra_message_sent_cost',
+    'read' => 'extra_message_read_cost'
+  }.freeze
+
   def usage_limits
     {
       agents: agent_limits.to_i,
       inboxes: get_limits(:inboxes).to_i
     }
+  end
+
+  # if limit is exceeded, we will create a usage report
+  def increase_usage_messages(message_status)
+    return unless limit_exceeded?(:messages)
+
+    update_limit_count(:messages)
+    create_reporting_event("extra_#{message_status}_messages", extra_messages_cost(message_status))
   end
 
   private
@@ -13,7 +26,7 @@ module Enterprise::Account
   end
 
   def get_limits(limit_name)
-    increase_usage(limit_name) if Current.account.account_plan.present? && limit_exceeded?(limit_name)
+    increase_usage(limit_name) if account_plan.present? && limit_exceeded?(limit_name)
 
     # return self[:limits][limit_name.to_s] if self[:limits][limit_name.to_s].present?
     fetch_limit_from_config(limit_name) || ChatwootApp.max_limit
@@ -43,16 +56,34 @@ module Enterprise::Account
     account_plan&.extra_agents || 0
   end
 
+  def extra_messages
+    account_plan&.extra_messages || 0
+  end
+
   def increase_usage(limit_name)
+    update_limit_count(limit_name)
+    create_usage_report(limit_name)
+  end
+
+  def update_limit_count(limit_name)
     case limit_name
     when :inboxes
-      print('inboxes increase -- ', extra_agents + 1)
       account_plan.update(extra_inboxes: extra_inboxes + 1)
+    when :agents
+      account_plan.update(extra_agents: extra_agents + 1)
+    when :messages
+      account_plan.update(extra_messages: extra_messages + 1)
+    end
+  end
+
+  def create_usage_report(limit_name)
+    case limit_name
+    when :inboxes
       create_reporting_event('extra_inboxes', extra_conversation_cost)
     when :agents
-      print('agent increase -- ', extra_agents + 1)
-      account_plan.update(extra_agents: extra_agents + 1)
       create_reporting_event('extra_agents', extra_agent_cost)
+    else
+      create_reporting_event(limit_name, yield)
     end
   end
 
@@ -67,7 +98,7 @@ module Enterprise::Account
   end
 
   def product
-    @product ||= Current.account.account_plan.product
+    @product ||= account_plan.product
   end
 
   def product_details
@@ -82,5 +113,9 @@ module Enterprise::Account
 
   def extra_conversation_cost
     product.details['extra_conversation_cost'].to_f || 0.0
+  end
+
+  def extra_messages_cost(message_status)
+    product.details[COST_MAPPING[message_status]].to_f || 0.0
   end
 end

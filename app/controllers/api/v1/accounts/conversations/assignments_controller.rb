@@ -39,7 +39,8 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
   def find_and_validate_agent(id)
     agent = Current.account.users.find_by(id: id)
     return if agent.nil?
-    raise CustomExceptions::Agent::AgentOfflineError unless agent.online?
+
+    raise CustomExceptions::Agent::AgentOfflineError unless agent.availability_status == 'online'
 
     agent
   end

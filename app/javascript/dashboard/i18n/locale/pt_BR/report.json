@@ -504,6 +504,12 @@
     "GRAPH": {
       "PRICE_LABEL": "Preço"
     },
+    "USAGE_GRAPH": {
+      "TITLE": "Gráfico de uso",
+      "SUBTITLE": "Gráfico de uso de mensagens e agentes",
+      "MESSAGES_LABEL": "Mensagens",
+      "AGENTS_LABEL": "Agentes"
+    },
     "METRICS": {
       "TOTAL": {
         "NAME": "Total em R$"

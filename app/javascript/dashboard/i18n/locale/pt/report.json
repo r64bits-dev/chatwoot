@@ -501,6 +501,12 @@
     "SUBTITLE": "relatório para faturamento de conversas e agentes",
     "GRAPH_COLUMN_LABEL": "Faturas",
     "GRAPH_TITLE": "Gráfico de faturas",
+    "USAGE_GRAPH": {
+      "TITLE": "Gráfico de uso",
+      "SUBTITLE": "Gráfico de uso de mensagens e agentes",
+      "MESSAGES_LABEL": "Mensagens",
+      "AGENTS_LABEL": "Agentes"
+    },
     "METRICS": {
       "TOTAL": {
         "NAME": "Faturas"

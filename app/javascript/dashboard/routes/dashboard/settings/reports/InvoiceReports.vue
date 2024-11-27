@@ -37,10 +37,17 @@
     <!-- Componente de gráfico de invoices -->
     <div class="row">
       <template v-if="!uiFlags.isFetching">
-        <graph-invoices
-          :invoices-data="invoices"
-          :is-loading="uiFlags.isFetching"
-        />
+        <div class="w-full flex flex-col sm:flex-row">
+          <div class="w-full sm:w-1/2 flex flex-col p-1">
+            <graph-invoices
+              :invoices-data="invoices"
+              :is-loading="uiFlags.isFetching"
+            />
+          </div>
+          <div class="w-full sm:w-1/2 flex flex-col p-1">
+            <graph-usage :data="[]" :is-loading="uiFlags.isFetching" />
+          </div>
+        </div>
       </template>
       <template v-else>
         <div class="flex items-center justify-center w-full">
@@ -64,6 +71,7 @@ import ReportFilters from './components/ReportFilters.vue';
 import { mapGetters } from 'vuex';
 import { INVOICE_SUMMARY_METRICS } from './constants';
 import GraphInvoices from './components/invoices/GraphInvoices.vue';
+import GraphUsage from './components/Graph/GraphUsage.vue';
 
 const COLUMNS_TO_FORMAT = ['total', 'average_invoice_price'];
 
@@ -73,6 +81,7 @@ export default {
     MetricCard,
     ReportFilters,
     GraphInvoices,
+    GraphUsage,
   },
   data: () => ({
     from: null,

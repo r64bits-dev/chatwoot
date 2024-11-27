@@ -55,7 +55,8 @@
       "STATUS": "Status",
       "ASSIGNEE": "Atribuído",
       "LABELS": "Etiquetas",
-      "SUBMIT": "Criar Ticket"
+      "SUBMIT": "Criar Ticket",
+      "ERROR_MESSAGE": "Ocorreu um erro, por favor tente novamente"
     },
     "LIST": {
       "TOTAL_TICKETS": "Total de Tickets",

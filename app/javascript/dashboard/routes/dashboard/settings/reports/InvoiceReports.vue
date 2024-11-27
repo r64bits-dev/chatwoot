@@ -36,16 +36,19 @@
 
     <!-- Componente de gráfico de invoices -->
     <div class="row">
-      <template v-if="!uiFlags.isFetching">
-        <div class="w-full flex flex-col sm:flex-row">
-          <div class="w-full sm:w-1/2 flex flex-col p-1">
+      <template v-if="!uiFlags.isFetching && !uiFlags.isFetchingUsage">
+        <div class="w-full flex flex-col md:flex-row">
+          <div class="w-full md:w-1/2 flex flex-col p-1">
             <graph-invoices
               :invoices-data="invoices"
               :is-loading="uiFlags.isFetching"
             />
           </div>
-          <div class="w-full sm:w-1/2 flex flex-col p-1">
-            <graph-usage :data="[]" :is-loading="uiFlags.isFetching" />
+          <div class="w-full md:w-1/2 flex flex-col p-1">
+            <graph-usage
+              :data="invoicesUsage"
+              :is-loading="uiFlags.isFetchingUsage"
+            />
           </div>
         </div>
       </template>
@@ -55,7 +58,7 @@
             {{ $t('REPORT.LOADING_CHART') }}
           </span>
           <woot-loading-state
-            v-if="uiFlags.isFetching"
+            v-if="uiFlags.isFetching || uiFlags.isFetchingUsage"
             class="text-xs"
             :message="$t('REPORT.LOADING_CHART')"
           />
@@ -90,6 +93,7 @@ export default {
   computed: {
     ...mapGetters({
       invoices: 'invoices/getInvoices',
+      invoicesUsage: 'invoices/getUsage',
       summary: 'invoices/getSummary',
       uiFlags: 'invoices/getUIFlags',
     }),
@@ -108,9 +112,6 @@ export default {
       return metric;
     },
   },
-  mounted() {
-    this.fetchAllData();
-  },
   methods: {
     formatCurrency(value) {
       return new Intl.NumberFormat('pt-BR', {
@@ -127,11 +128,17 @@ export default {
       this.to = to;
 
       this.fetchAllData();
+      this.fetchUsageData();
     },
     fetchAllData() {
       const { from, to } = this;
       const payload = { from, to };
       this.$store.dispatch('invoices/get', payload);
+    },
+    fetchUsageData() {
+      const { from, to } = this;
+      const payload = { from, to };
+      this.$store.dispatch('invoices/getUsage', payload);
     },
   },
 };

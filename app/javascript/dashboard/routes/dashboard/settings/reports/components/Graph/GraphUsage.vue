@@ -59,7 +59,7 @@ export default {
     },
     prepareChartData(data) {
       const labels = data.map(item => this.formatDate(item.date));
-      const values = data.map(item => item.total_price);
+      const values = data.map(item => item.count);
 
       this.chartData = {
         labels,

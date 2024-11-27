@@ -333,6 +333,7 @@ Rails.application.routes.draw do
             get :conversation_traffic
             get :triggers
             get :invoices
+            get 'invoices/usage', to: 'reports#invoices_usage'
             get :tickets
           end
         end

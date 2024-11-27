@@ -4,6 +4,7 @@ import ReportsAPI from '../../../api/reports';
 export const state = {
   data: {
     values: [],
+    valuesUsage: [],
     summary: {
       total: 0,
     },
@@ -11,6 +12,7 @@ export const state = {
   uiFlags: {
     isFetching: false,
     isFetchingItem: false,
+    isFetchingUsage: false,
     isCreating: false,
     isUpdating: false,
     isDeleting: false,
@@ -20,6 +22,9 @@ export const state = {
 export const getters = {
   getInvoices($state) {
     return $state.data.values;
+  },
+  getUsage($state) {
+    return $state.data.valuesUsage;
   },
   getSummary($state) {
     return $state.data.summary;
@@ -50,6 +55,20 @@ export const actions = {
       commit(types.default.SET_INVOICES_UI_FLAG, { isFetching: false });
     }
   },
+
+  getUsage: async ({ commit }, { from, to }) => {
+    commit(types.default.SET_INVOICES_UI_FLAG, { isFetchingUsage: true });
+    try {
+      const response = await ReportsAPI.getInvoicesUsageReport({
+        from,
+        to,
+      });
+      commit(types.default.SET_INVOICES_UI_FLAG, { isFetchingUsage: false });
+      commit(types.default.SET_INVOICES_USAGE, response.data);
+    } catch (error) {
+      commit(types.default.SET_INVOICES_UI_FLAG, { isFetchingUsage: false });
+    }
+  },
 };
 
 export const mutations = {
@@ -57,7 +76,11 @@ export const mutations = {
     $state.uiFlags = { ...$state.uiFlags, ...uiFlag };
   },
   [types.default.SET_INVOICES]($state, data) {
-    $state.data = data;
+    $state.data.values = data.values;
+    $state.data.summary = data.summary;
+  },
+  [types.default.SET_INVOICES_USAGE]($state, data) {
+    $state.data.valuesUsage = data.values;
   },
 };
 

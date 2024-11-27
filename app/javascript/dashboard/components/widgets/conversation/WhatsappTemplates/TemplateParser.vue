@@ -88,12 +88,15 @@
 </template>
 
 <script>
+import alertMixin from 'shared/mixins/alertMixin';
+
 const allKeysRequired = value => {
   const keys = Object.keys(value);
   return keys.every(key => value[key]);
 };
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
+  mixins: [alertMixin],
   props: {
     template: {
       type: Object,
@@ -159,39 +162,45 @@ export default {
   },
   methods: {
     sendMessage() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
+      try {
+        this.$v.$touch();
+        if (this.$v.$invalid) return;
 
-      let buttonsPayload = [];
-      if (this.buttons.length) {
-        buttonsPayload = this.buttons.map((button, index) => {
-          const buttonPayload = {
-            type: button.type,
-            sub_type: button.sub_type,
-            index: index,
-            parameters: [
-              {
-                type: 'text',
-                text: this.processedParams.buttons[index][1],
-              },
-            ],
-          };
-          return buttonPayload;
-        });
+        let buttonsPayload = [];
+        if (this.buttons.length) {
+          buttonsPayload = this.buttons.map((button, index) => {
+            const buttonPayload = {
+              type: button.type,
+              sub_type: button.sub_type,
+              index: index,
+              parameters: [
+                {
+                  type: 'text',
+                  text: this.processedParams.buttons?.[index]?.[1],
+                },
+              ],
+            };
+            return buttonPayload;
+          });
+        }
+
+        const payload = {
+          message: this.processedString,
+          templateParams: {
+            name: this.template.name,
+            category: this.template.category,
+            language: this.template.language,
+            namespace: this.template.namespace,
+            processed_params: this.processedParams.variables,
+            buttons: buttonsPayload,
+          },
+        };
+        this.$emit('sendMessage', payload);
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.log(error);
+        this.showAlert(this.$t('TICKETS.CREATE.ERROR_MESSAGE'));
       }
-
-      const payload = {
-        message: this.processedString,
-        templateParams: {
-          name: this.template.name,
-          category: this.template.category,
-          language: this.template.language,
-          namespace: this.template.namespace,
-          processed_params: this.processedParams.variables,
-          buttons: buttonsPayload,
-        },
-      };
-      this.$emit('sendMessage', payload);
     },
     processVariable(str) {
       return str.replace(/{{|}}/g, '');

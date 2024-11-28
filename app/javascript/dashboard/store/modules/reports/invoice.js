@@ -4,7 +4,11 @@ import ReportsAPI from '../../../api/reports';
 export const state = {
   data: {
     values: [],
-    valuesUsage: [],
+    usage: {
+      values: [],
+      extra_sent_messages: [],
+      extra_received_messages: [],
+    },
     summary: {
       total: 0,
     },
@@ -23,8 +27,14 @@ export const getters = {
   getInvoices($state) {
     return $state.data.values;
   },
-  getUsage($state) {
-    return $state.data.valuesUsage;
+  getUsageMessages($state) {
+    return $state.data.usage.values;
+  },
+  getUsageReceivedMessages($state) {
+    return $state.data.usage.extra_received_messages;
+  },
+  getUsageSentMessages($state) {
+    return $state.data.usage.extra_sent_messages;
   },
   getSummary($state) {
     return $state.data.summary;
@@ -80,7 +90,9 @@ export const mutations = {
     $state.data.summary = data.summary;
   },
   [types.default.SET_INVOICES_USAGE]($state, data) {
-    $state.data.valuesUsage = data.values;
+    $state.data.usage.values = data.values;
+    $state.data.usage.extra_sent_messages = data.extra_sent_messages;
+    $state.data.usage.extra_received_messages = data.extra_received_messages;
   },
 };
 

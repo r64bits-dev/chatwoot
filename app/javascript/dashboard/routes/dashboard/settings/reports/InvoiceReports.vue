@@ -46,6 +46,8 @@
           </div>
           <div class="w-full md:w-1/2 flex flex-col p-1">
             <graph-usage
+              :messages-send="messagesSend"
+              :messages-receive="messagesReceive"
               :data="invoicesUsage"
               :is-loading="uiFlags.isFetchingUsage"
             />
@@ -93,7 +95,9 @@ export default {
   computed: {
     ...mapGetters({
       invoices: 'invoices/getInvoices',
-      invoicesUsage: 'invoices/getUsage',
+      invoicesUsage: 'invoices/getUsageMessages',
+      messagesSend: 'invoices/getUsageSentMessages',
+      messagesReceive: 'invoices/getUsageReceivedMessages',
       summary: 'invoices/getSummary',
       uiFlags: 'invoices/getUIFlags',
     }),

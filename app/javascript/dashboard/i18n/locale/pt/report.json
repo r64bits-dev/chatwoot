@@ -505,7 +505,9 @@
       "TITLE": "Gráfico de uso",
       "SUBTITLE": "Gráfico de uso de mensagens e agentes",
       "MESSAGES_LABEL": "Mensagens",
-      "AGENTS_LABEL": "Agentes"
+      "AGENTS_LABEL": "Agentes",
+      "MESSAGES_SENT_LABEL": "Extra Mensagens enviadas",
+      "MESSAGES_RECEIVED_LABEL": "Extra Mensagens recebidas"
     },
     "METRICS": {
       "TOTAL": {

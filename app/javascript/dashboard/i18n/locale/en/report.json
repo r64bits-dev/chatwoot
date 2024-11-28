@@ -476,7 +476,9 @@
       "TITLE": "Usage Graph",
       "SUBTITLE": "Usage of messages and agents",
       "MESSAGES_LABEL": "Messages",
-      "AGENTS_LABEL": "Agents"
+      "AGENTS_LABEL": "Agents",
+      "MESSAGES_SENT_LABEL": "Extra Messages Sent",
+      "MESSAGES_RECEIVED_LABEL": "Extra Messages Received"
     },
     "METRICS": {
       "TOTAL": {

@@ -14,6 +14,8 @@ class V2::ReportInvoicesUsageBuilder < V2::ReportBuilderBase
 
     {
       values: messages,
+      extra_sent_messages: sent_messages_by_date(start_date, end_date),
+      extra_received_messages: received_messages_by_date(start_date, end_date),
       summary: {
         total: messages.count,
         sent_messages: sent_messages_count,
@@ -23,6 +25,26 @@ class V2::ReportInvoicesUsageBuilder < V2::ReportBuilderBase
   end
 
   private
+
+  def sent_messages_by_date(start_date, end_date)
+    accounts.flat_map do |account|
+      account.reporting_events
+             .extra_messages_outgoing
+             .where(created_at: start_date..end_date)
+             .group_by { |event| event.created_at.to_date }
+             .map { |date, events| { date: date, count: events.count } }
+    end
+  end
+
+  def received_messages_by_date(start_date, end_date)
+    accounts.flat_map do |account|
+      account.reporting_events
+             .extra_messages_incoming
+             .where(created_at: start_date..end_date)
+             .group_by { |event| event.created_at.to_date }
+             .map { |date, events| { date: date, count: events.count } }
+    end
+  end
 
   def messages(start_date, end_date)
     accounts.flat_map do |account|

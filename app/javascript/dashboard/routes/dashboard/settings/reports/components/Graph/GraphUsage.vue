@@ -32,6 +32,14 @@ export default {
       type: Array,
       required: true,
     },
+    messagesSend: {
+      type: Array,
+      required: true,
+    },
+    messagesReceive: {
+      type: Array,
+      required: true,
+    },
     isLoading: {
       type: Boolean,
       default: false,
@@ -46,8 +54,8 @@ export default {
   watch: {
     data: {
       immediate: true,
-      handler(newData) {
-        this.prepareChartData(newData);
+      handler() {
+        this.prepareChartData();
       },
     },
   },
@@ -57,9 +65,33 @@ export default {
       const zonedDate = utcToZonedTime(dateString, timeZone);
       return format(zonedDate, 'dd/MM/yyyy', { timeZone });
     },
-    prepareChartData(data) {
-      const labels = data.map(item => this.formatDate(item.date));
-      const values = data.map(item => item.count);
+    prepareChartData() {
+      const datesSet = new Set();
+
+      // Collect dates from all datasets
+      this.data.forEach(item => datesSet.add(item.date));
+      this.messagesSend.forEach(item => datesSet.add(item.date));
+      this.messagesReceive.forEach(item => datesSet.add(item.date));
+
+      // Convert to array and sort dates
+      const datesArray = Array.from(datesSet).sort();
+      const labels = datesArray.map(date => this.formatDate(date));
+
+      // Map counts to dates for each dataset
+      const values = datesArray.map(date => {
+        const item = this.data.find(e => e.date === date);
+        return item ? item.count : 0;
+      });
+
+      const valuesSend = datesArray.map(date => {
+        const item = this.messagesSend.find(e => e.date === date);
+        return item ? item.count : 0;
+      });
+
+      const valuesReceive = datesArray.map(date => {
+        const item = this.messagesReceive.find(e => e.date === date);
+        return item ? item.count : 0;
+      });
 
       this.chartData = {
         labels,
@@ -68,6 +100,21 @@ export default {
             label: this.$t('INVOICE_REPORTS.USAGE_GRAPH.MESSAGES_LABEL'),
             data: values,
             borderWidth: 1,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          },
+          {
+            label: this.$t('INVOICE_REPORTS.USAGE_GRAPH.MESSAGES_SENT_LABEL'),
+            data: valuesSend,
+            borderWidth: 1,
+            backgroundColor: 'rgba(255, 204, 0, 0.2)',
+          },
+          {
+            label: this.$t(
+              'INVOICE_REPORTS.USAGE_GRAPH.MESSAGES_RECEIVED_LABEL'
+            ),
+            data: valuesReceive,
+            borderWidth: 1,
+            backgroundColor: 'rgba(255, 215, 204, 0.2)',
           },
         ],
       };

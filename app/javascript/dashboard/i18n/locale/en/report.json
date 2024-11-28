@@ -478,7 +478,9 @@
       "MESSAGES_LABEL": "Messages",
       "AGENTS_LABEL": "Agents",
       "MESSAGES_SENT_LABEL": "Extra Messages Sent",
-      "MESSAGES_RECEIVED_LABEL": "Extra Messages Received"
+      "MESSAGES_RECEIVED_LABEL": "Extra Messages Received",
+      "EXTRA_MESSAGES_SENT_LABEL": "Extra Messages Sent",
+      "EXTRA_MESSAGES_RECEIVED_LABEL": "Extra Messages Received"
     },
     "METRICS": {
       "TOTAL": {

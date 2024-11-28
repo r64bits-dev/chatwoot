@@ -6,6 +6,8 @@ export const state = {
     values: [],
     usage: {
       values: [],
+      sent_messages: [],
+      received_messages: [],
       extra_sent_messages: [],
       extra_received_messages: [],
     },
@@ -30,11 +32,17 @@ export const getters = {
   getUsageMessages($state) {
     return $state.data.usage.values;
   },
-  getUsageReceivedMessages($state) {
+  getUsageExtraSentMessages($state) {
+    return $state.data.usage.extra_sent_messages;
+  },
+  getUsageExtraReceivedMessages($state) {
     return $state.data.usage.extra_received_messages;
   },
+  getUsageReceivedMessages($state) {
+    return $state.data.usage.received_messages;
+  },
   getUsageSentMessages($state) {
-    return $state.data.usage.extra_sent_messages;
+    return $state.data.usage.sent_messages;
   },
   getSummary($state) {
     return $state.data.summary;
@@ -90,9 +98,12 @@ export const mutations = {
     $state.data.summary = data.summary;
   },
   [types.default.SET_INVOICES_USAGE]($state, data) {
-    $state.data.usage.values = data.values;
-    $state.data.usage.extra_sent_messages = data.extra_sent_messages;
-    $state.data.usage.extra_received_messages = data.extra_received_messages;
+    $state.data.usage.values = data.values || [];
+    $state.data.usage.extra_sent_messages = data.extra_sent_messages || [];
+    $state.data.usage.extra_received_messages =
+      data.extra_received_messages || [];
+    $state.data.usage.sent_messages = data.sent_messages || [];
+    $state.data.usage.received_messages = data.received_messages || [];
   },
 };
 

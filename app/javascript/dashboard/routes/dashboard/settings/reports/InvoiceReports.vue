@@ -45,12 +45,7 @@
             />
           </div>
           <div class="w-full md:w-1/2 flex flex-col p-1">
-            <graph-usage
-              :messages-send="messagesSend"
-              :messages-receive="messagesReceive"
-              :data="invoicesUsage"
-              :is-loading="uiFlags.isFetchingUsage"
-            />
+            <graph-message-usage />
           </div>
         </div>
       </template>
@@ -76,7 +71,7 @@ import ReportFilters from './components/ReportFilters.vue';
 import { mapGetters } from 'vuex';
 import { INVOICE_SUMMARY_METRICS } from './constants';
 import GraphInvoices from './components/invoices/GraphInvoices.vue';
-import GraphUsage from './components/Graph/GraphUsage.vue';
+import GraphMessageUsage from './components/Graph/GraphMessageUsage.vue';
 
 const COLUMNS_TO_FORMAT = ['total', 'average_invoice_price'];
 
@@ -86,7 +81,7 @@ export default {
     MetricCard,
     ReportFilters,
     GraphInvoices,
-    GraphUsage,
+    GraphMessageUsage,
   },
   data: () => ({
     from: null,
@@ -95,9 +90,6 @@ export default {
   computed: {
     ...mapGetters({
       invoices: 'invoices/getInvoices',
-      invoicesUsage: 'invoices/getUsageMessages',
-      messagesSend: 'invoices/getUsageSentMessages',
-      messagesReceive: 'invoices/getUsageReceivedMessages',
       summary: 'invoices/getSummary',
       uiFlags: 'invoices/getUIFlags',
     }),

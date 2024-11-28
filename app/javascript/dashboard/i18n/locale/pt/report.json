@@ -507,7 +507,9 @@
       "MESSAGES_LABEL": "Mensagens",
       "AGENTS_LABEL": "Agentes",
       "MESSAGES_SENT_LABEL": "Extra Mensagens enviadas",
-      "MESSAGES_RECEIVED_LABEL": "Extra Mensagens recebidas"
+      "MESSAGES_RECEIVED_LABEL": "Extra Mensagens recebidas",
+      "EXTRA_MESSAGES_SENT_LABEL": "Mensagens extra enviadas",
+      "EXTRA_MESSAGES_RECEIVED_LABEL": "Mensagens extra recebidas"
     },
     "METRICS": {
       "TOTAL": {

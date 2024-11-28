@@ -504,6 +504,13 @@
     "GRAPH": {
       "PRICE_LABEL": "Preço"
     },
+    "USAGE": {
+      "TITLE": "Uso de mensagens",
+      "SENT_MESSAGES": "Mensagens enviadas",
+      "RECEIVED_MESSAGES": "Mensagens recebidas",
+      "EXTRA_SENT_MESSAGES": "Mensagens extra enviadas",
+      "EXTRA_RECEIVED_MESSAGES": "Mensagens extra recebidas"
+    },
     "USAGE_GRAPH": {
       "TITLE": "Gráfico de uso",
       "SUBTITLE": "Gráfico de uso de mensagens e agentes",

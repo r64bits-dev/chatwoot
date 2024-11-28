@@ -10,18 +10,21 @@ class V2::ReportInvoicesUsageBuilder < V2::ReportBuilderBase
 
     sent_messages_count = count_messages(start_date, end_date, 'incoming')
     received_messages_count = count_messages(start_date, end_date, 'outgoing')
+    extra_sent_messages = sent_extra_messages_by_date(start_date, end_date)
+    extra_received_messages = sent_extra_received_messages_by_date(start_date, end_date)
     messages = messages(start_date, end_date)
 
     {
       values: messages,
       sent_messages: sent_messages_by_date(start_date, end_date),
       received_messages: received_messages_by_date(start_date, end_date),
-      extra_sent_messages: sent_extra_messages_by_date(start_date, end_date),
-      extra_received_messages: sent_extra_received_messages_by_date(start_date, end_date),
+      extra_sent_messages: extra_sent_messages,
+      extra_received_messages: extra_received_messages,
       summary: {
-        total: messages.count,
         sent_messages: sent_messages_count,
-        received_messages: received_messages_count
+        received_messages: received_messages_count,
+        extra_sent_messages: extra_sent_messages.count,
+        extra_received_messages: extra_received_messages.count
       }
     }
   end

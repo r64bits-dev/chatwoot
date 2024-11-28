@@ -14,6 +14,13 @@ export const state = {
     summary: {
       total: 0,
     },
+    summaryUsage: {
+      total: 0,
+      sent_messages: 0,
+      received_messages: 0,
+      extra_sent_messages: 0,
+      extra_received_messages: 0,
+    },
   },
   uiFlags: {
     isFetching: false,
@@ -46,6 +53,9 @@ export const getters = {
   },
   getSummary($state) {
     return $state.data.summary;
+  },
+  getSummaryUsage($state) {
+    return $state.data.summaryUsage;
   },
   getInvoice: $state => invoiceId => {
     const [invoice] = $state.data.filter(
@@ -83,6 +93,7 @@ export const actions = {
       });
       commit(types.default.SET_INVOICES_UI_FLAG, { isFetchingUsage: false });
       commit(types.default.SET_INVOICES_USAGE, response.data);
+      commit(types.default.SET_INVOICES_SUMMARY_USAGE, response.data);
     } catch (error) {
       commit(types.default.SET_INVOICES_UI_FLAG, { isFetchingUsage: false });
     }
@@ -96,6 +107,9 @@ export const mutations = {
   [types.default.SET_INVOICES]($state, data) {
     $state.data.values = data.values;
     $state.data.summary = data.summary;
+  },
+  [types.default.SET_INVOICES_SUMMARY_USAGE]($state, data) {
+    $state.data.summaryUsage = data.summary;
   },
   [types.default.SET_INVOICES_USAGE]($state, data) {
     $state.data.usage.values = data.values || [];

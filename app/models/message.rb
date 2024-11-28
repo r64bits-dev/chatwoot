@@ -400,7 +400,7 @@ class Message < ApplicationRecord
   end
 
   def message_cost
-    account.increase_usage_messages(status)
+    account.increase_usage_messages(message_type)
   end
 end
 

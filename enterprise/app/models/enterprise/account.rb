@@ -1,7 +1,7 @@
 module Enterprise::Account
   COST_MAPPING = {
-    'sent' => 'extra_message_sent_cost',
-    'read' => 'extra_message_read_cost'
+    'incoming' => 'extra_message_incoming_cost',
+    'outgoing' => 'extra_message_outgoing_cost'
   }.freeze
 
   def usage_limits
@@ -12,11 +12,11 @@ module Enterprise::Account
   end
 
   # if limit is exceeded, we will create a usage report
-  def increase_usage_messages(message_status)
+  def increase_usage_messages(message_type)
     return unless limit_exceeded?(:messages)
 
     update_limit_count(:messages)
-    create_reporting_event("extra_#{message_status}_messages", extra_messages_cost(message_status))
+    create_reporting_event("extra_messages_#{message_type}", extra_messages_cost(message_type))
   end
 
   private
@@ -115,7 +115,7 @@ module Enterprise::Account
     product.details['extra_conversation_cost'].to_f || 0.0
   end
 
-  def extra_messages_cost(message_status)
-    product.details[COST_MAPPING[message_status]].to_f || 0.0
+  def extra_messages_cost(message_type)
+    product.details[COST_MAPPING[message_type]].to_f || 0.0
   end
 end

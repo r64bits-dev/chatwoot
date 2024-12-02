@@ -48,6 +48,10 @@ module Api::V2::Accounts::ReportsHelper
     V2::ReportInvoicesBuilder.new([Current.account], params).invoices_metrics
   end
 
+  def generate_invoices_usage_report
+    V2::ReportInvoicesUsageBuilder.new([Current.account], params).build
+  end
+
   def generate_tickets_report
     V2::ReportTicketsBuilder.new(Current.account, params).tickets_metrics
   end

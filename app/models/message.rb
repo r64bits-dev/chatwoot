@@ -130,8 +130,8 @@ class Message < ApplicationRecord
   }
 
   after_create_commit :execute_after_create_commit_callbacks
-
   after_update_commit :dispatch_update_event
+  after_create_commit :message_cost
 
   def channel_token
     @token ||= inbox.channel.try(:page_access_token)
@@ -397,6 +397,10 @@ class Message < ApplicationRecord
 
   def update_message_sentiments
     # override in the enterprise ::Enterprise::SentimentAnalysisJob.perform_later(self)
+  end
+
+  def message_cost
+    account.increase_usage_messages(message_type)
   end
 end
 

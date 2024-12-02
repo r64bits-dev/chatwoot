@@ -8,8 +8,8 @@ class V2::ReportInvoicesUsageBuilder < V2::ReportBuilderBase
     start_date, end_date = calculate_date_range
     end_date = adjust_end_date(end_date)
 
-    sent_messages_count = count_messages(start_date, end_date, 'incoming')
-    received_messages_count = count_messages(start_date, end_date, 'outgoing')
+    sent_messages_count = count_messages(start_date, end_date, 'outgoing')
+    received_messages_count = count_messages(start_date, end_date, 'incoming')
     extra_sent_messages = sent_extra_messages_by_date(start_date, end_date)
     extra_received_messages = sent_extra_received_messages_by_date(start_date, end_date)
     messages = messages(start_date, end_date)

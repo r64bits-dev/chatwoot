@@ -53,7 +53,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def validate_provider_config?
     response = HTTParty.get("#{business_account_path}/message_templates?access_token=#{whatsapp_channel.provider_config['api_key']}")
-    p response
+    p "#{response.inspect} response code: #{response.code} request provider config: #{whatsapp_channel.provider_config}"
     raise CustomExceptions::Account::InvalidProviderConfig unless response.success?
 
     response.success?

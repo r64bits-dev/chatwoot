@@ -169,7 +169,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     [{
       type: 'body',
       parameters: parameters.map do |param|
-        { type: 'text', text: param[:text] }
+        { type: 'text', text: param[:text].presence || '' }
       end
     }]
   end
@@ -179,7 +179,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       type: 'button',
       sub_type: 'URL',
       index: buttons[:index],
-      parameters: buttons[:parameters].map { |param| { type: param['type'], text: param['text'] } }
+      parameters: buttons[:parameters].map { |param| { type: param['type'], text: param['text'] || '' } }
     }
   end
 

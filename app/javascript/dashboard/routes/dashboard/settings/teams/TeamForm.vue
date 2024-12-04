@@ -20,6 +20,14 @@
           @input="$v.description.$touch"
         />
 
+        <!-- hardcoded team level for now -->
+        <woot-select
+          class-name="w-full"
+          label="Nível da equipe"
+          :options="levelOptions"
+          :value="level"
+        />
+
         <div class="w-full">
           <input v-model="allowAutoAssign" type="checkbox" :value="true" />
           <label for="conversation_creation">
@@ -71,14 +79,24 @@ export default {
     const formData = this.formData || {};
     const {
       description = '',
+      level = '',
       name: title = '',
       allow_auto_assign: allowAutoAssign = true,
     } = formData;
 
+    const levelOptions = [
+      { id: 'level_1', value: 'Nível 1' },
+      { id: 'level_2', value: 'Nível 2' },
+      { id: 'level_3', value: 'Nível 3' },
+      { id: 'level_4', value: 'Nível 4' },
+    ];
+
     return {
+      level,
       description,
       title,
       allowAutoAssign,
+      levelOptions,
     };
   },
   validations,
@@ -92,6 +110,7 @@ export default {
         description: this.description,
         name: this.title,
         allow_auto_assign: this.allowAutoAssign,
+        level: this.level,
       });
     },
   },

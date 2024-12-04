@@ -8,6 +8,7 @@
 #  extra_agents          :integer          default(0), not null
 #  extra_conversations   :integer          default(0), not null
 #  extra_inboxes         :integer          default(0)
+#  extra_messages        :integer          default(0), not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  account_id            :bigint           not null

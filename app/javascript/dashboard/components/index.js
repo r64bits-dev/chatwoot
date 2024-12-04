@@ -3,6 +3,7 @@ import AvatarUploader from './widgets/forms/AvatarUploader.vue';
 import Bar from './widgets/chart/BarChart';
 import LineChart from './widgets/chart/LineChart';
 import Button from './ui/WootButton';
+import Select from './ui/WootSelect';
 import Code from './Code';
 import ColorPicker from './widgets/ColorPicker';
 import ConfirmDeleteModal from './widgets/modal/ConfirmDeleteModal.vue';
@@ -35,6 +36,7 @@ const WootUIKit = {
   Button,
   Code,
   ColorPicker,
+  Select,
   ConfirmDeleteModal,
   ConfirmModal,
   ContextMenu,

@@ -22,7 +22,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: request_payload
     )
-    p "response: #{response.inspect} request payload: #{request_payload}"
+    Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
     raise CustomExceptions::Account::ErrorReply unless response.success?
 
     process_response(response)
@@ -53,7 +53,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def validate_provider_config?
     response = HTTParty.get("#{business_account_path}/message_templates?access_token=#{whatsapp_channel.provider_config['api_key']}")
-    p "#{response.inspect} response code: #{response.code} request provider config: #{whatsapp_channel.provider_config}"
+    Rails.logger.info "#{response.inspect} response code: #{response.code} request provider config: #{whatsapp_channel.provider_config}"
     raise CustomExceptions::Account::InvalidProviderConfig unless response.success?
 
     response.success?
@@ -147,7 +147,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
-    p template_info
+    Rails.logger.info "template_info: #{template_info}"
     {
       name: template_info[:name],
       language: {
@@ -159,9 +159,11 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def build_components(template_info)
+    return [] if template_info[:parameters].blank?
+
     components = build_body_component(template_info[:parameters])
     components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
-    p components
+    Rails.logger.info "build_components: #{components}"
     components
   end
 

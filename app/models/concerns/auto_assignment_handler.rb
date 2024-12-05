@@ -14,7 +14,7 @@ module AutoAssignmentHandler
     return unless conversation_status_changed_to_open?
     return unless should_run_auto_assignment?
 
-    ::AutoAssignment::AgentAssignmentService.new(conversation: self, allowed_agent_ids: inbox.member_ids_with_assignment_capacity).perform
+    ::AutoAssignment::AgentAssignmentService.new(conversation: self, allowed_agent_ids: inbox.members_ids_with_assignment_capacity_team).perform
     conversation_participants.find_or_create_by(user_id: assignee_id) if assignee_id.present?
   end
 

@@ -160,6 +160,10 @@ class Inbox < ApplicationRecord
     members.ids
   end
 
+  def members_ids_with_assignment_capacity_team
+    members.ids
+  end
+
   private
 
   def dispatch_create_event

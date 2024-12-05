@@ -165,7 +165,8 @@ export default {
       this.maxAssignmentLimit =
         this.inbox?.auto_assignment_config?.max_assignment_limit || null;
       this.maxAssignmentLimitTeam =
-        this.inbox?.auto_assignment_config?.max_assignment_limit_team || null;
+        this.inbox?.auto_assignment_config?.max_assignment_limit_per_team ||
+        null;
       this.fetchAttachedAgents();
     },
     async fetchAttachedAgents() {
@@ -206,7 +207,7 @@ export default {
           enable_auto_assignment: this.enableAutoAssignment,
           auto_assignment_config: {
             max_assignment_limit: this.maxAssignmentLimit,
-            max_assignment_limit_team: this.maxAssignmentLimitTeam,
+            max_assignment_limit_per_team: this.maxAssignmentLimitTeam,
           },
         };
         await this.$store.dispatch('inboxes/updateInbox', payload);

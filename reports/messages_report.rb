@@ -1,5 +1,6 @@
-start_date = Date.new(2024, 10, 1)
-end_date = Date.new(2024, 10, 31).end_of_day
+#!/usr/bin/env ruby
+start_date = Date.new(2024, 11, 1)
+end_date = Date.new(2024, 11, 30).end_of_day
 
 global_account = Account.find_by(name: 'Global')
 
@@ -12,12 +13,14 @@ daily_message_counts = Message.joins(conversation: :account)
 
 # Organizando o resultado
 daily_message_counts_by_type = daily_message_counts.each_with_object(Hash.new do |h, k|
-  h[k] = { sent: 0, received: 0 }
+  h[k] = { incoming: 0, outgoing: 0, another: 0 }
 end) do |((date, type), count), hash|
-  if type == 1 # Assumindo que 1 representa enviadas
-    hash[date][:sent] = count
-  else # Assumindo que 0 representa recebidas
-    hash[date][:received] = count
+  if type == 'outgoing'
+    hash[date][:outgoing] = count
+  elsif type == 'incoming'
+    hash[date][:incoming] = count
+  else
+    hash[date][:another] = count
   end
 end
 

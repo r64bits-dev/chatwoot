@@ -26,6 +26,7 @@
           label="Nível da equipe"
           :options="levelOptions"
           :value="level"
+          @change="onLevelChange"
         />
 
         <div class="w-full">
@@ -101,6 +102,9 @@ export default {
   },
   validations,
   methods: {
+    onLevelChange(value) {
+      this.level = value;
+    },
     handleSubmit() {
       this.$v.$touch();
       if (this.$v.$invalid) {

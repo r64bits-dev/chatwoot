@@ -73,7 +73,7 @@ class OnlineStatusTracker
     user_ids = ::Redis::Alfred.zrangebyscore(presence_key(account_id, 'User'), range_start, '+inf')
 
     # since we are dealing with redis items as string, casting to string
-    user_ids += account.account_users.non_administrators.where(auto_offline: false)&.map(&:user_id)&.map(&:to_s)
+    user_ids += account.account_users.non_administrators.where(availability: 'online')&.map(&:user_id)&.map(&:to_s)
     user_ids.uniq
   rescue StandardError => e
     Rails.logger.error "Online status tracker error: #{e.message} #{e.backtrace}"

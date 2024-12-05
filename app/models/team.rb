@@ -62,6 +62,14 @@ class Team < ApplicationRecord
   def self.minimum_level
     Team.minimum(:level).to_i
   end
+
+  def self.maximum_level
+    Team.maximum(:level).to_i
+  end
+
+  def self.max_assignment_limit
+    ENV.fetch('MAXIMUM_TEAM_ASSIGNMENT_LIMIT', 10).to_i
+  end
 end
 
 Team.include_mod_with('Audit::Team')

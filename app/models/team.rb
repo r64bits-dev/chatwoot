@@ -58,6 +58,10 @@ class Team < ApplicationRecord
       name: name
     }
   end
+
+  def self.minimum_level
+    Team.minimum(:level).to_i
+  end
 end
 
 Team.include_mod_with('Audit::Team')

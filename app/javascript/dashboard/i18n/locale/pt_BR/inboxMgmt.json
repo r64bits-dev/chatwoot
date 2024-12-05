@@ -478,7 +478,7 @@
     },
     "SETTINGS": "Confirgurações",
     "FEATURES": {
-    "LABEL": "Funcionalidades",
+      "LABEL": "Funcionalidades",
       "DISPLAY_FILE_PICKER": "Exibir seletor de arquivos no widget",
       "DISPLAY_EMOJI_PICKER": "Exibir seletor de emoji no widget",
       "ALLOW_END_CONVERSATION": "Permitir que usuários terminem a conversa a partir do widget",
@@ -536,8 +536,11 @@
     },
     "AUTO_ASSIGNMENT": {
       "MAX_ASSIGNMENT_LIMIT": "Limite de atribuição automática",
+      "MAX_ASSIGNMENT_LIMIT_TEAM": "Limite de atribuição automática por equipe",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Por favor, insira um valor maior que 0",
-      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente"
+      "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Por favor, insira um valor maior que 0",
+      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente por equipe"
     },
     "FACEBOOK_REAUTHORIZE": {
       "TITLE": "Reautorizar",

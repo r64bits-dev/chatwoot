@@ -72,6 +72,33 @@
           @click="updateInbox"
         />
       </div>
+
+      <!-- adição de limite de atribuição por team-->
+      <div
+        v-if="enableAutoAssignment && isEnterprise"
+        class="max-assignment-container"
+      >
+        <woot-input
+          v-model.trim="maxAssignmentLimitTeam"
+          type="number"
+          :class="{ error: $v.maxAssignmentLimitTeam.$error }"
+          :error="maxAssignmentLimitTeamErrors"
+          :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM')"
+          @blur="$v.maxAssignmentLimitTeam.$touch"
+        />
+
+        <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+          {{
+            $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT')
+          }}
+        </p>
+
+        <woot-submit-button
+          :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+          :disabled="$v.maxAssignmentLimitTeam.$invalid"
+          @click="updateInbox"
+        />
+      </div>
     </settings-section>
   </div>
 </template>
@@ -100,6 +127,7 @@ export default {
       isAgentListUpdating: false,
       enableAutoAssignment: false,
       maxAssignmentLimit: null,
+      maxAssignmentLimitTeam: null,
     };
   },
   computed: {
@@ -110,6 +138,14 @@ export default {
       if (this.$v.maxAssignmentLimit.$error) {
         return this.$t(
           'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_RANGE_ERROR'
+        );
+      }
+      return '';
+    },
+    maxAssignmentLimitTeamErrors() {
+      if (this.$v.maxAssignmentLimitTeam.$error) {
+        return this.$t(
+          'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR'
         );
       }
       return '';
@@ -128,6 +164,8 @@ export default {
       this.enableAutoAssignment = this.inbox.enable_auto_assignment;
       this.maxAssignmentLimit =
         this.inbox?.auto_assignment_config?.max_assignment_limit || null;
+      this.maxAssignmentLimitTeam =
+        this.inbox?.auto_assignment_config?.max_assignment_limit_team || null;
       this.fetchAttachedAgents();
     },
     async fetchAttachedAgents() {
@@ -168,6 +206,7 @@ export default {
           enable_auto_assignment: this.enableAutoAssignment,
           auto_assignment_config: {
             max_assignment_limit: this.maxAssignmentLimit,
+            max_assignment_limit_team: this.maxAssignmentLimitTeam,
           },
         };
         await this.$store.dispatch('inboxes/updateInbox', payload);
@@ -184,6 +223,9 @@ export default {
       },
     },
     maxAssignmentLimit: {
+      minValue: minValue(1),
+    },
+    maxAssignmentLimitTeam: {
       minValue: minValue(1),
     },
   },

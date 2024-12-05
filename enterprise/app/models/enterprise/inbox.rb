@@ -6,8 +6,7 @@ module Enterprise::Inbox
   end
 
   def members_ids_with_assignment_capacity_team(level = nil)
-    max_assignment_limit_per_team = auto_assignment_config['max_assignment_limit_per_team']
-    return [] if max_assignment_limit_per_team.blank?
+    max_assignment_limit_per_team = auto_assignment_config['max_assignment_limit_per_team'].presence || Team.max_assignment_limit
 
     # Inicializa os IDs dos membros que têm capacidade
     available_member_ids = []

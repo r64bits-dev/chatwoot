@@ -231,6 +231,22 @@
           </p>
         </label>
 
+        <!-- this part is to able conversation init by agent marked as active -->
+        <label v-if="isAWebWidgetInbox" class="w-[75%] pb-4">
+          {{ $t('INBOX_MGMT.SETTINGS_POPUP.ENABLE_INIT_BY_AGENT') }}
+          <select v-model="initByAgent">
+            <option :value="true">
+              {{ $t('INBOX_MGMT.EDIT.ENABLE_INIT_BY_AGENT.ENABLED') }}
+            </option>
+            <option :value="false">
+              {{ $t('INBOX_MGMT.EDIT.ENABLE_INIT_BY_AGENT.DISABLED') }}
+            </option>
+          </select>
+          <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+            {{ $t('INBOX_MGMT.SETTINGS_POPUP.ENABLE_INIT_BY_AGENT_SUB_TEXT') }}
+          </p>
+        </label>
+
         <label v-if="isAWebWidgetInbox" class="w-[75%] pb-4">
           {{ $t('INBOX_MGMT.SETTINGS_POPUP.ENABLE_CONTINUITY_VIA_EMAIL') }}
           <select v-model="continuityViaEmail">
@@ -467,6 +483,7 @@ export default {
       businessName: '',
       locktoSingleConversation: false,
       allowMessagesAfterResolved: true,
+      initByAgent: false,
       continuityViaEmail: true,
       selectedInboxName: '',
       channelWebsiteUrl: '',
@@ -662,6 +679,7 @@ export default {
         this.businessName = this.inbox.business_name;
         this.allowMessagesAfterResolved =
           this.inbox.allow_messages_after_resolved;
+        this.initByAgent = this.inbox.init_by_agent;
         this.continuityViaEmail = this.inbox.continuity_via_email;
         this.channelWebsiteUrl = this.inbox.website_url;
         this.channelWelcomeTitle = this.inbox.welcome_title;
@@ -682,6 +700,7 @@ export default {
           enable_email_collect: this.emailCollectEnabled,
           csat_survey_enabled: this.csatSurveyEnabled,
           allow_messages_after_resolved: this.allowMessagesAfterResolved,
+          init_by_agent: this.initByAgent,
           greeting_enabled: this.greetingEnabled,
           greeting_message: this.greetingMessage || '',
           portal_id: this.selectedPortalSlug

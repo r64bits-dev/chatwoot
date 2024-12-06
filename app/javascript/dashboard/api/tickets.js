@@ -39,6 +39,12 @@ export class TicketsAPI extends CacheEnabledApiClient {
   getLabels() {
     return axios.get(`${this.url}/labels`);
   }
+
+  export() {
+    return axios.get(`${this.url}/export`, {
+      responseType: 'blob',
+    });
+  }
 }
 
 export default new TicketsAPI();

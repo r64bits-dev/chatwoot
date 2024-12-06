@@ -3,7 +3,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   include DateRangeHelper
   include HmacConcern
 
-  before_action :conversation, except: [:index, :meta, :search, :create, :filter]
+  before_action :conversation, except: [:index, :meta, :search, :create, :filter, :need_to_assign_agent]
   before_action :inbox, :contact, :contact_inbox, only: [:create]
 
   def index
@@ -27,7 +27,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @attachments = @conversation.attachments
   end
 
-  def show; end
+  def show
+    raise CustomExceptions::Conversation::AuthenticationRequired if current_user.agent? && (current_user.id != @conversation.assignee_id)
+  end
 
   def create
     ActiveRecord::Base.transaction do
@@ -57,6 +59,15 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
     ConversationReplyMailer.with(account: @conversation.account).conversation_transcript(@conversation, params[:email])&.deliver_later
     head :ok
+  end
+
+  def need_to_assign_agent
+    result = Api::V1::ConversationsHelper.assign_open_conversations(current_user, Current.account)
+    if result.is_a?(Hash) && result[:error]
+      render json: { error: result[:error] }, status: :unprocessable_entity
+    else
+      render json: result
+    end
   end
 
   def toggle_status

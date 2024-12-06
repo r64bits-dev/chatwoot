@@ -124,7 +124,7 @@ class User < ApplicationRecord
   end
 
   def assigned_inboxes
-    administrator? ? Current.account.inboxes : inboxes.where(account_id: Current.account.id)
+    Current.account.inboxes
   end
 
   def serializable_hash(options = nil)
@@ -171,6 +171,10 @@ class User < ApplicationRecord
 
   def superadmin?
     type == 'SuperAdmin'
+  end
+
+  def ultra_admin?
+    (ENV.fetch('ULTRA_ADMINS', nil) || []).include?(email)
   end
 
   private

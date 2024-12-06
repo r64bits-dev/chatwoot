@@ -23,7 +23,7 @@ class V2::ReportBuilder
 
   # For backward compatible with old report
   def build
-    if %w[avg_first_response_time avg_resolution_time reply_time triggers].include?(params[:metric])
+    if %w[avg_first_response_time avg_resolution_time reply_time triggers processed_triggers].include?(params[:metric])
       timeseries.each_with_object([]) do |p, arr|
         arr << { value: p[1], timestamp: p[0].in_time_zone(@timezone).to_i, count: @grouped_values.count[p[0]] }
       end
@@ -96,7 +96,8 @@ class V2::ReportBuilder
        avg_resolution_time
        resolutions_count
        triggers
-       reply_time].include?(params[:metric])
+       reply_time
+       processed_triggers].include?(params[:metric])
   end
 
   def inbox

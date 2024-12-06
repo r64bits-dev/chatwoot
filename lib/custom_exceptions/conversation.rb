@@ -18,4 +18,10 @@ module CustomExceptions::Conversation
       I18n.t('errors.conversations.different_team')
     end
   end
+
+  class AuthenticationRequired < CustomExceptions::Base
+    def message
+      I18n.t('errors.conversations.authentication_required')
+    end
+  end
 end

@@ -40,13 +40,7 @@ module Api::V2::Tickets::TicketHelper
     request_params
   end
 
-  def find_tickets
-    if current_user.administrator?
-      current_account.tickets
-    else
-      current_account.tickets.assigned_to(current_user.id)
-    end
-  end
+ 
 
   private
 

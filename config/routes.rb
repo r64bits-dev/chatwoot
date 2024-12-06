@@ -81,6 +81,7 @@ Rails.application.routes.draw do
               get :meta
               get :search
               post :filter
+              get 'need_to_assign_agent', to: 'conversations#need_to_assign_agent'
             end
             scope module: :conversations do
               resources :messages, only: [:index, :create, :destroy] do
@@ -131,7 +132,11 @@ Rails.application.routes.draw do
               delete :avatar
             end
             scope module: :contacts do
-              resources :conversations, only: [:index]
+              resources :conversations, only: [:index] do
+                member do
+                  get :messages
+                end
+              end
               resources :contact_inboxes, only: [:create]
               resources :labels, only: [:create, :index]
               resources :notes
@@ -254,6 +259,7 @@ Rails.application.routes.draw do
             end
 
             collection do
+              get :export
               get :search
               get 'labels', action: :labels
               get 'conversations/:conversation_id', action: :conversations
@@ -327,6 +333,7 @@ Rails.application.routes.draw do
             get :conversation_traffic
             get :triggers
             get :invoices
+            get 'invoices/usage', to: 'reports#invoices_usage'
             get :tickets
           end
         end

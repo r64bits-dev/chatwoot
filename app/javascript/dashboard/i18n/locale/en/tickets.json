@@ -55,7 +55,8 @@
       "STATUS": "Status",
       "ASSIGNEE": "Assignee",
       "LABELS": "Labels",
-      "SUBMIT": "Create Ticket"
+      "SUBMIT": "Create Ticket",
+      "ERROR_MESSAGE": "There was an error, please try again"
     },
     "LIST": {
       "TOTAL_TICKETS": "Total of Tickets",

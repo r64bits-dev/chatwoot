@@ -65,6 +65,8 @@
       <th class="px-4 py-2">Custo Extra por Conversa</th>
       <th class="px-4 py-2">Custo Extra por Agente</th>
       <th class="px-4 py-2">Preço Total</th>
+      <th class="px-4 py-2">Mensagens Extras Envidas</th>
+      <th class="px-4 py-2">Mensagens Extras Recebidas</th>
     </tr>
   </thead>
   <tbody>
@@ -77,6 +79,8 @@
         <td class="border px-4 py-2"><%= number_to_currency(value[:extra_conversation_cost], unit: "R$") %></td>
         <td class="border px-4 py-2"><%= number_to_currency(value[:extra_agent_cost], unit: "R$") %></td>
         <td class="border px-4 py-2"><%= number_to_currency(value[:total_price], unit: "R$") %></td>
+        <td class="border px-4 py-2"><%= value[:extra_conversation_messages] %></td>
+        <td class="border px-4 py-2"><%= value[:extra_agent_messages] %></td>
       </tr>
     <% end %>
   </tbody>

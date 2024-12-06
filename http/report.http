@@ -67,6 +67,15 @@ Authorization: {{token}}
 
 ###
 
+# Path: http/invoices.http
+# @name invoices_usage_report
+## get invoices usage
+GET {{api}}/api/v2/accounts/{{account_id}}/reports/invoices/usage?since=1712199600&until=1727751599
+Content-Type: application/json
+Authorization: {{token}}
+
+###
+
 # Path: http/triggers.http
 # @name trigger_metrics
 ## get summary of triggers

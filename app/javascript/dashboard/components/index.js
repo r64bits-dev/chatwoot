@@ -3,6 +3,7 @@ import AvatarUploader from './widgets/forms/AvatarUploader.vue';
 import Bar from './widgets/chart/BarChart';
 import LineChart from './widgets/chart/LineChart';
 import Button from './ui/WootButton';
+import Select from './ui/WootSelect';
 import Code from './Code';
 import ColorPicker from './widgets/ColorPicker';
 import ConfirmDeleteModal from './widgets/modal/ConfirmDeleteModal.vue';
@@ -11,6 +12,7 @@ import ContextMenu from './ui/ContextMenu.vue';
 import DeleteModal from './widgets/modal/DeleteModal.vue';
 import DropdownItem from 'shared/components/ui/dropdown/DropdownItem';
 import DropdownMenu from 'shared/components/ui/dropdown/DropdownMenu';
+import DivisionLine from './widgets/DivisionLine';
 import FeatureToggle from './widgets/FeatureToggle';
 import HorizontalBar from './widgets/chart/HorizontalBarChart';
 import Input from './widgets/forms/Input.vue';
@@ -34,10 +36,12 @@ const WootUIKit = {
   Button,
   Code,
   ColorPicker,
+  Select,
   ConfirmDeleteModal,
   ConfirmModal,
   ContextMenu,
   DeleteModal,
+  DivisionLine,
   DropdownItem,
   DropdownMenu,
   FeatureToggle,

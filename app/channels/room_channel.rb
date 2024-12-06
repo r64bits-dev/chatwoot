@@ -24,13 +24,13 @@ class RoomChannel < ApplicationCable::Channel
     data = {}
     # Extrai os dados serializáveis dos usuários disponíveis
     if @current_user.is_a? AccountUser
-      p 'find available users by type account user'
+      Rails.logger.info 'find available users by type account user'
       available_users = ::OnlineStatusTracker.get_available_users(@current_account.id).map do |user|
         { user_id: user[:user_id], availability: user[:availability] }
       end
       data = { account_id: @current_account.id, users: available_users }
     elsif @current_user.is_a? User
-      p 'find available users by type user'
+      Rails.logger.info 'find available users by type user'
       data = { account_id: @current_account.id, users: ::OnlineStatusTracker.get_available_users(@current_account.id) }
     end
     ActionCable.server.broadcast(@pubsub_token, { event: 'presence.update', data: data })
@@ -46,7 +46,7 @@ class RoomChannel < ApplicationCable::Channel
   def update_subscription
     return if @current_account.blank?
 
-    p "current class name: #{@current_user.class.name}, current id: #{@current_user.id}"
+    Rails.logger.info "Updating subscription for user #{@current_user.id} on account #{@current_account.id}"
 
     ::OnlineStatusTracker.update_presence(@current_account.id, @current_user.class.name, @current_user.id)
   rescue StandardError => e

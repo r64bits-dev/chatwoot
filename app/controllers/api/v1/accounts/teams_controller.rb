@@ -36,11 +36,11 @@ class Api::V1::Accounts::TeamsController < Api::V1::Accounts::BaseController
   end
 
   def team_params
-    params.require(:team).permit(:name, :description, :allow_auto_assign)
+    params.require(:team).permit(:name, :description, :allow_auto_assign, :level)
   end
 
   def find_teams
-    @teams = @user.administrator? ? Current.account.teams : Current.user.teams
+    @teams = @user.administrator? ? Current.account.teams : Current.user.teams.where(account_id: Current.account.id)
   end
 
   def all_teams_with_unassigned_conversation_counts

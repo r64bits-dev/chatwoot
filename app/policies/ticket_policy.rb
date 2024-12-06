@@ -39,6 +39,10 @@ class TicketPolicy < ApplicationPolicy
     true
   end
 
+  def export?
+    @account_user.administrator?
+  end
+
   def destroy?
     @account_user.administrator? || @account_user.supervisor?
   end

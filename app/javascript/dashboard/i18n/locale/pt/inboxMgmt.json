@@ -525,9 +525,14 @@
       "SUB_TEXT": "Associe um Centro de Ajuda com a caixa de entrada"
     },
     "AUTO_ASSIGNMENT": {
+      "USE_MAX_ASSIGNMENT_LIMIT": "Usar limite de atribuição automática",
+      "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Usar limite de atribuição por níveis",
       "MAX_ASSIGNMENT_LIMIT": "Limite de atribuição automática",
+      "MAX_ASSIGNMENT_LIMIT_TEAM": "Limite de atribuição automática por equipe",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Por favor, insira um valor maior que 0",
-      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente"
+      "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Por favor, insira um valor maior que 0",
+      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente por equipe"
     },
     "FACEBOOK_REAUTHORIZE": {
       "TITLE": "Reautorizar",

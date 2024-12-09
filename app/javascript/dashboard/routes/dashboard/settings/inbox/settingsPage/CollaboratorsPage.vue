@@ -49,55 +49,75 @@
         </p>
       </label>
 
+      <!-- Apenas exibir a escolha se for enterprise e autoassignment estiver ligado -->
       <div
         v-if="enableAutoAssignment && isEnterprise"
         class="max-assignment-container"
       >
-        <woot-input
-          v-model.trim="maxAssignmentLimit"
-          type="number"
-          :class="{ error: $v.maxAssignmentLimit.$error }"
-          :error="maxAssignmentLimitErrors"
-          :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT')"
-          @blur="$v.maxAssignmentLimit.$touch"
-        />
+        <!-- Toggle entre limite individual e limite por time -->
+        <div class="flex items-center mb-4">
+          <label class="mr-4">
+            <input
+              v-model="useTeamLimit"
+              type="radio"
+              value="false"
+              @change="toggleUseTeamLimit"
+            />
+            {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.USE_MAX_ASSIGNMENT_LIMIT') }}
+          </label>
+          <label>
+            <input
+              v-model="useTeamLimit"
+              type="radio"
+              value="true"
+              @change="toggleUseTeamLimit"
+            />
+            {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.USE_MAX_ASSIGNMENT_LIMIT_TEAM') }}
+          </label>
+        </div>
 
-        <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
-          {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_SUB_TEXT') }}
-        </p>
-
-        <woot-submit-button
-          :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-          :disabled="$v.maxAssignmentLimit.$invalid"
-          @click="updateInbox"
-        />
-      </div>
-
-      <!-- adição de limite de atribuição por team-->
-      <div
-        v-if="enableAutoAssignment && isEnterprise"
-        class="max-assignment-container"
-      >
-        <woot-input
-          v-model.trim="maxAssignmentLimitTeam"
-          type="number"
-          :class="{ error: $v.maxAssignmentLimitTeam.$error }"
-          :error="maxAssignmentLimitTeamErrors"
-          :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM')"
-          @blur="$v.maxAssignmentLimitTeam.$touch"
-        />
-
-        <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
-          {{
-            $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT')
-          }}
-        </p>
-
-        <woot-submit-button
-          :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-          :disabled="$v.maxAssignmentLimitTeam.$invalid"
-          @click="updateInbox"
-        />
+        <!-- Quando useTeamLimit for false, exibe o input de maxAssignmentLimit -->
+        <div v-if="!useTeamLimit">
+          <woot-input
+            v-model.trim="maxAssignmentLimit"
+            type="number"
+            :class="{ error: $v.maxAssignmentLimit.$error }"
+            :error="maxAssignmentLimitErrors"
+            :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT')"
+            @blur="$v.maxAssignmentLimit.$touch"
+          />
+          <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+            {{ $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_SUB_TEXT') }}
+          </p>
+          <woot-submit-button
+            :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+            :disabled="$v.maxAssignmentLimit.$invalid"
+            @click="updateInbox"
+          />
+        </div>
+        <div v-else>
+          <!-- Quando useTeamLimit for true, exibe o input de maxAssignmentLimitTeam -->
+          <woot-input
+            v-model.trim="maxAssignmentLimitTeam"
+            type="number"
+            :class="{ error: $v.maxAssignmentLimitTeam.$error }"
+            :error="maxAssignmentLimitTeamErrors"
+            :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM')"
+            @blur="$v.maxAssignmentLimitTeam.$touch"
+          />
+          <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+            {{
+              $t(
+                'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT'
+              )
+            }}
+          </p>
+          <woot-submit-button
+            :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+            :disabled="$v.maxAssignmentLimitTeam.$invalid"
+            @click="updateInbox"
+          />
+        </div>
       </div>
     </settings-section>
   </div>
@@ -128,6 +148,7 @@ export default {
       enableAutoAssignment: false,
       maxAssignmentLimit: null,
       maxAssignmentLimitTeam: null,
+      useTeamLimit: false,
     };
   },
   computed: {
@@ -167,6 +188,8 @@ export default {
       this.maxAssignmentLimitTeam =
         this.inbox?.auto_assignment_config?.max_assignment_limit_per_team ||
         null;
+      // Define qual campo fica ativo baseado no que está salvo na inbox
+      this.useTeamLimit = !!this.maxAssignmentLimitTeam;
       this.fetchAttachedAgents();
     },
     async fetchAttachedAgents() {
@@ -206,8 +229,12 @@ export default {
           formData: false,
           enable_auto_assignment: this.enableAutoAssignment,
           auto_assignment_config: {
-            max_assignment_limit: this.maxAssignmentLimit,
-            max_assignment_limit_per_team: this.maxAssignmentLimitTeam,
+            max_assignment_limit: !this.useTeamLimit
+              ? this.maxAssignmentLimit
+              : null,
+            max_assignment_limit_per_team: this.useTeamLimit
+              ? this.maxAssignmentLimitTeam
+              : null,
           },
         };
         await this.$store.dispatch('inboxes/updateInbox', payload);
@@ -215,6 +242,9 @@ export default {
       } catch (error) {
         this.showAlert(this.$t('INBOX_MGMT.EDIT.API.SUCCESS_MESSAGE'));
       }
+    },
+    toggleUseTeamLimit(e) {
+      this.useTeamLimit = e.target.value === 'true';
     },
   },
   validations: {

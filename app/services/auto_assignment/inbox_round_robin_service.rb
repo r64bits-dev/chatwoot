@@ -59,10 +59,12 @@ class AutoAssignment::InboxRoundRobinService
   # Obtém agentes permitidos de um nível específico
   def agents_by_level(level, allowed_agent_ids)
     team_ids = Team.where(level: level).pluck(:id)
-    User.joins(:team_members).where(
-      team_members: { team_id: team_ids },
-      id: allowed_agent_ids
-    ).pluck(:id).map(&:to_s)
+
+    User.joins(:team_members)
+        .where(team_members: { team_id: team_ids }, id: allowed_agent_ids)
+        .distinct
+        .pluck(:id)
+        .map(&:to_s)
   end
 
   # Retorna o maior nível hierárquico de times

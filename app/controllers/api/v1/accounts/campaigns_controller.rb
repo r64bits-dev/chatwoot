@@ -1,5 +1,5 @@
 class Api::V1::Accounts::CampaignsController < Api::V1::Accounts::BaseController
-  before_action :campaign, except: [:index, :create]
+  before_action :campaign, except: [:index, :create, :file_import]
   before_action :check_authorization
 
   def index
@@ -19,6 +19,10 @@ class Api::V1::Accounts::CampaignsController < Api::V1::Accounts::BaseController
   def destroy
     @campaign.destroy!
     head :ok
+  end
+
+  def file_import
+    binding.pry
   end
 
   private

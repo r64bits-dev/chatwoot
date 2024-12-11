@@ -48,8 +48,13 @@
           size="small"
           >{{ button.text }}
         </woot-button>
-        <p v-if="button.type == 'URL'" class="text-xs mt-1">
+        <p v-if="button.type == 'URL' && button.example" class="text-xs mt-1">
           Exemplo da url: {{ button.example }}
+        </p>
+        <p v-else>
+          hint: isso é uma previsualização do botão, nesse caso ele será
+          estático, caso precise altera-lo você deve alterar no template do
+          whatsapp na Meta
         </p>
         <div
           v-if="
@@ -94,6 +99,12 @@ const allKeysRequired = value => {
   const keys = Object.keys(value);
   return keys.every(key => value[key]);
 };
+
+function hasDynamicParameters(url) {
+  const dynamicParamRegex = /{{([^}]+)}}/g;
+  return dynamicParamRegex.test(url);
+}
+
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
   mixins: [alertMixin],
@@ -168,20 +179,26 @@ export default {
 
         let buttonsPayload = [];
         if (this.buttons.length) {
-          buttonsPayload = this.buttons.map((button, index) => {
-            const buttonPayload = {
-              type: button.type,
-              sub_type: button.sub_type,
-              index: index,
-              parameters: [
-                {
-                  type: 'text',
-                  text: this.processedParams.buttons?.[index]?.[1],
-                },
-              ],
-            };
-            return buttonPayload;
-          });
+          buttonsPayload = this.buttons
+            .map((button, index) => {
+              if (!hasDynamicParameters(button.url)) return;
+
+              const buttonPayload = {
+                type: button.type,
+                sub_type: button.sub_type,
+                index: index,
+                parameters: [
+                  {
+                    type: 'text',
+                    text: this.processedParams.buttons?.[index]?.[1],
+                  },
+                ],
+              };
+
+              // eslint-disable-next-line consistent-return
+              return buttonPayload;
+            })
+            .filter(Boolean);
         }
 
         const payload = {

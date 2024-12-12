@@ -132,37 +132,13 @@
           </p>
           <woot-submit-button
             :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-            :disabled="$v.maxAssignmentLimitTeam.$invalid"
+            :disabled="
+              $v.maxAssignmentLimitTeam.$invalid ||
+              $v.maxAssignmentLimitTeamPerPerson.$invalid
+            "
             @click="updateInbox"
           />
         </div>
-      </div>
-
-      <!-- adição de limite de atribuição por team-->
-      <div
-        v-if="enableAutoAssignment && isEnterprise"
-        class="max-assignment-container"
-      >
-        <woot-input
-          v-model.trim="maxAssignmentLimitTeam"
-          type="number"
-          :class="{ error: $v.maxAssignmentLimitTeam.$error }"
-          :error="maxAssignmentLimitTeamErrors"
-          :label="$t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM')"
-          @blur="$v.maxAssignmentLimitTeam.$touch"
-        />
-
-        <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
-          {{
-            $t('INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT')
-          }}
-        </p>
-
-        <woot-submit-button
-          :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-          :disabled="$v.maxAssignmentLimitTeam.$invalid"
-          @click="updateInbox"
-        />
       </div>
     </settings-section>
   </div>

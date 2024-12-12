@@ -37,6 +37,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_04_180342) do
     t.integer "current_conversations", default: 0, null: false
     t.integer "current_agents", default: 0, null: false
     t.integer "extra_inboxes", default: 0
+    t.integer "extra_messages", default: 0, null: false
     t.index ["account_id", "product_id"], name: "index_account_plans_on_account_id_and_product_id", unique: true
     t.index ["account_id"], name: "index_account_plans_on_account_id"
     t.index ["product_id"], name: "index_account_plans_on_product_id"
@@ -651,6 +652,7 @@ ActiveRecord::Schema[7.0].define(version: 2024_12_04_180342) do
     t.bigint "portal_id"
     t.integer "sender_name_type", default: 0, null: false
     t.string "business_name"
+    t.boolean "init_by_agent", default: false, null: false
     t.index ["account_id"], name: "index_inboxes_on_account_id"
     t.index ["channel_id", "channel_type"], name: "index_inboxes_on_channel_id_and_channel_type"
     t.index ["portal_id"], name: "index_inboxes_on_portal_id"

@@ -70,6 +70,10 @@ class Team < ApplicationRecord
   def self.max_assignment_limit
     ENV.fetch('MAXIMUM_TEAM_ASSIGNMENT_LIMIT', 10).to_i
   end
+
+  def self.max_assignment_limit_team_per_person
+    ENV.fetch('MAXIMUM_TEAM_ASSIGNMENT_LIMIT_PER_PERSON', nil).to_i
+  end
 end
 
 Team.include_mod_with('Audit::Team')

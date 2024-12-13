@@ -541,9 +541,15 @@
       "SUB_TEXT": "Attach a Help Center with the inbox"
     },
     "AUTO_ASSIGNMENT": {
+      "USE_MAX_ASSIGNMENT_LIMIT": "Use auto assignment limit",
+      "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Use auto assignment limit per team",
+      "USE_MAX_ASSIGNMENT_LIMIT_TEAM_PERSON": "Use auto assignment limit per team per person",
       "MAX_ASSIGNMENT_LIMIT": "Auto assignment limit",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Please enter a value greater than 0",
-      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent"
+      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent per team",
+      "MAX_ASSIGNMENT_LIMIT_TEAM": "Auto assignment limit per team",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Please enter a value greater than 0"
     },
     "FACEBOOK_REAUTHORIZE": {
       "TITLE": "Reauthorize",

@@ -6,28 +6,14 @@ module Enterprise::Inbox
   end
 
   def members_ids_with_assignment_capacity_team(level = nil)
-    max_assignment_limit_per_team = auto_assignment_config['max_assignment_limit_per_team'].presence || Team.max_assignment_limit
+    members_ids = available_members_by_team(level)
+    overload_agents_ids = if max_assignment_limit_team_per_person.present?
+                            get_agent_ids_over_assignment_limit(max_assignment_limit_team_per_person)
+                          else
+                            []
+                          end
 
-    # Inicializa os IDs dos membros que têm capacidade
-    available_member_ids = []
-
-    # Começa pelo menor nível e avança apenas se todos os membros do nível atual estiverem ocupados
-    current_level = level || Team.minimum_level
-
-    while current_level
-      member_ids = members_group_by_teams(current_level).pluck(:member_ids).flatten
-      break unless member_ids # Sai do loop se não houver mais membros neste nível
-
-      overloaded_agent_ids = get_agent_ids_over_assignment_limit(max_assignment_limit_per_team, member_ids)
-
-      available_ids = member_ids - overloaded_agent_ids
-      available_member_ids.concat(available_ids)
-      break if available_member_ids.any?
-
-      current_level = Team.where('level > ?', current_level).minimum(:level)
-    end
-
-    available_member_ids
+    members_ids - overload_agents_ids
   end
 
   def get_responses(query)
@@ -62,5 +48,38 @@ module Enterprise::Inbox
     query = User.where(id: members.ids).joins(:teams).group('teams.level').select('teams.level, array_agg(users.id) as member_ids')
     query = query.having('teams.level = ?', level) if level.present?
     query.map { |row| { level: row.level, member_ids: row.member_ids } }
+  end
+
+  def max_assignment_limit_per_team
+    auto_assignment_config['max_assignment_limit_per_team'].presence || Team.max_assignment_limit
+  end
+
+  def max_assignment_limit_team_per_person
+    @max_assignment_limit_team_per_person ||=
+      auto_assignment_config['max_assignment_limit_team_per_person'].presence ||
+      Team.max_assignment_limit_team_per_person
+  end
+
+  def available_members_by_team(level)
+    available_member_ids = []
+
+    # Começa pelo menor nível e avança apenas se todos os membros do nível atual estiverem ocupados
+    current_level = level || Team.minimum_level
+
+    while current_level
+      member_ids = members_group_by_teams(current_level).pluck(:member_ids).flatten
+      break unless member_ids
+
+      overloaded_agent_ids_team = get_agent_ids_over_assignment_limit(max_assignment_limit_per_team, member_ids)
+
+      available_ids = member_ids - overloaded_agent_ids_team
+      available_member_ids.concat(available_ids)
+
+      break if available_member_ids.any?
+
+      current_level = Team.where('level > ?', current_level).minimum(:level)
+    end
+
+    available_member_ids
   end
 end

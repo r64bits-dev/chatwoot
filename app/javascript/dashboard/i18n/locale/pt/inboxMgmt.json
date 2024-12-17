@@ -533,6 +533,7 @@
     "AUTO_ASSIGNMENT": {
       "USE_MAX_ASSIGNMENT_LIMIT": "Usar limite de atribuição automática",
       "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Usar limite de atribuição por níveis",
+      "USE_ONLY_AGENTS": "Usar limite mas apenas agentes específicos",
       "MAX_ASSIGNMENT_LIMIT": "Limite de atribuição automática",
       "MAX_ASSIGNMENT_LIMIT_TEAM": "Limite de atribuição automática por equipe",
       "MAX_ASSIGNMENT_LIMIT_TEAM_PERSON": "Limite de atribuição automática por equipe por pessoa",

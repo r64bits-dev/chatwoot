@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full">
+  <div id="tickets-list" class="flex flex-row w-full">
     <div class="flex-col w-full" :class="{ 'w-[70%]': !!ticket }">
       <div class="flex p-4">
         <div class="flex flex-row w-full">
@@ -265,15 +265,46 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.empty-data {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 200px;
-  width: 100%;
-  color: #666;
-  font-size: 16px;
-  border: 1px solid #eee;
-  border-top: 0;
+#tickets-list {
+  @apply flex flex-col flex-1;
+
+  .ve-table {
+    &::v-deep {
+      th.ve-table-header-th {
+        font-size: var(--font-size-mini) !important;
+        padding: var(--space-small) var(--space-two) !important;
+      }
+
+      td.ve-table-body-td {
+        padding: var(--space-one) var(--space-two) !important;
+      }
+    }
+  }
+
+  &::v-deep .ve-pagination {
+    @apply bg-transparent dark:bg-transparent;
+
+    @apply dark:text-white;
+  }
+
+  &::v-deep .ve-pagination-select {
+    @apply hidden;
+  }
+
+  .table-pagination {
+    @apply mt-4 text-right;
+  }
+
+  .empty-data {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    width: 100%;
+    color: #666;
+    font-size: 16px;
+    border: 1px solid #eee;
+    border-top: 0;
+  }
 }
 </style>

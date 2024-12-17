@@ -42,4 +42,6 @@ class ReportingEvent < ApplicationRecord
 
   scope :extra_inboxes, -> { where(name: 'extra_inboxes') }
   scope :extra_agents, -> { where(name: 'extra_agents') }
+  scope :extra_messages_outgoing, -> { where(name: 'extra_messages_outgoing') }
+  scope :extra_messages_incoming, -> { where(name: 'extra_messages_incoming') }
 end

@@ -437,6 +437,10 @@
       },
       "ENABLE_HMAC": {
         "LABEL": "Ativar"
+      },
+      "INIT_BY_AGENT": {
+        "ENABLED": "Ativado",
+        "DISABLED": "Desabilitado"
       }
     },
     "DELETE": {
@@ -507,6 +511,8 @@
       "FORWARD_EMAIL_SUB_TEXT": "Comece a encaminhar as suas mensagens de email para o seguinte endereço.",
       "ALLOW_MESSAGES_AFTER_RESOLVED": "Permitir mensagens após a resolução da conversa",
       "ALLOW_MESSAGES_AFTER_RESOLVED_SUB_TEXT": "Permite que os utilizadores finais enviem mensagens após a conversa estar resolvida.",
+      "ENABLE_INIT_BY_AGENT": "Habilitar inicialização de conversa por agente marcando como ativo",
+      "ENABLE_INIT_BY_AGENT_SUB_TEXT": "Permite que os agentes iniciem conversas automaticamente quando recebem uma mensagem de um agente marcado como ativo.",
       "WHATSAPP_SECTION_SUBHEADER": "Esta chave de API é usada para a integração com as APIs do WhatsApp.",
       "WHATSAPP_SECTION_UPDATE_SUBHEADER": "Escreva a chave atualizada a ser usada para a integração com as APIs do WhatsApp.",
       "WHATSAPP_SECTION_TITLE": "Chave da API",
@@ -529,6 +535,7 @@
       "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Usar limite de atribuição por níveis",
       "MAX_ASSIGNMENT_LIMIT": "Limite de atribuição automática",
       "MAX_ASSIGNMENT_LIMIT_TEAM": "Limite de atribuição automática por equipe",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_PERSON": "Limite de atribuição automática por equipe por pessoa",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Por favor, insira um valor maior que 0",
       "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Por favor, insira um valor maior que 0",
       "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limitar o número máximo de conversas desta caixa de entrada que pode ser atribuído automaticamente a um agente",

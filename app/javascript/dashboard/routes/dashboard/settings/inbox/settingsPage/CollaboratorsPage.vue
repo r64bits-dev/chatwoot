@@ -112,9 +112,30 @@
               )
             }}
           </p>
+          <woot-input
+            v-model.trim="maxAssignmentLimitTeamPerPerson"
+            type="number"
+            :class="{ error: $v.maxAssignmentLimitTeamPerPerson.$error }"
+            :label="
+              $t(
+                'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_PER_PERSON'
+              )
+            "
+            @blur="$v.maxAssignmentLimitTeamPerPerson.$touch"
+          />
+          <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+            {{
+              $t(
+                'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT'
+              )
+            }}
+          </p>
           <woot-submit-button
             :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
-            :disabled="$v.maxAssignmentLimitTeam.$invalid"
+            :disabled="
+              $v.maxAssignmentLimitTeam.$invalid ||
+              $v.maxAssignmentLimitTeamPerPerson.$invalid
+            "
             @click="updateInbox"
           />
         </div>
@@ -148,6 +169,7 @@ export default {
       enableAutoAssignment: false,
       maxAssignmentLimit: null,
       maxAssignmentLimitTeam: null,
+      maxAssignmentLimitTeamPerPerson: null,
       useTeamLimit: false,
     };
   },
@@ -188,6 +210,9 @@ export default {
       this.maxAssignmentLimitTeam =
         this.inbox?.auto_assignment_config?.max_assignment_limit_per_team ||
         null;
+      this.maxAssignmentLimitTeamPerPerson =
+        this.inbox?.auto_assignment_config
+          ?.max_assignment_limit_team_per_person || null;
       // Define qual campo fica ativo baseado no que está salvo na inbox
       this.useTeamLimit = !!this.maxAssignmentLimitTeam;
       this.fetchAttachedAgents();
@@ -235,6 +260,9 @@ export default {
             max_assignment_limit_per_team: this.useTeamLimit
               ? this.maxAssignmentLimitTeam
               : null,
+            max_assignment_limit_team_per_person: this.useTeamLimit
+              ? this.maxAssignmentLimitTeamPerPerson
+              : null,
           },
         };
         await this.$store.dispatch('inboxes/updateInbox', payload);
@@ -257,6 +285,9 @@ export default {
       minValue: minValue(1),
     },
     maxAssignmentLimitTeam: {
+      minValue: minValue(1),
+    },
+    maxAssignmentLimitTeamPerPerson: {
       minValue: minValue(1),
     },
   },

@@ -114,6 +114,12 @@ class ReportsAPI extends ApiClient {
     });
   }
 
+  getInvoicesUsageReport({ from: since, to: until }) {
+    return axios.get(`${this.url}/invoices/usage`, {
+      params: { since, until },
+    });
+  }
+
   getTicketsReport({
     from: since,
     to: until,

@@ -93,6 +93,6 @@ module Enterprise::Inbox
     ids = auto_assignment_only_this_agents_ids
     return [] if ids.blank?
 
-    members.where(id: ids).ids
+    User.where(id: ids).pluck(:id)
   end
 end

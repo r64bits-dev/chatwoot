@@ -5,17 +5,17 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   before_action :check_authorization
 
   def index
-    builder = V2::ReportBuilder.new(Current.account, report_params)
-    data = builder.build
+    builder = V2::Reports::Conversations::ReportBuilder.new(Current.account, report_params)
+    data = builder.timeseries
     render json: data
   end
 
   def summary
-    render json: summary_metrics
+    render json: build_summary(:summary)
   end
 
-  def summary_tickets
-    render json: summary_tickets_metrics
+  def bot_summary
+    render json: build_summary(:bot_summary)
   end
 
   def agents
@@ -34,8 +34,6 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   end
 
   def teams
-    return render json: teams_metrics if params[:response] == 'json'
-
     @report_data = generate_teams_report
     generate_csv('teams_report', 'api/v2/accounts/reports/teams')
   end
@@ -54,23 +52,9 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
     render json: conversation_metrics
   end
 
-  # metrics for triggers
-  def triggers
-    render json: generate_triggers_report
-  end
-
-  # metrics for invoices
-  def invoices
-    render json: generate_invoices_report
-  end
-
-  # metrics for invoices usage
-  def invoices_usage
-    render json: generate_invoices_usage_report
-  end
-
-  def tickets
-    render json: generate_tickets_report
+  def bot_metrics
+    bot_metrics = V2::Reports::BotMetricsBuilder.new(Current.account, params).metrics
+    render json: bot_metrics
   end
 
   private
@@ -82,7 +66,9 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
   end
 
   def check_authorization
-    raise Pundit::NotAuthorizedError unless Current.account_user.administrator? || Current.account_user.supervisor?
+    return if Current.account_user.administrator?
+
+    raise Pundit::NotAuthorizedError
   end
 
   def common_params
@@ -90,9 +76,7 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
       type: params[:type].to_sym,
       id: params[:id],
       group_by: params[:group_by],
-      business_hours: ActiveModel::Type::Boolean.new.cast(params[:business_hours]),
-      agents_ids: params[:agents_ids],
-      custom_attributes: params[:custom_attributes]
+      business_hours: ActiveModel::Type::Boolean.new.cast(params[:business_hours])
     }
   end
 
@@ -121,7 +105,7 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
                         })
   end
 
-  def default_params
+  def conversation_params
     {
       type: params[:type].to_sym,
       user_id: params[:user_id],
@@ -142,21 +126,16 @@ class Api::V2::Accounts::ReportsController < Api::V1::Accounts::BaseController
     }
   end
 
-  def summary_metrics
-    summary = V2::ReportBuilder.new(Current.account, current_summary_params).summary
-    summary[:previous] = V2::ReportBuilder.new(Current.account, previous_summary_params).summary
-    summary
-  end
-
-  def summary_tickets_metrics
-    V2::ReportBuilder.new(Current.account, current_summary_params).summary_tickets_metrics
+  def build_summary(method)
+    builder = V2::Reports::Conversations::MetricBuilder
+    current_summary = builder.new(Current.account, current_summary_params).send(method)
+    previous_summary = builder.new(Current.account, previous_summary_params).send(method)
+    current_summary.merge(previous: previous_summary)
   end
 
   def conversation_metrics
-    V2::ReportBuilder.new(Current.account, default_params).conversation_metrics
-  end
-
-  def teams_metrics
-    V2::ReportBuilder.new(Current.account, default_params).teams_metrics
+    V2::ReportBuilder.new(Current.account, conversation_params).conversation_metrics
   end
 end
+
+Api::V2::Accounts::ReportsController.prepend_mod_with('Api::V2::Accounts::ReportsController')

@@ -16,7 +16,6 @@ class ReportsAPI extends ApiClient {
     id,
     groupBy,
     businessHours,
-    agentsIds = [],
   }) {
     return axios.get(`${this.url}`, {
       params: {
@@ -28,21 +27,12 @@ class ReportsAPI extends ApiClient {
         group_by: groupBy,
         business_hours: businessHours,
         timezone_offset: getTimeOffset(),
-        agents_ids: agentsIds,
       },
     });
   }
 
-  getSummary(
-    since,
-    until,
-    // eslint-disable-next-line default-param-last
-    type = 'account',
-    id,
-    groupBy,
-    businessHours,
-    agentsIds = []
-  ) {
+  // eslint-disable-next-line default-param-last
+  getSummary(since, until, type = 'account', id, groupBy, businessHours) {
     return axios.get(`${this.url}/summary`, {
       params: {
         since,
@@ -52,7 +42,6 @@ class ReportsAPI extends ApiClient {
         group_by: groupBy,
         business_hours: businessHours,
         timezone_offset: getTimeOffset(),
-        agents_ids: agentsIds,
       },
     });
   }
@@ -69,12 +58,6 @@ class ReportsAPI extends ApiClient {
   getAgentReports({ from: since, to: until, businessHours }) {
     return axios.get(`${this.url}/agents`, {
       params: { since, until, business_hours: businessHours },
-    });
-  }
-
-  getTeamsMetricsReport({ page }) {
-    return axios.get(`${this.url}/teams`, {
-      params: { type: 'agent', page, response: 'json' },
     });
   }
 
@@ -102,47 +85,20 @@ class ReportsAPI extends ApiClient {
     });
   }
 
-  getTriggersMetricsReport({ from: since, to: until, businessHours }) {
-    return axios.get(`${this.url}/triggers`, {
-      params: { since, until, business_hours: businessHours },
+  getBotMetrics({ from, to } = {}) {
+    return axios.get(`${this.url}/bot_metrics`, {
+      params: { since: from, until: to },
     });
   }
 
-  getInvoicesReport({ from: since, to: until, groupBy }) {
-    return axios.get(`${this.url}/invoices`, {
-      params: { since, until, group_by: groupBy },
-    });
-  }
-
-  getInvoicesUsageReport({ from: since, to: until }) {
-    return axios.get(`${this.url}/invoices/usage`, {
-      params: { since, until },
-    });
-  }
-
-  getTicketsReport({
-    from: since,
-    to: until,
-    businessHours,
-    customAttributes = [],
-  }) {
-    return axios.get(`${this.url}/tickets`, {
+  getBotSummary({ from, to, groupBy, businessHours } = {}) {
+    return axios.get(`${this.url}/bot_summary`, {
       params: {
-        since,
-        until,
-        business_hours: businessHours,
-        custom_attributes: customAttributes,
-      },
-    });
-  }
-
-  getTicketsSummaryReport({ from: since, to: until, customAttributes = [] }) {
-    return axios.get(`${this.url}/summary_tickets`, {
-      params: {
-        since,
-        until,
+        since: from,
+        until: to,
         type: 'account',
-        custom_attributes: customAttributes,
+        group_by: groupBy,
+        business_hours: businessHours,
       },
     });
   }

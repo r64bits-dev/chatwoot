@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import types from '../mutation-types';
 import authAPI from '../../api/auth';
 
@@ -66,12 +65,12 @@ export const getters = {
     return currentAccount.role;
   },
 
-  getCurrentPermissions($state, $getters) {
+  getCurrentCustomRoleId($state, $getters) {
     const { accounts = [] } = $state.currentUser;
     const [currentAccount = {}] = accounts.filter(
       account => account.id === $getters.getCurrentAccountId
     );
-    return currentAccount.permissions || {};
+    return currentAccount.custom_role_id;
   },
 
   getCurrentUser($state) {
@@ -103,18 +102,6 @@ export const actions = {
   async validityCheck(context) {
     try {
       const response = await authAPI.validityCheck();
-
-      // Salvando os tokens nos headers
-      const token = response.headers['access-token'];
-      const client = response.headers.client;
-      const uid = response.headers.uid;
-
-      if (token && client && uid) {
-        localStorage.setItem('access-token', token);
-        localStorage.setItem('client', client);
-        localStorage.setItem('uid', uid);
-      }
-
       const currentUser = response.data.payload.data;
       setUser(currentUser);
       context.commit(types.SET_CURRENT_USER, currentUser);
@@ -201,6 +188,14 @@ export const actions = {
       // Ignore error
     }
   },
+
+  resendConfirmation: async () => {
+    try {
+      await authAPI.resendConfirmation();
+    } catch (error) {
+      // Ignore error
+    }
+  },
 };
 
 // mutations
@@ -212,29 +207,29 @@ export const mutations = {
       }
       return account;
     });
-    Vue.set(_state, 'currentUser', {
+    _state.currentUser = {
       ..._state.currentUser,
       accounts,
-    });
+    };
   },
   [types.CLEAR_USER](_state) {
     _state.currentUser = initialState.currentUser;
   },
   [types.SET_CURRENT_USER](_state, currentUser) {
-    Vue.set(_state, 'currentUser', currentUser);
+    _state.currentUser = currentUser;
   },
   [types.SET_CURRENT_USER_UI_SETTINGS](_state, { uiSettings }) {
-    Vue.set(_state, 'currentUser', {
+    _state.currentUser = {
       ..._state.currentUser,
       ui_settings: {
         ..._state.currentUser.ui_settings,
         ...uiSettings,
       },
-    });
+    };
   },
 
   [types.SET_CURRENT_USER_UI_FLAGS](_state, { isFetching }) {
-    Vue.set(_state, 'uiFlags', { isFetching });
+    _state.uiFlags = { isFetching };
   },
 };
 

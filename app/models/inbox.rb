@@ -15,7 +15,6 @@
 #  enable_email_collect          :boolean          default(TRUE)
 #  greeting_enabled              :boolean          default(FALSE)
 #  greeting_message              :string
-#  init_by_agent                 :boolean          default(FALSE), not null
 #  lock_to_single_conversation   :boolean          default(FALSE), not null
 #  name                          :string           not null
 #  out_of_office_message         :string
@@ -67,7 +66,7 @@ class Inbox < ApplicationRecord
   has_many :inbox_members, dependent: :destroy_async
   has_many :members, through: :inbox_members, source: :user
   has_many :conversations, dependent: :destroy_async
-  has_many :messages, through: :conversations
+  has_many :messages, dependent: :destroy_async
 
   has_one :agent_bot_inbox, dependent: :destroy_async
   has_one :agent_bot, through: :agent_bot_inbox
@@ -125,12 +124,25 @@ class Inbox < ApplicationRecord
     channel_type == 'Channel::Whatsapp'
   end
 
+  def notifica_me?
+    channel_type == 'Channel::NotificaMe'
+  end
+
   def assignable_agents
     (account.users.where(id: members.select(:user_id)) + account.administrators).uniq
   end
 
   def active_bot?
-    agent_bot_inbox&.active? || hooks.where(app_id: 'dialogflow', status: 'enabled').count.positive?
+    agent_bot_inbox&.active? || hooks.where(app_id: %w[dialogflow],
+                                            status: 'enabled').count.positive? || captain_enabled?
+  end
+
+  def captain_enabled?
+    captain_hook = account.hooks.where(
+      app_id: %w[captain], status: 'enabled'
+    ).first
+
+    captain_hook.present? && captain_hook.settings['inbox_ids'].split(',').include?(id.to_s)
   end
 
   def inbox_type
@@ -154,14 +166,12 @@ class Inbox < ApplicationRecord
       "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/line/#{channel.line_channel_id}"
     when 'Channel::Whatsapp'
       "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/whatsapp/#{channel.phone_number}"
+    when 'Channel::NotificaMe'
+      "#{ENV.fetch('FRONTEND_URL', nil)}/webhooks/notifica_me/#{channel.notifica_me_id}"
     end
   end
 
   def member_ids_with_assignment_capacity
-    members.ids
-  end
-
-  def members_ids_with_assignment_capacity_team
     members.ids
   end
 

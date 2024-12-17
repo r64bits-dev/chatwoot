@@ -56,27 +56,22 @@ class OnlineStatusTracker
 
     return {} if user_ids.blank?
 
-    Rails.logger.info "get_available_users: #{user_ids}, account_id: #{account_id}"
-
     user_availabilities = ::Redis::Alfred.hmget(status_key(account_id), user_ids)
-    user_map = user_ids.map.with_index { |id, index| [id, user_availabilities[index] || 'online'] }.to_h
-    Rails.logger.info "get_available_users available users: #{user_availabilities}, account_id: #{account_id}, user_ids: #{user_map}"
-    user_map
-  rescue StandardError => e
-    Rails.logger.error "get_available_users error: #{e.message} #{e.backtrace}"
-    []
+    user_ids.map.with_index { |id, index| [id, (user_availabilities[index] || get_availability_from_db(account_id, id))] }.to_h
+  end
+
+  def self.get_availability_from_db(account_id, user_id)
+    availability = Account.find(account_id).account_users.find_by(user_id: user_id).availability
+    set_status(account_id, user_id, availability)
+    availability
   end
 
   def self.get_available_user_ids(account_id)
     account = Account.find(account_id)
     range_start = (Time.zone.now - PRESENCE_DURATION).to_i
     user_ids = ::Redis::Alfred.zrangebyscore(presence_key(account_id, 'User'), range_start, '+inf')
-
     # since we are dealing with redis items as string, casting to string
-    user_ids += account.account_users.non_administrators.where(auto_offline: false)&.map(&:user_id)&.map(&:to_s)
+    user_ids += account.account_users.where(auto_offline: false)&.map(&:user_id)&.map(&:to_s)
     user_ids.uniq
-  rescue StandardError => e
-    Rails.logger.error "Online status tracker error: #{e.message} #{e.backtrace}"
-    []
   end
 end

@@ -33,7 +33,6 @@ services:
       - webpack
       - mailhog
       - sidekiq
-      - mysql
     ports:
       - 3000:3000
     env_file: .env
@@ -60,7 +59,7 @@ services:
     environment:
       - NODE_ENV=development
       - RAILS_ENV=development
-    command: ["sh", "-c", "bundle install && bundle exec sidekiq -C config/sidekiq.yml"]
+    command: ["bundle", "exec", "sidekiq", "-C", "config/sidekiq.yml"]
 
   webpack:
     <<: *base
@@ -79,6 +78,7 @@ services:
     environment:
       - WEBPACKER_DEV_SERVER_HOST=0.0.0.0
       - NODE_ENV=development
+      - NODE_OPTIONS=--openssl-legacy-provider
       - RAILS_ENV=development
     entrypoint: docker/entrypoints/webpack.sh
     command: bin/webpack-dev-server
@@ -91,10 +91,9 @@ services:
     volumes:
       - postgres:/data/postgres
     environment:
-      - POSTGRES_HOST_AUTH_METHOD=trust 
-      - POSTGRES_DB=chatwoot
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
 
   redis:
     image: redis:alpine
@@ -105,19 +104,6 @@ services:
       - redis:/data/redis
     ports:
       - '6379:6379'
-
-  mysql:
-    image: mysql:8.0
-    restart: always
-    ports:
-      - '3306:3306'
-    environment:
-      MYSQL_ROOT_PASSWORD: 'password!123'
-      MYSQL_DATABASE: chatwoot
-      MYSQL_USER: root
-      MYSQL_PASSWORD: 'password!123'
-    volumes:
-      - mysql:/var/lib/mysql
 
   mailhog:
     image: mailhog/mailhog
@@ -132,4 +118,3 @@ volumes:
   node_modules:
   cache:
   bundle:
-  mysql:

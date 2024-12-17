@@ -1,9 +1,28 @@
+## 🚨 Note: This branch is unstable. For the stable branch's source code, please use the branch [3.x](https://github.com/chatwoot/chatwoot/tree/3.x)
+
+
 <img src="https://user-images.githubusercontent.com/2246121/282256557-1570674b-d142-4198-9740-69404cc6a339.png#gh-light-mode-only" width="100%" alt="Chat dashboard dark mode"/>
 <img src="https://user-images.githubusercontent.com/2246121/282256632-87f6a01b-6467-4e0e-8a93-7bbf66d03a17.png#gh-dark-mode-only" width="100%" alt="Chat dashboard"/>
 
 ___
 
-# Chatwoot 
+
+# Chatwoot Uno
+  - essa versão do chatwoot que esta sendo usada aqui tem algumas customizações que ainda não foram aceitas pelo time do chatwoot e para um melhor uso com a unoapi(http://github.com/clairton/unoapi-cloud):
+    - funciona as conversas em grupo
+    - trata a mensagem enviadas por outras conexões, inclusive o aplicativo
+    - desabilita a janela de 24 horas do whatsapp cloud oficial
+    - sincroniza as imagens de perfil dos grupos e usuarios
+    - possibilidade de editar o endereço da caixa de entrada do whatsapp, assim pode usar a oficial e a unoapi na mesma instalação(não usar a env WHATSAPP_CLOUD_BASE_URL)
+    - opção no superadmin de habilitar para colocar o nome do agente na mensagem
+    - opção no superadmin de habilitar para marcar as mensagem no whatsapp como lido quando o agente visualiza a conversa
+    - opção no superadmin de esconder para a aba de todas as conversas
+    - opção no superadmin de esconder para o filtro de conversas
+    - opção no superadmin de esconder a parte de contatos
+    - da opção de alterar logo e nome da empresa
+  Exemplo de stack com os dois projetos integrados: https://github.com/clairton/unoapi-cloud/tree/main/examples/unochat
+
+# Chatwoot
 
 Customer engagement suite, an open-source alternative to Intercom, Zendesk, Salesforce Service Cloud etc.
 <p>
@@ -23,7 +42,6 @@ Customer engagement suite, an open-source alternative to Intercom, Zendesk, Sale
   <img src="https://img.shields.io/github/commit-activity/m/chatwoot/chatwoot" alt="Commits-per-month">
   <a title="Crowdin" target="_self" href="https://chatwoot.crowdin.com/chatwoot"><img src="https://badges.crowdin.net/e/37ced7eba411064bd792feb3b7a28b16/localized.svg"></a>
   <a href="https://discord.gg/cJXdrwS"><img src="https://img.shields.io/discord/647412545203994635" alt="Discord"></a>
-  <a href="https://huntr.dev/bounties/disclose"><img src="https://cdn.huntr.dev/huntr_security_badge_mono.svg" alt="Huntr"></a>
   <a href="https://status.chatwoot.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchatwoot%2Fstatus%2Fmaster%2Fapi%2Fchatwoot%2Fuptime.json" alt="uptime"></a>
   <a href="https://status.chatwoot.com"><img src="https://img.shields.io/endpoint?url=https%3A%2F%2Fraw.githubusercontent.com%2Fchatwoot%2Fstatus%2Fmaster%2Fapi%2Fchatwoot%2Fresponse-time.json" alt="response time"></a>
   <a href="https://artifacthub.io/packages/helm/chatwoot/chatwoot"><img src="https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/artifact-hub" alt="Artifact HUB"></a>
@@ -99,7 +117,7 @@ Chatwoot now supports 1-Click deployment to DigitalOcean as a kubernetes app.
 
 ### Other deployment options
 
-For other supported options, checkout our [deployment page](https://chatwoot.com/deploy). 
+For other supported options, checkout our [deployment page](https://chatwoot.com/deploy).
 
 ## Security
 
@@ -118,4 +136,4 @@ Thanks goes to all these [wonderful people](https://www.chatwoot.com/docs/contri
 <a href="https://github.com/chatwoot/chatwoot/graphs/contributors"><img src="https://opencollective.com/chatwoot/contributors.svg?width=890&button=false" /></a>
 
 
-*Chatwoot* &copy; 2017-2023, Chatwoot Inc - Released under the MIT License.
+*Chatwoot* &copy; 2017-2024, Chatwoot Inc - Released under the MIT License.

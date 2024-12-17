@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import {
   SET_TEAM_UI_FLAG,
   CLEAR_TEAMS,
@@ -6,7 +5,6 @@ import {
   SET_TEAM_ITEM,
   EDIT_TEAM,
   DELETE_TEAM,
-  SET_TEAMS_METRICS,
 } from './types';
 
 export const mutations = {
@@ -18,36 +16,39 @@ export const mutations = {
   },
 
   [CLEAR_TEAMS]: $state => {
-    Vue.set($state, 'records', {});
+    $state.records = {};
   },
 
   [SET_TEAMS]: ($state, data) => {
+    const updatedRecords = { ...$state.records };
     data.forEach(team => {
-      Vue.set($state.records, team.id, {
-        ...($state.records[team.id] || {}),
+      updatedRecords[team.id] = {
+        ...(updatedRecords[team.id] || {}),
         ...team,
-      });
+      };
     });
+    $state.records = updatedRecords;
   },
 
   [SET_TEAM_ITEM]: ($state, data) => {
-    Vue.set($state.records, data.id, {
-      ...($state.records[data.id] || {}),
-      ...data,
-    });
+    $state.records = {
+      ...$state.records,
+      [data.id]: {
+        ...($state.records[data.id] || {}),
+        ...data,
+      },
+    };
   },
 
   [EDIT_TEAM]: ($state, data) => {
-    Vue.set($state.records, data.id, data);
+    $state.records = {
+      ...$state.records,
+      [data.id]: data,
+    };
   },
 
   [DELETE_TEAM]: ($state, teamId) => {
     const { [teamId]: toDelete, ...records } = $state.records;
-    Vue.set($state, 'records', records);
-  },
-
-  [SET_TEAMS_METRICS]: ($state, data) => {
-    Vue.set($state.uiFlags, 'isFetchingTeams', false);
-    $state.metrics = data;
+    $state.records = records;
   },
 };

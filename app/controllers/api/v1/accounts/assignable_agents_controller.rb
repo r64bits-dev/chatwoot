@@ -7,10 +7,7 @@ class Api::V1::Accounts::AssignableAgentsController < Api::V1::Accounts::BaseCon
       member_ids = inbox.members.pluck(:user_id)
       member_ids
     end
-
-    # Intersecção dos IDs de membros para os diferentes inboxes
     agent_ids = agent_ids.inject(:&)
-
     agents = Current.account.users.where(id: agent_ids)
     @assignable_agents = (agents + Current.account.administrators).uniq
   end

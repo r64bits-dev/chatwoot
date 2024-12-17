@@ -1,30 +1,30 @@
-import { AdminSupervisorRoles } from '../../../../featureFlags';
 import { frontendURL } from '../../../../helper/URLHelper';
 
-const SettingsContent = () => import('../Wrapper.vue');
+const SettingsWrapper = () => import('../SettingsWrapper.vue');
 const Index = () => import('./Index.vue');
 
 export default {
   routes: [
     {
       path: frontendURL('accounts/:accountId/settings/labels'),
-      component: SettingsContent,
-      props: {
-        headerTitle: 'LABEL_MGMT.HEADER',
-        icon: 'tag',
-        showNewButton: false,
-      },
+      component: SettingsWrapper,
       children: [
         {
           path: '',
           name: 'labels_wrapper',
-          roles: AdminSupervisorRoles,
-          redirect: 'list',
+          meta: {
+            permissions: ['administrator'],
+          },
+          redirect: to => {
+            return { name: 'labels_list', params: to.params };
+          },
         },
         {
           path: 'list',
           name: 'labels_list',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator'],
+          },
           component: Index,
         },
       ],

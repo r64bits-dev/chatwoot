@@ -35,13 +35,4 @@ class ReportingEvent < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :inbox, optional: true
   belongs_to :conversation, optional: true
-
-  scope :with_agents_ids, lambda { |agent_ids|
-    where(user_id: agent_ids) if agent_ids.present?
-  }
-
-  scope :extra_inboxes, -> { where(name: 'extra_inboxes') }
-  scope :extra_agents, -> { where(name: 'extra_agents') }
-  scope :extra_messages_outgoing, -> { where(name: 'extra_messages_outgoing') }
-  scope :extra_messages_incoming, -> { where(name: 'extra_messages_incoming') }
 end

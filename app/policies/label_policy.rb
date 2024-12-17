@@ -1,12 +1,10 @@
 class LabelPolicy < ApplicationPolicy
-  FEATURE = 'labels'.freeze
-
   def index?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def update?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator?
   end
 
   def show?
@@ -14,14 +12,10 @@ class LabelPolicy < ApplicationPolicy
   end
 
   def create?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator?
   end
 
   def destroy?
     @account_user.administrator?
-  end
-
-  def conversations?
-    @account_user.administrator? || can_access?(FEATURE)
   end
 end

@@ -48,9 +48,9 @@ class Rack::Attack
 
   throttle('req/ip', limit: ENV.fetch('RACK_ATTACK_LIMIT', '3000').to_i, period: 1.minute, &:ip)
 
-  # ##-----------------------------------------------###
-  # ##-----Authentication Related Throttling---------###
-  # ##-----------------------------------------------###
+  ###-----------------------------------------------###
+  ###-----Authentication Related Throttling---------###
+  ###-----------------------------------------------###
 
   ### Prevent Brute-Force Super Admin Login Attacks ###
   throttle('super_admin_login/ip', limit: 5, period: 5.minutes) do |req|
@@ -94,16 +94,21 @@ class Rack::Attack
     end
   end
 
+  ## Resend confirmation throttling
+  throttle('resend_confirmation/ip', limit: 5, period: 30.minutes) do |req|
+    req.ip if req.path_without_extentions == '/api/v1/profile/resend_confirmation' && req.post?
+  end
+
   ## Prevent Brute-Force Signup Attacks ###
   throttle('accounts/ip', limit: 5, period: 30.minutes) do |req|
     req.ip if req.path_without_extentions == '/api/v1/accounts' && req.post?
   end
 
-  # #-----------------------------------------------##
+  ##-----------------------------------------------##
 
-  # ##-----------------------------------------------###
-  # ##-----------Widget API Throttling---------------###
-  # ##-----------------------------------------------###
+  ###-----------------------------------------------###
+  ###-----------Widget API Throttling---------------###
+  ###-----------------------------------------------###
 
   # Rack attack on widget APIs can be disabled by setting ENABLE_RACK_ATTACK_WIDGET_API to false
   # For clients using the widgets in specific conditions like inside and iframe
@@ -125,11 +130,11 @@ class Rack::Attack
     end
   end
 
-  # #-----------------------------------------------##
+  ##-----------------------------------------------##
 
-  # ##-----------------------------------------------###
-  # ##----------Application API Throttling-----------###
-  # ##-----------------------------------------------###
+  ###-----------------------------------------------###
+  ###----------Application API Throttling-----------###
+  ###-----------------------------------------------###
 
   ## Prevent Abuse of Converstion Transcript APIs ###
   throttle('/api/v1/accounts/:account_id/conversations/:conversation_id/transcript', limit: 30, period: 1.hour) do |req|
@@ -140,6 +145,12 @@ class Rack::Attack
   ## Prevent Abuse of attachment upload APIs ##
   throttle('/api/v1/accounts/:account_id/upload', limit: 60, period: 1.hour) do |req|
     match_data = %r{/api/v1/accounts/(?<account_id>\d+)/upload}.match(req.path)
+    match_data[:account_id] if match_data.present?
+  end
+
+  ## Prevent abuse of contact search api
+  throttle('/api/v1/accounts/:account_id/contacts/search', limit: ENV.fetch('RATE_LIMIT_CONTACT_SEARCH', '100').to_i, period: 1.minute) do |req|
+    match_data = %r{/api/v1/accounts/(?<account_id>\d+)/contacts/search}.match(req.path)
     match_data[:account_id] if match_data.present?
   end
 

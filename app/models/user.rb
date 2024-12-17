@@ -68,22 +68,21 @@ class User < ApplicationRecord
   # work because :validatable in devise overrides this.
   # validates_uniqueness_of :email, scope: :account_id
 
-  validates :email, :name, presence: true
-  validates_length_of :name, minimum: 1, maximum: 255
+  validates :email, presence: true
 
   has_many :account_users, dependent: :destroy_async
   has_many :accounts, through: :account_users
   accepts_nested_attributes_for :account_users
 
-  has_many :assigned_conversations, foreign_key: 'assignee_id', class_name: 'Conversation', dependent: :nullify
+  has_many :assigned_conversations, foreign_key: 'assignee_id', class_name: 'Conversation', dependent: :nullify, inverse_of: :assignee
   alias_attribute :conversations, :assigned_conversations
-  has_many :csat_survey_responses, foreign_key: 'assigned_agent_id', dependent: :nullify
+  has_many :csat_survey_responses, foreign_key: 'assigned_agent_id', dependent: :nullify, inverse_of: :assigned_agent
   has_many :conversation_participants, dependent: :destroy_async
   has_many :participating_conversations, through: :conversation_participants, source: :conversation
 
   has_many :inbox_members, dependent: :destroy_async
   has_many :inboxes, through: :inbox_members, source: :inbox
-  has_many :messages, as: :sender
+  has_many :messages, as: :sender, dependent: :nullify
   has_many :invitees, through: :account_users, class_name: 'User', foreign_key: 'inviter_id', source: :inviter, dependent: :nullify
 
   has_many :custom_filters, dependent: :destroy_async
@@ -95,28 +94,27 @@ class User < ApplicationRecord
   has_many :notifications, dependent: :destroy_async
   has_many :team_members, dependent: :destroy_async
   has_many :teams, through: :team_members
-  has_many :articles, foreign_key: 'author_id', dependent: :nullify
+  has_many :articles, foreign_key: 'author_id', dependent: :nullify, inverse_of: :author
   has_many :portal_members, class_name: :PortalMember, dependent: :destroy_async
   has_many :portals, through: :portal_members, source: :portal,
                      class_name: :Portal,
                      dependent: :nullify
-  has_many :macros, foreign_key: 'created_by_id'
+  # rubocop:disable Rails/HasManyOrHasOneDependent
+  # we are handling this in `remove_macros` callback
+  has_many :macros, foreign_key: 'created_by_id', inverse_of: :created_by
+  # rubocop:enable Rails/HasManyOrHasOneDependent
+
   before_validation :set_password_and_uid, on: :create
   after_destroy :remove_macros
 
-  # tickets
-  has_many :tickets, inverse_of: :user
-  has_many :assigned_tickets, class_name: 'Ticket', foreign_key: 'assigned_to', inverse_of: :assignee
-
   scope :order_by_full_name, -> { order('lower(name) ASC') }
-  scope :non_administrator, -> { where.not(type: 'SuperAdmin') }
 
   before_validation do
     self.email = email.try(:downcase)
   end
 
-  def send_devise_notification(notification, *)
-    devise_mailer.with(account: Current.account).send(notification, self, *).deliver_later
+  def send_devise_notification(notification, *args)
+    devise_mailer.with(account: Current.account).send(notification, self, *args).deliver_later
   end
 
   def set_password_and_uid
@@ -124,11 +122,11 @@ class User < ApplicationRecord
   end
 
   def assigned_inboxes
-    Current.account.inboxes
+    administrator? ? Current.account.inboxes : inboxes.where(account_id: Current.account.id)
   end
 
   def serializable_hash(options = nil)
-    super.merge(confirmed: confirmed?)
+    super(options).merge(confirmed: confirmed?)
   end
 
   def push_event_data
@@ -141,10 +139,6 @@ class User < ApplicationRecord
       availability_status: availability_status,
       thumbnail: avatar_url
     }
-  end
-
-  def offline?
-    availability_status == 'offline'
   end
 
   def webhook_data
@@ -162,19 +156,8 @@ class User < ApplicationRecord
     mutations_from_database.changed?('email')
   end
 
-  def notifications_meta(account_id)
-    {
-      unread_count: notifications.where(account_id: account_id, read_at: nil).count,
-      count: notifications.where(account_id: account_id).count
-    }
-  end
-
-  def superadmin?
-    type == 'SuperAdmin'
-  end
-
-  def ultra_admin?
-    (ENV.fetch('ULTRA_ADMINS', nil) || []).include?(email)
+  def self.from_email(email)
+    find_by(email: email&.downcase)
   end
 
   private
@@ -185,3 +168,4 @@ class User < ApplicationRecord
 end
 
 User.include_mod_with('Audit::User')
+User.include_mod_with('Concerns::User')

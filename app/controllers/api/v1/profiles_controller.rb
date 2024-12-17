@@ -4,15 +4,15 @@ class Api::V1::ProfilesController < Api::BaseController
   def show; end
 
   def update
-    params[:profile][:message_signature] = @user.name if profile_params[:message_signature].blank?
-
     if password_params[:password].present?
       render_could_not_create_error('Invalid current password') and return unless @user.valid_password?(password_params[:current_password])
 
       @user.update!(password_params.except(:current_password))
     end
 
-    @user.update!(profile_params)
+    @user.assign_attributes(profile_params)
+    @user.custom_attributes.merge!(custom_attributes_params)
+    @user.save!
   end
 
   def avatar
@@ -33,10 +33,15 @@ class Api::V1::ProfilesController < Api::BaseController
     head :ok
   end
 
+  def resend_confirmation
+    @user.send_confirmation_instructions unless @user.confirmed?
+    head :ok
+  end
+
   private
 
   def set_user
-    @user = User.includes(account_users: :account).find(current_user.id)
+    @user = current_user
   end
 
   def availability_params
@@ -57,6 +62,10 @@ class Api::V1::ProfilesController < Api::BaseController
       :account_id,
       ui_settings: {}
     )
+  end
+
+  def custom_attributes_params
+    params.require(:profile).permit(:phone_number)
   end
 
   def password_params

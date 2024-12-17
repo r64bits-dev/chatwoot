@@ -1,13 +1,10 @@
 class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   include Api::V1::InboxesHelper
-  include PhoneHelper
   before_action :fetch_inbox, except: [:index, :create]
   before_action :fetch_agent_bot, only: [:set_agent_bot]
-  before_action :change_phone_number, only: [:create]
   before_action :validate_limit, only: [:create]
   # we are already handling the authorization in fetch inbox
   before_action :check_authorization, except: [:show]
-  before_action :handle_qrcode_channel, only: [:create]
 
   def index
     @inboxes = policy_scope(Current.account.inboxes.order_by_name.includes(:channel, { avatar_attachment: [:blob] }))
@@ -77,13 +74,6 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
     authorize @inbox, :show?
   end
 
-  def handle_qrcode_channel
-    if params.dig("channel", "provider") == 'qrcode'
-      QrCodeService.new(params).call
-      head :ok
-    end
-  end
-
   def fetch_agent_bot
     @agent_bot = AgentBot.find(params[:agent_bot]) if params[:agent_bot]
   end
@@ -134,7 +124,7 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   def inbox_attributes
     [:name, :avatar, :greeting_enabled, :greeting_message, :enable_email_collect, :csat_survey_enabled,
      :enable_auto_assignment, :working_hours_enabled, :out_of_office_message, :timezone, :allow_messages_after_resolved,
-     :init_by_agent, :lock_to_single_conversation, :portal_id, :sender_name_type, :business_name]
+     :lock_to_single_conversation, :portal_id, :sender_name_type, :business_name]
   end
 
   def permitted_params(channel_attributes = [])
@@ -165,10 +155,6 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
     else
       []
     end
-  end
-
-  def change_phone_number
-    params[:channel][:phone_number] = format_phone_number(params[:channel][:phone_number])
   end
 end
 

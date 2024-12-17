@@ -1,9 +1,9 @@
 {
   "LOGIN": {
-    "TITLE": "Logga in till Omni",
+    "TITLE": "Logga in till Chatwoot",
     "EMAIL": {
       "LABEL": "E-post",
-      "PLACEHOLDER": "example@companyname.com",
+      "PLACEHOLDER": "example{'@'}companyname.com",
       "ERROR": "Ange en giltig e-postadress"
     },
     "PASSWORD": {

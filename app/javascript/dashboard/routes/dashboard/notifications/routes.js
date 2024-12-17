@@ -1,5 +1,4 @@
 /* eslint arrow-body-style: 0 */
-import { AllRoles } from '../../../featureFlags';
 import { frontendURL } from '../../../helper/URLHelper';
 const SettingsWrapper = () => import('../settings/Wrapper.vue');
 const NotificationsView = () => import('./components/NotificationsView.vue');
@@ -19,7 +18,9 @@ export const routes = [
         path: '',
         name: 'notifications_index',
         component: NotificationsView,
-        roles: AllRoles,
+        meta: {
+          permissions: ['administrator', 'agent', 'custom_role'],
+        },
       },
     ],
   },

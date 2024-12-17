@@ -23,7 +23,7 @@ class V2::ReportBuilder
 
   # For backward compatible with old report
   def build
-    if %w[avg_first_response_time avg_resolution_time reply_time triggers processed_triggers].include?(params[:metric])
+    if %w[avg_first_response_time avg_resolution_time reply_time].include?(params[:metric])
       timeseries.each_with_object([]) do |p, arr|
         arr << { value: p[1], timestamp: p[0].in_time_zone(@timezone).to_i, count: @grouped_values.count[p[0]] }
       end
@@ -46,11 +46,18 @@ class V2::ReportBuilder
     }
   end
 
-  def summary_tickets_metrics
+  def short_summary
     {
-      total: tickets.count,
-      resolved: tickets.resolved.count,
-      unresolved: tickets.unresolved.count
+      conversations_count: conversations.count,
+      avg_first_response_time: avg_first_response_time_summary,
+      avg_resolution_time: avg_resolution_time_summary
+    }
+  end
+
+  def bot_summary
+    {
+      bot_resolutions_count: bot_resolutions.count,
+      bot_handoffs_count: bot_handoffs.count
     }
   end
 
@@ -62,30 +69,6 @@ class V2::ReportBuilder
     end
   end
 
-  def teams_metrics
-    account.teams.map do |team|
-      {
-        id: team.id,
-        name: team.name,
-        conversations_resolved_count: team.conversations.resolved.count,
-        conversations_unassigned_count: team.conversations.unassigned.count,
-        conversations_open_count: team.conversations.open.count,
-        conversations_pending_count: team.conversations.pending.count
-      }
-    end
-  end
-
-  def triggers_metrics
-    triggers_scope = account.triggers
-    triggers_scope = triggers_scope.where(createdAt: range) if range
-
-    {
-      total: triggers_scope.count,
-      unprocessed: triggers_scope.where(processedAt: nil).count,
-      processed: triggers_scope.where.not(processedAt: nil).count
-    }
-  end
-
   private
 
   def metric_valid?
@@ -93,11 +76,11 @@ class V2::ReportBuilder
        incoming_messages_count
        outgoing_messages_count
        avg_first_response_time
-       avg_resolution_time
+       avg_resolution_time reply_time
        resolutions_count
-       triggers
-       reply_time
-       processed_triggers].include?(params[:metric])
+       bot_resolutions_count
+       bot_handoffs_count
+       reply_time].include?(params[:metric])
   end
 
   def inbox
@@ -116,10 +99,10 @@ class V2::ReportBuilder
     @team ||= account.teams.find(params[:id])
   end
 
-  def get_grouped_values(object_scope, field = :created_at)
+  def get_grouped_values(object_scope)
     @grouped_values = object_scope.group_by_period(
       params[:group_by] || DEFAULT_GROUP_BY,
-      field,
+      :created_at,
       default_value: 0,
       range: range,
       permit: %w[day week month year hour],
@@ -149,7 +132,7 @@ class V2::ReportBuilder
       unattended: @open_conversations.unattended.count
     }
     metric[:unassigned] = @open_conversations.unassigned.count if params[:type].equal?(:account)
-    metric[:resolved] = scope.conversations.resolved.count if params[:type].equal?(:account)
+    metric[:pending] = @open_conversations.pending.count if params[:type].equal?(:account)
     metric
   end
 end

@@ -52,7 +52,7 @@ class Seeders::AccountSeeder
       user_record.skip_confirmation!
       user_record.save!
       Avatar::AvatarFromUrlJob.perform_later(user_record, "https://xsgames.co/randomusers/avatar.php?g=#{user['gender']}")
-      AccountUser.create_with(role: user['role'] || 'agent').find_or_create_by!(account_id: @account.id, user_id: user_record.id)
+      AccountUser.create_with(role: (user['role'] || 'agent')).find_or_create_by!(account_id: @account.id, user_id: user_record.id)
       next if user['team'].blank?
 
       add_user_to_teams(user: user_record, teams: user['team'])
@@ -81,14 +81,14 @@ class Seeders::AccountSeeder
       end
       contact_data['conversations'].each do |conversation_data|
         inbox = @account.inboxes.find_by(channel_type: conversation_data['channel'])
-        contact_inbox = inbox.contact_inboxes.create_or_find_by!(contact: contact, source_id: conversation_data['source_id'] || SecureRandom.hex)
+        contact_inbox = inbox.contact_inboxes.create_or_find_by!(contact: contact, source_id: (conversation_data['source_id'] || SecureRandom.hex))
         create_conversation(contact_inbox: contact_inbox, conversation_data: conversation_data)
       end
     end
   end
 
   def create_conversation(contact_inbox:, conversation_data:)
-    assignee = User.find_by(email: conversation_data['assignee']) if conversation_data['assignee'].present?
+    assignee = User.from_email(conversation_data['assignee']) if conversation_data['assignee'].present?
     conversation = contact_inbox.conversations.create!(account: contact_inbox.inbox.account, contact: contact_inbox.contact,
                                                        inbox: contact_inbox.inbox, assignee: assignee)
     create_messages(conversation: conversation, messages: conversation_data['messages'])
@@ -111,7 +111,7 @@ class Seeders::AccountSeeder
     if message_data['message_type'] == 'incoming'
       conversation.contact
     elsif message_data['sender'].present?
-      User.find_by(email: message_data['sender'])
+      User.from_email(message_data['sender'])
     end
   end
 

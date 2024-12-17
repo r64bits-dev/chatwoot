@@ -7,10 +7,6 @@ export const ATTRIBUTE_MODELS = [
     id: 1,
     option: 'Contact',
   },
-  {
-    id: 2,
-    option: 'Ticket',
-  },
 ];
 
 export const ATTRIBUTE_TYPES = [

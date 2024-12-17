@@ -1,32 +1,31 @@
 {
   "INBOX_MGMT": {
     "HEADER": "Inboxes",
-    "SIDEBAR_TXT": "<p><b>Inbox</b></p> <p> When you connect a website or a facebook Page to Omni, it is called an <b>Inbox</b>. You can have unlimited inboxes in your Omni account. </p><p> Click on <b>Add Inbox</b> to connect a website or a Facebook Page. </p><p> In the Dashboard, you can see all the conversations from all your inboxes in a single place and respond to them under the `Conversations` tab. </p><p> You can also see conversations specific to an inbox by clicking on the inbox name on the left pane of the dashboard. </p>",
+    "DESCRIPTION": "A channel is the mode of communication your customer chooses to interact with you. An inbox is where you manage interactions for a specific channel. It can include communications from various sources such as email, live chat, and social media.",
+    "LEARN_MORE": "Learn more about inboxes",
+    "RECONNECTION_REQUIRED": "Your inbox is disconnected. You won't receive new messages until you reauthorize it.",
+    "CLICK_TO_RECONNECT": "Click here to reconnect.",
     "LIST": {
       "404": "There are no inboxes attached to this account."
     },
-    "CREATE_FLOW": [
-      {
-        "title": "Choose Channel",
-        "route": "settings_inbox_new",
-        "body": "Choose the provider you want to integrate with Omni."
+    "CREATE_FLOW": {
+      "CHANNEL": {
+        "TITLE": "Choose Channel",
+        "BODY": "Choose the provider you want to integrate with Chatwoot."
       },
-      {
-        "title": "Create Inbox",
-        "route": "settings_inboxes_page_channel",
-        "body": "Authenticate your account and create an inbox."
+      "INBOX": {
+        "TITLE": "Create Inbox",
+        "BODY": "Authenticate your account and create an inbox."
       },
-      {
-        "title": "Add Agents",
-        "route": "settings_inboxes_add_agents",
-        "body": "Add agents to the created inbox."
+      "AGENT": {
+        "TITLE": "Add Agents",
+        "BODY": "Add agents to the created inbox."
       },
-      {
-        "title": "Voila!",
-        "route": "settings_inbox_finish",
-        "body": "You are all set to go!"
+      "FINISH": {
+        "TITLE": "Voilà!",
+        "BODY": "You are all set to go!"
       }
-    ],
+    },
     "ADD": {
       "CHANNEL_NAME": {
         "LABEL": "Inbox Name",
@@ -38,12 +37,12 @@
         "PLACEHOLDER": "Enter your website name (eg: Acme Inc)"
       },
       "FB": {
-        "HELP": "PS: By signing in, we only get access to your Page's messages. Your private messages can never be accessed by Omni.",
+        "HELP": "PS: By signing in, we only get access to your Page's messages. Your private messages can never be accessed by Chatwoot.",
         "CHOOSE_PAGE": "Choose Page",
         "CHOOSE_PLACEHOLDER": "Select a page from the list",
         "INBOX_NAME": "Inbox Name",
         "ADD_NAME": "Add a name for your inbox",
-        "PICK_NAME": "Pick A Name Your Inbox",
+        "PICK_NAME": "Pick a Name for your Inbox",
         "PICK_A_VALUE": "Pick a value"
       },
       "TWITTER": {
@@ -62,7 +61,7 @@
         },
         "CHANNEL_WEBHOOK_URL": {
           "LABEL": "Webhook URL",
-          "PLACEHOLDER": "Enter your Webhook URL",
+          "PLACEHOLDER": "Please enter your Webhook URL",
           "ERROR": "Please enter a valid URL"
         },
         "CHANNEL_DOMAIN": {
@@ -143,7 +142,7 @@
           "ERROR": "This field is required"
         },
         "PHONE_NUMBER": {
-          "LABEL": "Phone number",
+          "LABEL": "Phone Number",
           "PLACEHOLDER": "Please enter the phone number from which message will be sent.",
           "ERROR": "Please provide a valid phone number that starts with a `+` sign and does not contain any spaces."
         },
@@ -155,15 +154,6 @@
         "API": {
           "ERROR_MESSAGE": "We were not able to authenticate Twilio credentials, please try again"
         }
-      },
-      "QRCODE": {
-        "URL": {
-          "LABEL": "Subdomain",
-          "PLACEHOLDER": "Please enter the Subdomain",
-          "ERROR": "This field is required"
-        },
-        "USE_REOPEN_CONVERSATION": "Reopen closed conversations",
-        "USE_CONVERSATION_PENDING": "Use pending conversations"
       },
       "SMS": {
         "TITLE": "SMS Channel",
@@ -184,12 +174,12 @@
           },
           "API_KEY": {
             "LABEL": "API Key",
-            "PLACEHOLDER": "Please enter your Bandwith API Key",
+            "PLACEHOLDER": "Please enter your Bandwidth API Key",
             "ERROR": "This field is required"
           },
           "API_SECRET": {
             "LABEL": "API Secret",
-            "PLACEHOLDER": "Please enter your Bandwith API Secret",
+            "PLACEHOLDER": "Please enter your Bandwidth API Secret",
             "ERROR": "This field is required"
           },
           "APPLICATION_ID": {
@@ -225,11 +215,101 @@
           "TWILIO": "Twilio",
           "WHATSAPP_CLOUD": "WhatsApp Cloud",
           "360_DIALOG": "360Dialog",
-          "QR_CODE": "QR Code"
+          "UNOAPI": "Unoapi"
         },
         "INBOX_NAME": {
           "LABEL": "Inbox Name",
           "PLACEHOLDER": "Please enter an inbox name",
+          "ERROR": "This field is required"
+        },
+        "SEND_AGENT_NAME": {
+          "LABEL": "Send agent name",
+          "PLACEHOLDER": "Check to send agent name.",
+          "ERROR": "Check to send agent name."
+        },
+        "IGNORE_HISTORY": {
+          "LABEL": "Ignore history on connect",
+          "PLACEHOLDER": "Check to ignore history on connect.",
+          "ERROR": "Check to ignore history on connect."
+        },
+        "WEBWOOK_SEND_NEW_MESSAGES": {
+          "LABEL": "Webhook send new messages",
+          "PLACEHOLDER": "Check to ignore history on connect.",
+          "ERROR": "Check to webhook send new messages."
+        },
+        "IGNORE_GROUPS": {
+          "LABEL": "Ignore groups messages",
+          "PLACEHOLDER": "Check to ignore groups messages.",
+          "ERROR": "Check to ignore groups messages."
+        },
+        "GENERATE_API_KEY": {
+          "LABEL": "Generate API Key",
+          "PLACEHOLDER": "Generate API Key",
+          "ERROR": "Generate API Key"
+        },
+        "REJECT_CALLS": {
+          "LABEL": "Reject call",
+          "PLACEHOLDER": "Reject call.",
+          "ERROR": "Reject call."
+        },
+        "WAVOIP_TOKEN": {
+          "LABEL": "Wavoip Token",
+          "PLACEHOLDER": "Put the Wavoip token.",
+          "ERROR": "To make/receive whatsapp calls put the wavoip token"
+        },
+        "MESSAGE_CALLS_WEBHOOK": {
+          "LABEL": "Message on reject call",
+          "PLACEHOLDER": "Message on reject call.",
+          "ERROR": "Message on reject call."
+        },
+        "IGNORE_BROADCAST_STATUSES": {
+          "LABEL": "Ignore broadcast statuses",
+          "PLACEHOLDER": "Select to ignore broadcast statuses.",
+          "ERROR": "Select to ignore broadcast statuses."
+        },
+        "IGNORE_BROADCAST_MESSAGES": {
+          "LABEL": "Ignore broadcast messages",
+          "PLACEHOLDER": "Select to ignore broadcast messages.",
+          "ERROR": "Select to ignore broadcast messages."
+        },
+        "IGNORE_OWN_MESSAGES": {
+          "LABEL": "Ignore own messages",
+          "PLACEHOLDER": "Select to ignore own messages.",
+          "ERROR": "Select to ignore own messages."
+        },
+        "IGNORE_YOURSELF_MESSAGES": {
+          "LABEL": "Ignore your messages",
+          "PLACEHOLDER": "Select to ignore your messages.",
+          "ERROR": "Select to ignore your messages."
+        },
+        "SEND_CONNECTION_STATUS": {
+          "LABEL": "Show connection status",
+          "PLACEHOLDER": "Select to show connection status.",
+          "ERROR": "Select to show connection status."
+        },
+        "NOTIFY_FAILED_MESSAGES": {
+          "LABEL": "Notify failed messages",
+          "PLACEHOLDER": "Select to notify failed messages.",
+          "ERROR": "Select to notify failed messages."
+        },
+        "COMPOSING_MESSAGE": {
+          "LABEL": "Compose message",
+          "PLACEHOLDER": "Select to compose message.",
+          "ERROR": "Select to compose message."
+        },
+        "SEND_REACTION_AS_REPLY": {
+          "LABEL": "Show reaction as reply",
+          "PLACEHOLDER": "Select to show reaction as reply.",
+          "ERROR": "Select to show reaction as reply."
+        },
+        "SEND_PROFILE_PICTURE": {
+          "LABEL": "Show profile picture",
+          "PLACEHOLDER": "Select to show profile picture.",
+          "ERROR": "Select to show profile picture."
+        },        
+        "URL": {
+          "LABEL": "Unoapi URL",
+          "PLACEHOLDER": "Please enter an Unoapi URL or use default https://unoapi.cloud",
           "ERROR": "This field is required"
         },
         "PHONE_NUMBER": {
@@ -249,7 +329,7 @@
         },
         "WEBHOOK_VERIFY_TOKEN": {
           "LABEL": "Webhook Verify Token",
-          "PLACEHOLDER": "Enter a verify token which you want to configure for facebook webhooks.",
+          "PLACEHOLDER": "Enter a verify token which you want to configure for Facebook webhooks.",
           "ERROR": "Please enter a valid value."
         },
         "API_KEY": {
@@ -279,7 +359,7 @@
         },
         "WEBHOOK_URL": {
           "LABEL": "Webhook URL",
-          "SUBTITLE": "Configure the URL where you want to recieve callbacks on events.",
+          "SUBTITLE": "Configure the URL where you want to receive callbacks on events.",
           "PLACEHOLDER": "Webhook URL"
         },
         "SUBMIT_BUTTON": "Create API Channel",
@@ -287,9 +367,32 @@
           "ERROR_MESSAGE": "We were not able to save the api channel"
         }
       },
+      "NOTIFICA_ME_CHANNEL": {
+        "TITLE": "NotificaMe Channel",
+        "DESC": "Integrate with NotificaMe Hub.",
+        "CHANNEL_NAME": {
+          "LABEL": "Channel Name",
+          "PLACEHOLDER": "Please enter a channel name",
+          "ERROR": "This field is required"
+        },
+        "CHANNEL": {
+          "LABEL": "Channel",
+          "SUBTITLE": "Choose channel",
+          "PLACEHOLDER": "Choose a channel, if empty, put the channel token first"
+        },
+        "CHANNEL_TOKEN": {
+          "LABEL": "Channel Token",
+          "SUBTITLE": "Configure channel token",
+          "PLACEHOLDER": "Configure channel token"
+        },
+        "SUBMIT_BUTTON": "Create NotificaMe Channel",
+        "API": {
+          "ERROR_MESSAGE": "We were not able to save the NotificaMe channel"
+        }
+      },
       "EMAIL_CHANNEL": {
         "TITLE": "Email Channel",
-        "DESC": "Integrate you email inbox.",
+        "DESC": "Integrate your email inbox.",
         "CHANNEL_NAME": {
           "LABEL": "Channel Name",
           "PLACEHOLDER": "Please enter a channel name",
@@ -350,21 +453,21 @@
       },
       "AUTH": {
         "TITLE": "Choose a channel",
-        "DESC": "Omni supports live-chat widgets, Facebook Messenger, WhatsApp, Emails, etc., as channels. If you want to build a custom channel, you can create it using the API channel. To get started, choose one of the channels below."
+        "DESC": "Chatwoot supports live-chat widgets, Facebook Messenger, WhatsApp, Emails, etc., as channels. If you want to build a custom channel, you can create it using the API channel. To get started, choose one of the channels below."
       },
       "AGENTS": {
         "TITLE": "Agents",
         "DESC": "Here you can add agents to manage your newly created inbox. Only these selected agents will have access to your inbox. Agents which are not part of this inbox will not be able to see or respond to messages in this inbox when they login. <br> <b>PS:</b> As an administrator, if you need access to all inboxes, you should add yourself as agent to all inboxes that you create.",
-        "VALIDATION_ERROR": "Add atleast one agent to your new Inbox",
+        "VALIDATION_ERROR": "Add at least one agent to your new Inbox",
         "PICK_AGENTS": "Pick agents for the inbox"
       },
       "DETAILS": {
         "TITLE": "Inbox Details",
-        "DESC": "From the dropdown below, select the Facebook Page you want to connect to Omni. You can also give a custom name to your inbox for better identification."
+        "DESC": "From the dropdown below, select the Facebook Page you want to connect to Chatwoot. You can also give a custom name to your inbox for better identification."
       },
       "FINISH": {
         "TITLE": "Nailed It!",
-        "DESC": "You have successfully finished integrating your Facebook Page with Omni. Next time a customer messages your Page, the conversation will automatically appear on your inbox.<br>We are also providing you with a widget script that you can easily add to your website. Once this is live on your website, customers can message you right from your website without the help of any external tool and the conversation will appear right here, on Omni.<br>Cool, huh? Well, we sure try to be :)"
+        "DESC": "You have successfully finished integrating your Facebook Page with Chatwoot. Next time a customer messages your Page, the conversation will automatically appear on your inbox.<br>We are also providing you with a widget script that you can easily add to your website. Once this is live on your website, customers can message you right from your website without the help of any external tool and the conversation will appear right here, on Chatwoot.<br>Cool, huh? Well, we sure try to be :)"
       },
       "EMAIL_PROVIDER": {
         "TITLE": "Select your email provider",
@@ -374,12 +477,20 @@
         "TITLE": "Microsoft Email",
         "DESCRIPTION": "Click on the Sign in with Microsoft button to get started. You will redirected to the email sign in page. Once you accept the requested permissions, you would be redirected back to the inbox creation step.",
         "EMAIL_PLACEHOLDER": "Enter email address",
-        "HELP": "To add your Microsoft account as a channel, you need to authenticate your Microsoft account by clicking on 'Sign in with Microsoft' ",
+        "SIGN_IN": "Sign in with Microsoft",
         "ERROR_MESSAGE": "There was an error connecting to Microsoft, please try again"
+      },
+      "GOOGLE": {
+        "TITLE": "Google Email",
+        "DESCRIPTION": "Click on the Sign in with Google button to get started. You will redirected to the email sign in page. Once you accept the requested permissions, you would be redirected back to the inbox creation step.",
+        "SIGN_IN": "Sign in with Google",
+        "EMAIL_PLACEHOLDER": "Enter email address",
+        "ERROR_MESSAGE": "There was an error connecting to Google, please try again"
       }
     },
     "DETAILS": {
       "LOADING_FB": "Authenticating you with Facebook...",
+      "ERROR_FB_LOADING": "Error loading Facebook SDK. Please disable any ad-blockers and try again from a different browser.",
       "ERROR_FB_AUTH": "Something went wrong, Please refresh page...",
       "ERROR_FB_UNAUTHORIZED": "You're not authorized to perform this action. ",
       "ERROR_FB_UNAUTHORIZED_HELP": "Please ensure you have access to the Facebook page with full control. You can read more about Facebook roles <a href=\" https://www.facebook.com/help/187316341316631\">here</a>.",
@@ -416,7 +527,7 @@
       },
       "SENDER_NAME_SECTION": {
         "TITLE": "Sender name",
-        "SUB_TEXT": "Select the name shown to the your customer when they receive emails from your agents.",
+        "SUB_TEXT": "Select the name shown to your customer when they receive emails from your agents.",
         "FOR_EG": "For eg:",
         "FRIENDLY": {
           "TITLE": "Friendly",
@@ -447,10 +558,6 @@
       },
       "ENABLE_HMAC": {
         "LABEL": "Enable"
-      },
-      "INIT_BY_AGENT": {
-        "ENABLED": "Enabled",
-        "DISABLED": "Disabled"
       }
     },
     "DELETE": {
@@ -478,7 +585,8 @@
       "PRE_CHAT_FORM": "Pre Chat Form",
       "BUSINESS_HOURS": "Business Hours",
       "WIDGET_BUILDER": "Widget Builder",
-      "BOT_CONFIGURATION": "Bot Configuration"
+      "BOT_CONFIGURATION": "Bot Configuration",
+      "UNOAPI_CONFIGURATION": "Unoapi Configuration"
     },
     "SETTINGS": "Settings",
     "FEATURES": {
@@ -491,8 +599,8 @@
     "SETTINGS_POPUP": {
       "MESSENGER_HEADING": "Messenger Script",
       "MESSENGER_SUB_HEAD": "Place this button inside your body tag",
-      "INBOX_AGENTS": "Agents and Supervisors",
-      "INBOX_AGENTS_SUB_TEXT": "Add or remove agents/supervisors from this inbox",
+      "INBOX_AGENTS": "Agents",
+      "INBOX_AGENTS_SUB_TEXT": "Add or remove agents from this inbox",
       "AGENT_ASSIGNMENT": "Conversation Assignment",
       "AGENT_ASSIGNMENT_SUB_TEXT": "Update conversation assignment settings",
       "UPDATE": "Update",
@@ -521,15 +629,15 @@
       "FORWARD_EMAIL_SUB_TEXT": "Start forwarding your emails to the following email address.",
       "ALLOW_MESSAGES_AFTER_RESOLVED": "Allow messages after conversation resolved",
       "ALLOW_MESSAGES_AFTER_RESOLVED_SUB_TEXT": "Allow the end-users to send messages even after the conversation is resolved.",
-      "ENABLE_INIT_BY_AGENT": "Enable conversation initiation by agents",
-      "ENABLE_INIT_BY_AGENT_SUB_TEXT": "Allow agents to initiate conversations automatically when they receive a message from an agent marked as active.",
       "WHATSAPP_SECTION_SUBHEADER": "This API Key is used for the integration with the WhatsApp APIs.",
-      "WHATSAPP_SECTION_UPDATE_SUBHEADER": "Enter the updated key to be used for the integration with the WhatsApp APIs.",
+      "WHATSAPP_SECTION_UPDATE_SUBHEADER": "Enter the new API key to be used for the integration with the WhatsApp APIs.",
       "WHATSAPP_SECTION_TITLE": "API Key",
       "WHATSAPP_SECTION_UPDATE_TITLE": "Update API Key",
       "WHATSAPP_SECTION_UPDATE_PLACEHOLDER": "Enter the new API Key here",
       "WHATSAPP_SECTION_UPDATE_BUTTON": "Update",
-      "WHATSAPP_WEBHOOK_TITLE": "Webhook Verify Token",
+      "WHATSAPP_WEBHOOK_TITLE": "Webhook Verification Token",
+      "WHATSAPP_CONNECT": "Connect",
+      "WHATSAPP_DISCONNECT": "Disconnect",
       "WHATSAPP_WEBHOOK_SUBHEADER": "This token is used to verify the authenticity of the webhook endpoint.",
       "UPDATE_PRE_CHAT_FORM_SETTINGS": "Update Pre Chat Form Settings"
     },
@@ -541,15 +649,9 @@
       "SUB_TEXT": "Attach a Help Center with the inbox"
     },
     "AUTO_ASSIGNMENT": {
-      "USE_MAX_ASSIGNMENT_LIMIT": "Use auto assignment limit",
-      "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Use auto assignment limit per team",
-      "USE_MAX_ASSIGNMENT_LIMIT_TEAM_PERSON": "Use auto assignment limit per team per person",
       "MAX_ASSIGNMENT_LIMIT": "Auto assignment limit",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Please enter a value greater than 0",
-      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent",
-      "MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent per team",
-      "MAX_ASSIGNMENT_LIMIT_TEAM": "Auto assignment limit per team",
-      "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Please enter a value greater than 0"
+      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent"
     },
     "FACEBOOK_REAUTHORIZE": {
       "TITLE": "Reauthorize",
@@ -591,7 +693,7 @@
       "UPDATE": "Update business hours settings",
       "TOGGLE_AVAILABILITY": "Enable business availability for this inbox",
       "UNAVAILABLE_MESSAGE_LABEL": "Unavailable message for visitors",
-      "TOGGLE_HELP": "Enabling business availability will show the available hours on live chat widget even if all the agents are offline. Outside available hours vistors can be warned with a message and a pre-chat form.",
+      "TOGGLE_HELP": "Enabling business availability will show the available hours on live chat widget even if all the agents are offline. Outside available hours visitors can be warned with a message and a pre-chat form.",
       "DAY": {
         "ENABLE": "Enable availability for this day",
         "UNAVAILABLE": "Unavailable",
@@ -607,7 +709,7 @@
       "NOTE_TEXT": "To enable SMTP, please configure IMAP.",
       "UPDATE": "Update IMAP settings",
       "TOGGLE_AVAILABILITY": "Enable IMAP configuration for this inbox",
-      "TOGGLE_HELP": "Enabling IMAP will help the user to recieve email",
+      "TOGGLE_HELP": "Enabling IMAP will help the user to receive email",
       "EDIT": {
         "SUCCESS_MESSAGE": "IMAP settings updated successfully",
         "ERROR_MESSAGE": "Unable to update IMAP settings"
@@ -750,12 +852,26 @@
         "USER_MESSAGE": "Hi",
         "AGENT_MESSAGE": "Hello"
       },
-      "BRANDING_TEXT": "Powered by Omni",
+      "BRANDING_TEXT": "Powered by Chatwoot",
       "SCRIPT_SETTINGS": "\n      window.chatwootSettings = {options};"
     },
     "EMAIL_PROVIDERS": {
       "MICROSOFT": "Microsoft",
+      "GOOGLE": "Google",
       "OTHER_PROVIDERS": "Other Providers"
+    },
+    "CHANNELS": {
+      "MESSENGER": "Messenger",
+      "WEB_WIDGET": "Website",
+      "TWITTER_PROFILE": "Twitter",
+      "TWILIO_SMS": "Twilio SMS",
+      "WHATSAPP": "WhatsApp",
+      "SMS": "SMS",
+      "EMAIL": "Email",
+      "TELEGRAM": "Telegram",
+      "LINE": "Line",
+      "API": "API Channel",
+      "NOTIFICA_ME": "NotificaMe"
     }
   }
 }

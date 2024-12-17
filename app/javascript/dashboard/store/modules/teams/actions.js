@@ -5,7 +5,6 @@ import {
   SET_TEAM_ITEM,
   EDIT_TEAM,
   DELETE_TEAM,
-  SET_TEAMS_METRICS,
 } from './types';
 import TeamsAPI from '../../../api/teams';
 
@@ -85,15 +84,6 @@ export const actions = {
       throw new Error(error);
     } finally {
       commit(SET_TEAM_UI_FLAG, { isDeleting: false });
-    }
-  },
-
-  countConversationsUnassigned: async ({ commit }) => {
-    try {
-      const response = await TeamsAPI.countConversationsUnassigned();
-      commit(SET_TEAMS_METRICS, response.data);
-    } catch (error) {
-      throw new Error(error);
     }
   },
 };

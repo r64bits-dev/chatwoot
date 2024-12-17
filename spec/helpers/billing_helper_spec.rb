@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe BillingHelper, skip: true do
+RSpec.describe BillingHelper do
   describe '#conversations_this_month' do
     let(:user) { create(:user) }
     let(:account) { create(:account, custom_attributes: { 'plan_name' => 'Hacker' }) }

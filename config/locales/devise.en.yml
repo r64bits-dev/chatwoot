@@ -17,32 +17,8 @@ en:
       unauthenticated: "You need to sign in or sign up before continuing."
       unconfirmed: "You have to confirm your email address before continuing."
     mailer:
-      unlock_instructions:
-        subject: "Unlock instructions"
-        greeting: "Hello %{email}!"
-        locked_account: "Your account has been locked due to an excessive number of unsuccessful sign in attempts."
-        instructions: "Click the link below to unlock your account:"
-        unlock_account: "Unlock my account"
-      reset_password_instructions:
-        subject: "Reset password instructions"
-        greeting: "Hello %{email}!"
-        request: "Someone has requested a link to change your password. You can do this through the link below."
-        change_password: "Change my password"
-        ignore: "If you didn't request this, please ignore this email."
-        no_change: "Your password won't change until you access the link above and create a new one."
-      password_change:
-        subject: "Password Changed"
-        greeting: "Hi %{email}!"
-        notification: "We're contacting you to notify you that your password has been changed."
       confirmation_instructions:
         subject: "Confirmation Instructions"
-        greeting: "Hi %{name},"
-        inviter_message: "%{inviter_name}, with %{account_name}, has invited you to try out %{brand_name}."
-        confirmed_login: "You can login to your %{brand_name} account through the link below:"
-        welcome_message: "Welcome to %{brand_name}! We have a suite of powerful tools ready for you to explore. Before that we quickly need to verify your email address to know it's really you."
-        activate_account: "Please take a moment and click the link below and activate your account."
-        confirm_account: "Confirm my account"
-        login_account: "Login to my account"
       reset_password_instructions:
         subject: "Reset password instructions"
       unlock_instructions:
@@ -70,16 +46,10 @@ en:
       signed_in: "Signed in successfully."
       signed_out: "Signed out successfully."
       already_signed_out: "Signed out successfully."
-      bad_credentials: "Invalid email or password."
     unlocks:
       send_instructions: "You will receive an email with instructions for how to unlock your account in a few minutes."
       send_paranoid_instructions: "If your account exists, you will receive an email with instructions for how to unlock it in a few minutes."
       unlocked: "Your account has been unlocked successfully. Please sign in to continue."
-
-  devise_token_auth:
-    sessions:
-      bad_credentials: "Invalid email or password."
-
   errors:
     messages:
       already_confirmed: "was already confirmed, please try signing in"

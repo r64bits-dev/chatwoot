@@ -1,6 +1,10 @@
+# TODO: Move this into models jbuilder
+# Currently the file there is used only for search endpoint.
+# Everywhere else we use conversation builder in partials folder
+
 json.meta do
   json.sender do
-    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact, ticket: conversation.tickets.last
+    json.partial! 'api/v1/models/contact', formats: [:json], resource: conversation.contact
   end
   json.channel conversation.inbox.try(:channel_type)
   if conversation.assignee&.account
@@ -47,4 +51,5 @@ json.last_non_activity_message conversation.messages.where(account_id: conversat
 json.last_activity_at conversation.last_activity_at.to_i
 json.priority conversation.priority
 json.waiting_since conversation.waiting_since.to_i.to_i
-json.team_name conversation.team.try(:name)
+json.sla_policy_id conversation.sla_policy_id
+json.partial! 'enterprise/api/v1/conversations/partials/conversation', conversation: conversation if ChatwootApp.enterprise?

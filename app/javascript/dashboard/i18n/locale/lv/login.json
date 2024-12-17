@@ -1,9 +1,9 @@
 {
   "LOGIN": {
-    "TITLE": "Login to Omni",
+    "TITLE": "Login to Chatwoot",
     "EMAIL": {
       "LABEL": "E-pasts",
-      "PLACEHOLDER": "piemers@firmasnosaukums.com",
+      "PLACEHOLDER": "piemers{'@'}firmasnosaukums.com",
       "ERROR": "Lūdzu, ievadiet derīgu e-pasta adresi"
     },
     "PASSWORD": {

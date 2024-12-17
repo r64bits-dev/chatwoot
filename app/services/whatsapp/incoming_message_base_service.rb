@@ -4,6 +4,10 @@
 class Whatsapp::IncomingMessageBaseService
   include ::Whatsapp::IncomingMessageServiceHelpers
 
+  # rubocop:disable Style/ClassVars
+  @@microsecond = 0
+  # rubocop:enable Style/ClassVars
+
   pattr_initialize [:inbox!, :params!]
 
   def perform
@@ -19,16 +23,27 @@ class Whatsapp::IncomingMessageBaseService
   private
 
   def process_messages
-    # message allready exists so we don't need to process
+    # We don't support reactions & ephemeral message now, we need to skip processing the message
+    # if the webhook event is a reaction or an ephermal message or an unsupported message.
+    return if unprocessable_message_type?(message_type)
+
+    # Multiple webhook event can be received against the same message due to misconfigurations in the Meta
+    # business manager account. While we have not found the core reason yet, the following line ensure that
+    # there are no duplicate messages created.
     return if find_message_by_source_id(@processed_params[:messages].first[:id]) || message_under_process?
 
     cache_message_source_id_in_redis
-    set_contact
-    return unless @contact
 
-    set_conversation
-    create_messages
-    clear_message_source_id_from_redis
+    begin
+      set_message_type
+      set_contact
+      return clear_message_source_id_from_redis unless @contact
+
+      set_conversation
+      create_messages
+    ensure
+      clear_message_source_id_from_redis
+    end
   end
 
   def process_statuses
@@ -40,17 +55,20 @@ class Whatsapp::IncomingMessageBaseService
   end
 
   def update_message_with_status(message, status)
-    message.status = status[:status]
+    if status[:status] == 'deleted'
+      message.assign_attributes(content: I18n.t('conversations.messages.deleted'), content_attributes: { deleted: true })
+    else
+      message.status = status[:status]
+    end
     if status[:status] == 'failed' && status[:errors].present?
       error = status[:errors]&.first
       message.external_error = "#{error[:code]}: #{error[:title]}"
+      message.conversation.open! unless message.conversation.open?
     end
     message.save!
   end
 
   def create_messages
-    return if unprocessable_message_type?(message_type)
-
     message = @processed_params[:messages].first
     log_error(message) && return if error_webhook_event?(message)
 
@@ -78,16 +96,18 @@ class Whatsapp::IncomingMessageBaseService
     contact_params = @processed_params[:contacts]&.first
     return if contact_params.blank?
 
-    waid = processed_waid(contact_params[:wa_id])
+    waid = brazil_phone_number?(contact_params[:wa_id]) ? normalised_brazil_mobile_number(contact_params[:wa_id]) : contact_params[:wa_id]
+    waid = processed_waid(waid)
 
     contact_inbox = ::ContactInboxWithContactBuilder.new(
       source_id: waid,
       inbox: inbox,
-      contact_attributes: { name: contact_params.dig(:profile, :name), phone_number: "+#{@processed_params[:messages].first[:from]}" }
+      contact_attributes: { name: contact_params.dig(:profile, :name), phone_number: "+#{waid}", avatar_url: contact_params.dig(:profile, :picture) }
     ).perform
 
     @contact_inbox = contact_inbox
     @contact = contact_inbox.contact
+    @sender = outgoing_message_type? ? nil : contact_inbox.contact
   end
 
   def set_conversation
@@ -137,15 +157,18 @@ class Whatsapp::IncomingMessageBaseService
   end
 
   def create_message(message)
+    timestamp = message[:timestamp] ? Time.at(message[:timestamp].to_i, microsecond, :microsecond, in: 'UTC') : Time.current.utc
     @message = @conversation.messages.build(
       content: message_content(message),
       account_id: @inbox.account_id,
       inbox_id: @inbox.id,
-      message_type: :incoming,
-      sender: @contact,
+      message_type: @message_type,
+      sender: @sender,
       source_id: message[:id].to_s,
+      created_at: timestamp,
       in_reply_to_external_id: @in_reply_to_external_id
     )
+    @message
   end
 
   def attach_contact(contact)
@@ -159,5 +182,17 @@ class Whatsapp::IncomingMessageBaseService
         fallback_title: phone[:phone].to_s
       )
     end
+  end
+
+  def set_message_type
+    @message_type = :incoming
+  end
+
+  def microsecond
+    # rubocop:disable Style/ClassVars
+    @@microsecond = 0 if @@microsecond > 999_999
+    @@microsecond += 1
+    @@microsecond
+    # rubocop:enable Style/ClassVars
   end
 end

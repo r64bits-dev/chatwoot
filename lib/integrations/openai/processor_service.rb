@@ -1,51 +1,45 @@
 class Integrations::Openai::ProcessorService < Integrations::OpenaiBaseService
-  extend JsonRenderer
-
   AGENT_INSTRUCTION = 'You are a helpful support agent.'.freeze
   LANGUAGE_INSTRUCTION = 'Ensure that the reply should be in user language.'.freeze
   def reply_suggestion_message
     make_api_call(reply_suggestion_body)
   end
 
-  api_call :reply_suggestion_message do
-    make_api_call(reply_suggestion_body)
-  end
-
-  api_call :summarize_message do
+  def summarize_message
     make_api_call(summarize_body)
   end
 
-  api_call :rephrase_message do
+  def rephrase_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please rephrase the following response. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :fix_spelling_grammar_message do
+  def fix_spelling_grammar_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please fix the spelling and grammar of the following response. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :shorten_message do
+  def shorten_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please shorten the following response. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :expand_message do
+  def expand_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please expand the following response. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :make_friendly_message do
+  def make_friendly_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please make the following response more friendly. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :make_formal_message do
+  def make_formal_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please make the following response more formal. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
 
-  api_call :simplify_message do
+  def simplify_message
     make_api_call(build_api_call_body("#{AGENT_INSTRUCTION} Please simplify the following response. " \
                                       "#{LANGUAGE_INSTRUCTION}"))
   end
@@ -68,7 +62,6 @@ class Integrations::Openai::ProcessorService < Integrations::OpenaiBaseService
   end
 
   def conversation_messages(in_array_format: false)
-    conversation = find_conversation
     messages = init_messages_body(in_array_format)
 
     add_messages_until_token_limit(conversation, messages, in_array_format)
@@ -76,7 +69,7 @@ class Integrations::Openai::ProcessorService < Integrations::OpenaiBaseService
 
   def add_messages_until_token_limit(conversation, messages, in_array_format, start_from = 0)
     character_count = start_from
-    conversation.messages.chat.reorder('id desc').each do |message|
+    conversation.messages.where(message_type: [:incoming, :outgoing]).where(private: false).reorder('id desc').each do |message|
       character_count, message_added = add_message_if_within_limit(character_count, message, messages, in_array_format)
       break unless message_added
     end

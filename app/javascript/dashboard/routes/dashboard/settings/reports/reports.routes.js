@@ -1,4 +1,3 @@
-import { AdminSupervisorRoles } from '../../../../featureFlags';
 import { frontendURL } from '../../../../helper/URLHelper';
 
 const SettingsContent = () => import('../Wrapper.vue');
@@ -8,10 +7,9 @@ const LabelReports = () => import('./LabelReports.vue');
 const InboxReports = () => import('./InboxReports.vue');
 const TeamReports = () => import('./TeamReports.vue');
 const CsatResponses = () => import('./CsatResponses.vue');
+const BotReports = () => import('./BotReports.vue');
 const LiveReports = () => import('./LiveReports.vue');
-const TriggerReports = () => import('./TriggerReports.vue');
-const InvoiceReports = () => import('./InvoiceReports.vue');
-const TicketsReports = () => import('./TicketsReports.vue');
+const SLAReports = () => import('./SLAReports.vue');
 
 export default {
   routes: [
@@ -26,64 +24,17 @@ export default {
       children: [
         {
           path: '',
-          redirect: 'overview',
+          redirect: to => {
+            return { name: 'account_overview_reports', params: to.params };
+          },
         },
         {
           path: 'overview',
           name: 'account_overview_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: LiveReports,
-        },
-      ],
-    },
-    {
-      path: frontendURL('accounts/:accountId/reports'),
-      component: SettingsContent,
-      props: {
-        headerTitle: 'TRIGGER_REPORTS.HEADER',
-        icon: 'triggers',
-        keepAlive: false,
-      },
-      children: [
-        {
-          path: 'triggers',
-          name: 'triggers_reports',
-          roles: AdminSupervisorRoles,
-          component: TriggerReports,
-        },
-      ],
-    },
-    {
-      path: frontendURL('accounts/:accountId/reports'),
-      component: SettingsContent,
-      props: {
-        headerTitle: 'INVOICE_REPORTS.HEADER',
-        icon: 'invoice',
-        keepAlive: false,
-      },
-      children: [
-        {
-          path: 'invoices',
-          name: 'invoice_reports',
-          roles: AdminSupervisorRoles,
-          component: InvoiceReports,
-        },
-      ],
-    },
-    {
-      path: frontendURL('accounts/:accountId/reports/tickets'),
-      component: SettingsContent,
-      props: {
-        headerTitle: 'TICKETS_REPORTS.HEADER',
-        icon: 'ticket',
-        keepAlive: false,
-      },
-      children: [
-        {
-          path: '',
-          name: 'tickets_reports',
-          roles: AdminSupervisorRoles,
-          component: TicketsReports,
         },
       ],
     },
@@ -99,7 +50,9 @@ export default {
         {
           path: 'conversation',
           name: 'conversation_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: Index,
         },
       ],
@@ -116,8 +69,29 @@ export default {
         {
           path: 'csat',
           name: 'csat_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: CsatResponses,
+        },
+      ],
+    },
+    {
+      path: frontendURL('accounts/:accountId/reports'),
+      component: SettingsContent,
+      props: {
+        headerTitle: 'BOT_REPORTS.HEADER',
+        icon: 'bot',
+        keepAlive: false,
+      },
+      children: [
+        {
+          path: 'bot',
+          name: 'bot_reports',
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
+          component: BotReports,
         },
       ],
     },
@@ -133,7 +107,9 @@ export default {
         {
           path: 'agent',
           name: 'agent_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: AgentReports,
         },
       ],
@@ -150,7 +126,9 @@ export default {
         {
           path: 'label',
           name: 'label_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: LabelReports,
         },
       ],
@@ -167,7 +145,9 @@ export default {
         {
           path: 'inboxes',
           name: 'inbox_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: InboxReports,
         },
       ],
@@ -183,8 +163,29 @@ export default {
         {
           path: 'teams',
           name: 'team_reports',
-          roles: AdminSupervisorRoles,
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
           component: TeamReports,
+        },
+      ],
+    },
+    {
+      path: frontendURL('accounts/:accountId/reports'),
+      component: SettingsContent,
+      props: {
+        headerTitle: 'SLA_REPORTS.HEADER',
+        icon: 'document-list-clock',
+        keepAlive: false,
+      },
+      children: [
+        {
+          path: 'sla',
+          name: 'sla_reports',
+          meta: {
+            permissions: ['administrator', 'report_manage'],
+          },
+          component: SLAReports,
         },
       ],
     },

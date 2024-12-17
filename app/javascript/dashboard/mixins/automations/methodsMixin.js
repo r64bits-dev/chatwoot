@@ -1,5 +1,7 @@
 import languages from 'dashboard/components/widgets/conversation/advancedFilterItems/languages';
 import countries from 'shared/constants/countries';
+import { validateAutomation } from 'dashboard/helper/validations';
+
 import {
   generateCustomAttributeTypes,
   getActionOptions,
@@ -17,6 +19,7 @@ import {
   generateCustomAttributes,
 } from 'dashboard/helper/automationHelper';
 import { mapGetters } from 'vuex';
+import { useAlert } from 'dashboard/composables';
 
 export default {
   computed: {
@@ -27,6 +30,7 @@ export default {
       inboxes: 'inboxes/getInboxes',
       labels: 'labels/getLabels',
       teams: 'teams/getTeams',
+      slaPolicies: 'sla/getSLA',
     }),
     booleanFilterOptions() {
       return [
@@ -137,23 +141,26 @@ export default {
     },
     removeFilter(index) {
       if (this.automation.conditions.length <= 1) {
-        this.showAlert(this.$t('AUTOMATION.CONDITION.DELETE_MESSAGE'));
+        useAlert(this.$t('AUTOMATION.CONDITION.DELETE_MESSAGE'));
       } else {
         this.automation.conditions.splice(index, 1);
       }
     },
     removeAction(index) {
       if (this.automation.actions.length <= 1) {
-        this.showAlert(this.$t('AUTOMATION.ACTION.DELETE_MESSAGE'));
+        useAlert(this.$t('AUTOMATION.ACTION.DELETE_MESSAGE'));
       } else {
         this.automation.actions.splice(index, 1);
       }
     },
     submitAutomation() {
-      this.$v.$touch();
-      if (this.$v.$invalid) return;
-      const automation = generateAutomationPayload(this.automation);
-      this.$emit('saveAutomation', automation, this.mode);
+      // we assign it to this.errors so that it can be accessed in the template
+      // it is supposed to be declared in the data function
+      this.errors = validateAutomation(this.automation);
+      if (Object.keys(this.errors).length === 0) {
+        const automation = generateAutomationPayload(this.automation);
+        this.$emit('saveAutomation', automation, this.mode);
+      }
     },
     resetFilter(index, currentCondition) {
       this.automation.conditions[index].filter_operator = this.automationTypes[
@@ -257,8 +264,15 @@ export default {
       };
     },
     getActionDropdownValues(type) {
-      const { agents, labels, teams } = this;
-      return getActionOptions({ agents, labels, teams, languages, type });
+      const { agents, labels, teams, slaPolicies } = this;
+      return getActionOptions({
+        agents,
+        labels,
+        teams,
+        slaPolicies,
+        languages,
+        type,
+      });
     },
     manifestCustomAttributes() {
       const conversationCustomAttributesRaw = this.$store.getters[
@@ -290,6 +304,9 @@ export default {
         ...manifestedCustomAttributes
       );
       this.automationTypes.conversation_updated.conditions.push(
+        ...manifestedCustomAttributes
+      );
+      this.automationTypes.conversation_resolved.conditions.push(
         ...manifestedCustomAttributes
       );
       this.automationTypes.conversation_opened.conditions.push(

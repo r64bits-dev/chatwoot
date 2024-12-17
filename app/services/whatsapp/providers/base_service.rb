@@ -9,8 +9,6 @@
 ######################################
 
 class Whatsapp::Providers::BaseService
-  include PhoneHelper
-
   pattr_initialize [:whatsapp_channel!]
 
   def send_message(_phone_number, _message)
@@ -18,6 +16,18 @@ class Whatsapp::Providers::BaseService
   end
 
   def send_template(_phone_number, _template_info)
+    raise 'Overwrite this method in child class'
+  end
+
+  def message_update_payload(_message)
+    raise 'Overwrite this method in child class'
+  end
+
+  def message_update_http_method
+    :put
+  end
+
+  def message_path(_message)
     raise 'Overwrite this method in child class'
   end
 

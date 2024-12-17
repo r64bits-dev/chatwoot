@@ -1,38 +1,3 @@
-<template>
-  <div
-    class="py-0 px-0 w-full max-w-full overflow-auto bg-white dark:bg-slate-900"
-  >
-    <article-header
-      :header-title="headerTitle"
-      :count="meta.count"
-      :selected-locale="activeLocaleName"
-      :all-locales="allowedLocales"
-      selected-value="Published"
-      @new-article-page="newArticlePage"
-      @change-locale="onChangeLocale"
-    />
-    <article-table
-      :articles="articles"
-      :current-page="Number(meta.currentPage)"
-      :total-count="Number(meta.count)"
-      @page-change="onPageChange"
-      @reorder="onReorder"
-    />
-    <div
-      v-if="shouldShowLoader"
-      class="items-center flex text-base justify-center py-6 px-4 text-slate-600 dark:text-slate-200"
-    >
-      <spinner />
-      <span class="text-slate-600 dark:text-slate-200">{{
-        $t('HELP_CENTER.TABLE.LOADING_MESSAGE')
-      }}</span>
-    </div>
-    <empty-state
-      v-else-if="shouldShowEmptyState"
-      :title="$t('HELP_CENTER.TABLE.NO_ARTICLES')"
-    />
-  </div>
-</template>
 <script>
 import { mapGetters } from 'vuex';
 import allLocales from 'shared/constants/locales.js';
@@ -49,6 +14,7 @@ export default {
     EmptyState,
     Spinner,
   },
+  emits: ['reloadLocale'],
   data() {
     return {
       pageNumber: 1,
@@ -58,7 +24,6 @@ export default {
     ...mapGetters({
       articles: 'articles/allArticles',
       categories: 'categories/allCategories',
-      uiFlags: 'articles/uiFlags',
       meta: 'articles/getMeta',
       isFetching: 'articles/isFetching',
       currentUserId: 'getCurrentUserID',
@@ -71,9 +36,6 @@ export default {
     },
     shouldShowEmptyState() {
       return !this.isFetching && !this.articles.length;
-    },
-    shouldShowLoader() {
-      return this.isFetching && !this.articles.length;
     },
     selectedPortalSlug() {
       return this.$route.params.portalSlug;
@@ -187,8 +149,47 @@ export default {
           locale,
         },
       });
-      this.$emit('reload-locale');
+      this.$emit('reloadLocale');
     },
   },
 };
 </script>
+
+<template>
+  <div
+    class="flex flex-col w-full max-w-full px-0 py-0 overflow-auto bg-white dark:bg-slate-900"
+  >
+    <ArticleHeader
+      :header-title="headerTitle"
+      :count="meta.count"
+      :selected-locale="activeLocaleName"
+      :all-locales="allowedLocales"
+      selected-value="Published"
+      class="border-b border-slate-50 dark:border-slate-700"
+      @new-article-page="newArticlePage"
+      @change-locale="onChangeLocale"
+    />
+    <div
+      v-if="isFetching"
+      class="flex items-center justify-center px-4 py-6 text-base text-slate-600 dark:text-slate-200"
+    >
+      <Spinner />
+      <span class="text-slate-600 dark:text-slate-200">
+        {{ $t('HELP_CENTER.TABLE.LOADING_MESSAGE') }}
+      </span>
+    </div>
+    <EmptyState
+      v-else-if="shouldShowEmptyState"
+      :title="$t('HELP_CENTER.TABLE.NO_ARTICLES')"
+    />
+    <div v-else class="flex flex-1">
+      <ArticleTable
+        :articles="articles"
+        :current-page="Number(meta.currentPage)"
+        :total-count="Number(meta.count)"
+        @page-change="onPageChange"
+        @reorder="onReorder"
+      />
+    </div>
+  </div>
+</template>

@@ -1,11 +1,21 @@
 {
   "INTEGRATION_SETTINGS": {
     "HEADER": "Integrasi",
+    "DESCRIPTION": "Chatwoot integrates with multiple tools and services to improve your team's efficiency. Explore the list below to configure your favorite apps.",
+    "LEARN_MORE": "Learn more about integrations",
+    "LOADING": "Fetching integrations",
+    "CAPTAIN": {
+      "DISABLED": "Captain is not enabled on your account.",
+      "CLICK_HERE_TO_CONFIGURE": "Click here to configure",
+      "LOADING_CONSOLE": "Loading Captain Console...",
+      "FAILED_TO_LOAD_CONSOLE": "Failed to load Captain Console. Please refresh and try again."
+    },
     "WEBHOOK": {
       "SUBSCRIBED_EVENTS": "Acara Berlangganan",
+      "LEARN_MORE": "Learn more about webhooks",
       "FORM": {
         "CANCEL": "Batalkan",
-        "DESC": "Acara Webhook memberi Anda informasi realtime tentang apa yang terjadi di akun Omni Anda. Harap masukkan URL yang valid untuk mengkonfigurasi callback.",
+        "DESC": "Acara Webhook memberi Anda informasi realtime tentang apa yang terjadi di akun Chatwoot Anda. Harap masukkan URL yang valid untuk mengkonfigurasi callback.",
         "SUBSCRIPTIONS": {
           "LABEL": "Acara",
           "EVENTS": {
@@ -33,7 +43,7 @@
       "HEADER_BTN_TXT": "Tambah webhook baru",
       "LOADING": "Mengambil webhook terlampir",
       "SEARCH_404": "Tidak ada item yang cocok dengan kueri ini",
-      "SIDEBAR_TXT": "<p><b>Webhook</b> </p> <p>Webhook adalah callback HTTP yang dapat ditentukan untuk setiap akun. Mereka dipicu oleh peristiwa seperti pembuatan pesan di Omni. Anda dapat menambah lebih dari satu webhook untuk akun ini. <br /><br /> Untuk menambahkan <b>webhook</b>, klik tombol <b>Tambahkan webhook baru</b>. Anda juga dapat menghapus webhook yang ada dengan mengklik tombol Hapus.</p>",
+      "SIDEBAR_TXT": "<p><b>Webhook</b> </p> <p>Webhook adalah callback HTTP yang dapat ditentukan untuk setiap akun. Mereka dipicu oleh peristiwa seperti pembuatan pesan di Chatwoot. Anda dapat menambah lebih dari satu webhook untuk akun ini. <br /><br /> Untuk menambahkan <b>webhook</b>, klik tombol <b>Tambahkan webhook baru</b>. Anda juga dapat menghapus webhook yang ada dengan mengklik tombol Hapus.</p>",
       "LIST": {
         "404": "Tidak ada webhook yang dikonfigurasi untuk akun ini.",
         "TITLE": "Kelola webhook",
@@ -66,7 +76,7 @@
         },
         "CONFIRM": {
           "TITLE": "Konfirmasi Penghapusan",
-          "MESSAGE": "Apakah Anda yakin ingin menghapus webhook? (%{webhookURL})",
+          "MESSAGE": "Apakah Anda yakin ingin menghapus webhook? ({webhookURL})",
           "YES": "Ya, Hapus ",
           "NO": "Tidak, Simpan"
         }
@@ -80,14 +90,14 @@
       },
       "HELP_TEXT": {
         "TITLE": "Using Slack Integration",
-        "BODY": "<br/><p>Omni will now sync all the incoming conversations into the <b><i>customer-conversations</i></b> channel inside your slack workplace.</p><p>Replying to a conversation thread in <b><i>customer-conversations</i></b> slack channel will create a response back to the customer through chatwoot.</p><p>Start the replies with <b><i>note:</i></b> to create private notes instead of replies.</p><p>If the replier on slack has an agent profile in chatwoot under the same email, the replies will be associated accordingly.</p><p>When the replier doesn't have an associated agent profile, the replies will be made from the bot profile.</p>",
+        "BODY": "<br/><p>Chatwoot will now sync all the incoming conversations into the <b><i>customer-conversations</i></b> channel inside your slack workplace.</p><p>Replying to a conversation thread in <b><i>customer-conversations</i></b> slack channel will create a response back to the customer through chatwoot.</p><p>Start the replies with <b><i>note:</i></b> to create private notes instead of replies.</p><p>If the replier on slack has an agent profile in chatwoot under the same email, the replies will be associated accordingly.</p><p>When the replier doesn't have an associated agent profile, the replies will be made from the bot profile.</p>",
         "SELECTED": "selected"
       },
       "SELECT_CHANNEL": {
         "OPTION_LABEL": "Select a channel",
         "UPDATE": "Perbarui",
         "BUTTON_TEXT": "Connect channel",
-        "DESCRIPTION": "Your Slack workspace is now linked with Omni. However, the integration is currently inactive. To activate the integration and connect a channel to Omni, please click the button below.\n\n**Note:** If you are attempting to connect a private channel, add the Omni app to the Slack channel before proceeding with this step.",
+        "DESCRIPTION": "Your Slack workspace is now linked with Chatwoot. However, the integration is currently inactive. To activate the integration and connect a channel to Chatwoot, please click the button below.\n\n**Note:** If you are attempting to connect a private channel, add the Chatwoot app to the Slack channel before proceeding with this step.",
         "ATTENTION_REQUIRED": "Attention required",
         "EXPIRED": "Your Slack integration has expired. To continue receiving messages on Slack, please delete the integration and connect your workspace again."
       },
@@ -104,7 +114,7 @@
     },
     "OPEN_AI": {
       "AI_ASSIST": "AI Assist",
-      "WITH_AI": " %{option} with AI ",
+      "WITH_AI": " {option} with AI ",
       "OPTIONS": {
         "REPLY_SUGGESTION": "Reply Suggestion",
         "SUMMARIZE": "Summarize",
@@ -167,8 +177,9 @@
     "DASHBOARD_APPS": {
       "TITLE": "Aplikasi Dasbor",
       "HEADER_BTN_TXT": "Tambahkan aplikasi dasbor baru",
-      "SIDEBAR_TXT": "<p><b>Aplikasi Dasbor</b></p><p>Aplikasi Dasbor memungkinkan organisasi untuk menyematkan aplikasi di dalam dasbor Omni untuk menyediakan konteks bagi agen dukungan pelanggan. Fitur ini memungkinkan Anda membuat aplikasi secara independen dan menyematkannya di dalam dasbor untuk menyediakan informasi pengguna, pesanan, atau riwayat pembayaran sebelumnya.</p><p>Ketika Anda menyematkan aplikasi Anda menggunakan dasbor di Omni, aplikasi Anda akan mendapatkan konteks percakapan dan kontak sebagai acara window. Implementasikan penerima untuk acara pesan di halaman Anda untuk menerima konteks.</p><p>Untuk menambahkan aplikasi dasbor baru, klik tombol 'Tambahkan aplikasi dasbor baru'.</p>",
+      "SIDEBAR_TXT": "<p><b>Aplikasi Dasbor</b></p><p>Aplikasi Dasbor memungkinkan organisasi untuk menyematkan aplikasi di dalam dasbor Chatwoot untuk menyediakan konteks bagi agen dukungan pelanggan. Fitur ini memungkinkan Anda membuat aplikasi secara independen dan menyematkannya di dalam dasbor untuk menyediakan informasi pengguna, pesanan, atau riwayat pembayaran sebelumnya.</p><p>Ketika Anda menyematkan aplikasi Anda menggunakan dasbor di Chatwoot, aplikasi Anda akan mendapatkan konteks percakapan dan kontak sebagai acara window. Implementasikan penerima untuk acara pesan di halaman Anda untuk menerima konteks.</p><p>Untuk menambahkan aplikasi dasbor baru, klik tombol 'Tambahkan aplikasi dasbor baru'.</p>",
       "DESCRIPTION": "Aplikasi Dasbor memungkinkan organisasi untuk menyematkan aplikasi di dalam dasbor untuk menyediakan konteks bagi agen dukungan pelanggan. Fitur ini memungkinkan Anda membuat aplikasi secara independen dan menyematkannya untuk menyediakan informasi pengguna, pesanan, atau riwayat pembayaran sebelumnya.",
+      "LEARN_MORE": "Learn more about Dashboard Apps",
       "LIST": {
         "404": "Belum ada aplikasi dasbor yang dikonfigurasi untuk akun ini",
         "LOADING": "Mengambil aplikasi dasbor...",
@@ -205,9 +216,90 @@
         "CONFIRM_YES": "Ya, hapus",
         "CONFIRM_NO": "Tidak, simpan",
         "TITLE": "Konfirmasi Penghapusan",
-        "MESSAGE": "Apakah Anda yakin ingin menghapus aplikasi - %{appName}?",
+        "MESSAGE": "Apakah Anda yakin ingin menghapus aplikasi - {appName}?",
         "API_SUCCESS": "Aplikasi dasbor berhasil dihapus",
         "API_ERROR": "Kami tidak dapat menghapus aplikasi. Harap coba lagi nanti"
+      }
+    },
+    "LINEAR": {
+      "ADD_OR_LINK_BUTTON": "Create/Link Linear Issue",
+      "LOADING": "Fetching linear issues...",
+      "LOADING_ERROR": "There was an error fetching the linear issues, please try again",
+      "CREATE": "Buat",
+      "LINK": {
+        "SEARCH": "Search issues",
+        "SELECT": "Select issue",
+        "TITLE": "Tautan",
+        "EMPTY_LIST": "No linear issues found",
+        "LOADING": "Loading",
+        "ERROR": "There was an error fetching the linear issues, please try again",
+        "LINK_SUCCESS": "Issue linked successfully",
+        "LINK_ERROR": "There was an error linking the issue, please try again",
+        "LINK_TITLE": "Conversation (#{conversationId}) with {name}"
+      },
+      "ADD_OR_LINK": {
+        "TITLE": "Create/link linear issue",
+        "DESCRIPTION": "Create Linear issues from conversations, or link existing ones for seamless tracking.",
+        "FORM": {
+          "TITLE": {
+            "LABEL": "Judul",
+            "PLACEHOLDER": "Enter title",
+            "REQUIRED_ERROR": "Judul wajib diisi"
+          },
+          "DESCRIPTION": {
+            "LABEL": "Deskripsi",
+            "PLACEHOLDER": "Enter description"
+          },
+          "TEAM": {
+            "LABEL": "Tim",
+            "PLACEHOLDER": "Pilih tim",
+            "SEARCH": "Search team",
+            "REQUIRED_ERROR": "Team is required"
+          },
+          "ASSIGNEE": {
+            "LABEL": "Assignee",
+            "PLACEHOLDER": "Select assignee",
+            "SEARCH": "Search assignee"
+          },
+          "PRIORITY": {
+            "LABEL": "Prioritas",
+            "PLACEHOLDER": "Pilih prioritas",
+            "SEARCH": "Search priority"
+          },
+          "LABEL": {
+            "LABEL": "Label",
+            "PLACEHOLDER": "Select label",
+            "SEARCH": "Search label"
+          },
+          "STATUS": {
+            "LABEL": "Status",
+            "PLACEHOLDER": "Select status",
+            "SEARCH": "Search status"
+          },
+          "PROJECT": {
+            "LABEL": "Project",
+            "PLACEHOLDER": "Select project",
+            "SEARCH": "Search project"
+          }
+        },
+        "CREATE": "Buat",
+        "CANCEL": "Batalkan",
+        "CREATE_SUCCESS": "Issue created successfully",
+        "CREATE_ERROR": "There was an error creating the issue, please try again",
+        "LOADING_TEAM_ERROR": "There was an error fetching the teams, please try again",
+        "LOADING_TEAM_ENTITIES_ERROR": "There was an error fetching the team entities, please try again"
+      },
+      "ISSUE": {
+        "STATUS": "Status",
+        "PRIORITY": "Prioritas",
+        "ASSIGNEE": "Assignee",
+        "LABELS": "Label",
+        "CREATED_AT": "Created at {createdAt}"
+      },
+      "UNLINK": {
+        "TITLE": "Unlink",
+        "SUCCESS": "Issue unlinked successfully",
+        "ERROR": "There was an error unlinking the issue, please try again"
       }
     }
   }

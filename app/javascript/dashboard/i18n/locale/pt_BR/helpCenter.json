@@ -3,6 +3,7 @@
     "HEADER": {
       "FILTER": "Filtrar por",
       "SORT": "Ordenar por",
+      "LOCALE": "Localidade",
       "SETTINGS_BUTTON": "Confirgurações",
       "NEW_BUTTON": "Novo artigo",
       "DROPDOWN_OPTIONS": {
@@ -15,6 +16,12 @@
         "MINE": "Meus Artigos",
         "DRAFT": "Artigos em rascunho",
         "ARCHIVED": "Artigos arquivados"
+      },
+      "LOCALE_SELECT": {
+        "TITLE": "Selecionar local",
+        "PLACEHOLDER": "Selecionar local",
+        "NO_RESULT": "Nenhum local encontrado",
+        "SEARCH_PLACEHOLDER": "Selecionar local"
       }
     },
     "EDIT_HEADER": {
@@ -34,6 +41,7 @@
         "UPLOADING": "Enviando...",
         "SUCCESS": "Imagem enviada com sucesso",
         "ERROR": "Erro ao fazer upload da imagem",
+        "UN_AUTHORIZED_ERROR": "You are not authorized to upload images",
         "ERROR_FILE_SIZE": "O tamanho da imagem deve ser menor que {size}MB",
         "ERROR_FILE_FORMAT": "O formato da imagem deve ser jpg, jpeg ou png",
         "ERROR_FILE_DIMENSIONS": "Dimensões da imagem devem ser menores que 2000 x 2000"
@@ -42,12 +50,6 @@
     "ARTICLE_SETTINGS": {
       "TITLE": "Configurações de Artigo",
       "FORM": {
-        "PUBLIC": {
-          "LABEL_ENABLED": "Público",
-          "LABEL_DISABLED": "Privado",
-          "HELP_TEXT_ENABLED": "A publicação do artigo é pública para todos os usuários da organização.",
-          "HELP_TEXT_DISABLED": "A publicação do artigo é privada para todos os usuários da organização."
-        },
         "CATEGORY": {
           "LABEL": "Categoria",
           "TITLE": "Selecionar categoria",
@@ -61,13 +63,6 @@
           "PLACEHOLDER": "Selecionar autor",
           "NO_RESULT": "Nenhum autor encontrado",
           "SEARCH_PLACEHOLDER": "Pesquisar autor"
-        },
-        "TEAMS": {
-          "LABEL": "Equipes", 
-          "TITLE": "Selecionar equipes", 
-          "PLACEHOLDER": "Selecionar equipes", 
-          "NO_RESULT": "Nenhuma equipe encontrada", 
-          "SEARCH_PLACEHOLDER": "Pesquisar equipes" 
         },
         "META_TITLE": {
           "LABEL": "Meta title",
@@ -89,6 +84,9 @@
     },
     "ARTICLE_SEARCH_RESULT": {
       "UNCATEGORIZED": "Não categorizado",
+      "SEARCH_RESULTS": "Resultados da pesquisa para {query}",
+      "EMPTY_TEXT": "Procurar artigos para inserir em respostas.",
+      "SEARCH_LOADER": "Procurando...",
       "INSERT_ARTICLE": "Inserir",
       "NO_RESULT": "Nenhum artigo encontrado",
       "COPY_LINK": "Copiar link do artigo para área de transferência",
@@ -170,9 +168,6 @@
           },
           "LOCALE_SETTINGS": {
             "TITLE": "Localidades"
-          },
-          "TEAM_SETTINGS": {
-            "TITLE": "Equipe"
           }
         },
         "CATEGORIES": {
@@ -236,7 +231,10 @@
         "LOGO": {
           "LABEL": "Logotipo",
           "UPLOAD_BUTTON": "Carregar logotipo",
-          "HELP_TEXT": "Este logotipo será exibido no cabeçalho do portal."
+          "HELP_TEXT": "Este logotipo será exibido no cabeçalho do portal.",
+          "IMAGE_UPLOAD_SUCCESS": "Logo enviada com sucesso",
+          "IMAGE_UPLOAD_ERROR": "Logo deletada com sucesso",
+          "IMAGE_DELETE_ERROR": "Ocorreu um erro ao excluir logo"
         },
         "NAME": {
           "LABEL": "Nome",
@@ -300,23 +298,6 @@
         "API": {
           "SUCCESS_MESSAGE": "Localidade adicionada com sucesso",
           "ERROR_MESSAGE": "Não foi possível adicionar a localidade. Tente novamente."
-        },
-        "TEAM_SETTINGS": {
-          "TITLE": "Configurações da equipe",
-          "HELP_TEXT": "A equipe será usada no portal público para categorizar artigos.",
-          "ERROR": "Equipe é necessária",
-          "FORM": {
-            "PUBLIC": {
-              "LABEL": "Público",
-              "HELP_TEXT_DISABLED": "Somente você e os administradores podem ver e responder mensagens de outros membros da equipe.",
-              "HELP_TEXT_ENABLED": "Esta opção permite que os usuários vejam e respondam mensagens de outros membros da equipe."
-            },
-            "TEAMS": {
-              "LABEL": "Equipes",
-              "HELP_TEXT": "Selecione as equipes"
-            },
-            "SUBMIT": "Atualizar equipes"
-          }
         }
       },
       "CHANGE_DEFAULT_LOCALE": {
@@ -339,12 +320,13 @@
       "HEADERS": {
         "TITLE": "Título",
         "CATEGORY": "Categoria",
-        "READ_COUNT": "Contagem de leituras",
+        "READ_COUNT": "Visualizações",
         "STATUS": "SItuação",
         "LAST_EDITED": "Última edição"
       },
       "COLUMNS": {
-        "BY": "por"
+        "BY": "por",
+        "AUTHOR_NOT_AVAILABLE": "Autor indisponível"
       }
     },
     "EDIT_ARTICLE": {
@@ -398,7 +380,7 @@
         "NAME": {
           "LABEL": "Nome",
           "PLACEHOLDER": "Nome da categoria",
-          "HELP_TEXT": "The category name and icon will be used in the public facing portal to categorize articles.",
+          "HELP_TEXT": "O nome da categoria e o ícone serão usados no portal público para categorizar os artigos.",
           "ERROR": "O nome é obrigatório"
         },
         "SLUG": {
@@ -429,7 +411,7 @@
         "NAME": {
           "LABEL": "Nome",
           "PLACEHOLDER": "Nome da categoria",
-          "HELP_TEXT": "The category name and icon will be used in the public facing portal to categorize articles.",
+          "HELP_TEXT": "O nome da categoria e o ícone serão usados no portal público para categorizar os artigos.",
           "ERROR": "O nome é obrigatório"
         },
         "SLUG": {
@@ -459,6 +441,21 @@
         }
       }
     },
+    "ARTICLE_SEARCH": {
+      "TITLE": "Pesquisar artigos",
+      "PLACEHOLDER": "Pesquisar artigos",
+      "NO_RESULT": "Nenhum artigo encontrado",
+      "SEARCHING": "Procurando...",
+      "SEARCH_BUTTON": "Pesquisar",
+      "INSERT_ARTICLE": "Inserir link",
+      "IFRAME_ERROR": "A URL está vazia ou é inválida. Não é possível exibir conteúdo.",
+      "OPEN_ARTICLE_SEARCH": "Inserir artigo na Central de Ajuda",
+      "SUCCESS_ARTICLE_INSERTED": "Artigo publicado com sucesso",
+      "PREVIEW_LINK": "Visualizar artigo",
+      "CANCEL": "Fechar",
+      "BACK": "Anterior",
+      "BACK_RESULTS": "Voltar aos resultados"
+    },
     "UPGRADE_PAGE": {
       "TITLE": "Centro de Ajuda",
       "DESCRIPTION": "Crie portais de autoatendimento amigáveis ao usuário. Ajude seus usuários a acessar os artigos e obter suporte 24/7. Atualize sua assinatura para habilitar essa função.",
@@ -485,6 +482,7 @@
           "DESCRIPTION": "Use o portal como um CMS sem interface gráfica com frameworks front-end de terceiros usando nossas APIs."
         }
       }
-    }
+    },
+    "LOADING": "Carregando..."
   }
 }

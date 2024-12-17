@@ -5,13 +5,7 @@ import isYesterday from 'date-fns/isYesterday';
 import { endOfDay, getUnixTime, startOfDay, differenceInDays } from 'date-fns';
 
 export const formatUnixDate = (date, dateFormat = 'MMM dd, yyyy') => {
-  const unixDate =
-    typeof date === 'number' ? fromUnixTime(date) : new Date(date);
-
-  if (Number.isNaN(unixDate.getTime())) {
-    throw new Error('Data inválida');
-  }
-
+  const unixDate = fromUnixTime(date);
   return format(unixDate, dateFormat);
 };
 

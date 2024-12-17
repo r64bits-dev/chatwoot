@@ -11,19 +11,13 @@ module RequestExceptionHandler
     yield
   rescue ActiveRecord::RecordNotFound => e
     log_handled_error(e)
-    render_not_found_error(I18n.t('errors.not_found', resource: e.model.to_s.underscore.humanize))
-  rescue ActiveRecord::RecordNotUnique => e
-    log_handled_error(e)
-    render_unprocessable_entity(I18n.t('errors.unprocessable_entity'))
+    render_not_found_error('Resource could not be found')
   rescue Pundit::NotAuthorizedError => e
     log_handled_error(e)
-    render_unauthorized(I18n.t('errors.unauthorized'))
+    render_unauthorized('You are not authorized to do this action')
   rescue ActionController::ParameterMissing => e
     log_handled_error(e)
     render_could_not_create_error(e.message)
-  rescue CustomExceptions::Ticket => e
-    log_handled_error(e)
-    render_unprocessable_entity(e.message)
   ensure
     # to address the thread variable leak issues in Puma/Thin webserver
     Current.reset
@@ -31,10 +25,6 @@ module RequestExceptionHandler
 
   def render_unauthorized(message)
     render json: { error: message }, status: :unauthorized
-  end
-
-  def render_unprocessable_entity(message)
-    render json: { error: message }, status: :unprocessable_entity
   end
 
   def render_not_found_error(message)

@@ -19,6 +19,8 @@ const state = {
       avg_first_response_time: false,
       avg_resolution_time: false,
       resolutions_count: false,
+      bot_resolutions_count: false,
+      bot_handoffs_count: false,
       reply_time: false,
     },
     data: {
@@ -28,6 +30,8 @@ const state = {
       avg_first_response_time: [],
       avg_resolution_time: [],
       resolutions_count: [],
+      bot_resolutions_count: [],
+      bot_handoffs_count: [],
       reply_time: [],
     },
   },
@@ -39,6 +43,13 @@ const state = {
     outgoing_messages_count: 0,
     reply_time: 0,
     resolutions_count: 0,
+    bot_resolutions_count: 0,
+    bot_handoffs_count: 0,
+    previous: {},
+  },
+  botSummary: {
+    bot_resolutions_count: 0,
+    bot_handoffs_count: 0,
     previous: {},
   },
   overview: {
@@ -46,27 +57,10 @@ const state = {
       isFetchingAccountConversationMetric: false,
       isFetchingAccountConversationsHeatmap: false,
       isFetchingAgentConversationMetric: false,
-      isFetchingTeams: false,
-      isFetchingTriggers: false,
     },
     accountConversationMetric: {},
     accountConversationHeatmap: [],
     agentConversationMetric: [],
-    triggers: [],
-    triggersMetrics: {},
-    teams: [],
-  },
-  triggers: {
-    isFetching: false,
-    isFetchingMetrics: false,
-    isFetchingProcessed: false,
-    data: [],
-    processed: [],
-    metrics: {
-      total: 0,
-      resolved: 0,
-      unresolved: 0,
-    },
   },
 };
 
@@ -76,6 +70,9 @@ const getters = {
   },
   getAccountSummary(_state) {
     return _state.accountSummary;
+  },
+  getBotSummary(_state) {
+    return _state.botSummary;
   },
   getAccountConversationMetric(_state) {
     return _state.overview.accountConversationMetric;
@@ -88,12 +85,6 @@ const getters = {
   },
   getOverviewUIFlags($state) {
     return $state.overview.uiFlags;
-  },
-  getTriggersReport($state) {
-    return $state.triggers;
-  },
-  getTeamsMetrics($state) {
-    return $state.overview.teams;
   },
 };
 
@@ -139,11 +130,24 @@ export const actions = {
       reportObj.type,
       reportObj.id,
       reportObj.groupBy,
-      reportObj.businessHours,
-      reportObj.agentsIds
+      reportObj.businessHours
     )
       .then(accountSummary => {
         commit(types.default.SET_ACCOUNT_SUMMARY, accountSummary.data);
+      })
+      .catch(() => {
+        commit(types.default.TOGGLE_ACCOUNT_REPORT_LOADING, false);
+      });
+  },
+  fetchBotSummary({ commit }, reportObj) {
+    Report.getBotSummary({
+      from: reportObj.from,
+      to: reportObj.to,
+      groupBy: reportObj.groupBy,
+      businessHours: reportObj.businessHours,
+    })
+      .then(botSummary => {
+        commit(types.default.SET_BOT_SUMMARY, botSummary.data);
       })
       .catch(() => {
         commit(types.default.TOGGLE_ACCOUNT_REPORT_LOADING, false);
@@ -163,47 +167,6 @@ export const actions = {
         commit(types.default.TOGGLE_ACCOUNT_CONVERSATION_METRIC_LOADING, false);
       });
   },
-  fetchTriggersReport({ commit }, reportObj) {
-    commit(types.default.TOGGLE_TRIGGER_REPORT_LOADING, { isFetching: true });
-    Report.getReports({
-      ...reportObj,
-      metric: 'triggers',
-    })
-      .then(response => {
-        commit(types.default.SET_TRIGGERS_REPORTS, response.data);
-      })
-      .finally(() => {
-        commit(types.default.TOGGLE_TRIGGER_REPORT_LOADING, false);
-      });
-  },
-  fetchProcessedTriggersReport({ commit }, reportObj) {
-    commit(types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING, {
-      isFetching: true,
-    });
-    Report.getReports({
-      ...reportObj,
-      metric: 'processed_triggers',
-      isProcessed: true,
-    })
-      .then(response => {
-        commit(types.default.SET_TRIGGERS_REPORTS_PROCESSED, response.data);
-      })
-      .finally(() => {
-        commit(types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING, false);
-      });
-  },
-  fetchTriggersMetric({ commit }, reportObj) {
-    commit(types.default.TOGGLE_TRIGGER_REPORT_METRIC_LOADING, {
-      isFetching: true,
-    });
-    Report.getTriggersMetricsReport(reportObj)
-      .then(response => {
-        commit(types.default.SET_TRIGGERS_REPORTS_METRICS, response.data);
-      })
-      .finally(() => {
-        commit(types.default.TOGGLE_TRIGGER_REPORT_METRIC_LOADING, false);
-      });
-  },
   fetchAgentConversationMetric({ commit }, reportObj) {
     commit(types.default.TOGGLE_AGENT_CONVERSATION_METRIC_LOADING, true);
     Report.getConversationMetric(reportObj.type, reportObj.page)
@@ -216,16 +179,6 @@ export const actions = {
       })
       .catch(() => {
         commit(types.default.TOGGLE_AGENT_CONVERSATION_METRIC_LOADING, false);
-      });
-  },
-  fetchTeamsMetrics({ commit }, reportObj) {
-    commit(types.default.TOGGLE_TEAMS_METRICS_LOADING, true);
-    Report.getTeamsMetricsReport(reportObj)
-      .then(response => {
-        commit(types.default.SET_TEAMS_METRICS, response.data);
-      })
-      .finally(() => {
-        commit(types.default.TOGGLE_TEAMS_METRICS_LOADING, false);
       });
   },
   downloadAgentReports(_, reportObj) {
@@ -318,6 +271,9 @@ const mutations = {
   [types.default.SET_ACCOUNT_SUMMARY](_state, summaryData) {
     _state.accountSummary = summaryData;
   },
+  [types.default.SET_BOT_SUMMARY](_state, summaryData) {
+    _state.botSummary = summaryData;
+  },
   [types.default.SET_ACCOUNT_CONVERSATION_METRIC](_state, metricData) {
     _state.overview.accountConversationMetric = metricData;
   },
@@ -329,33 +285,6 @@ const mutations = {
   },
   [types.default.TOGGLE_AGENT_CONVERSATION_METRIC_LOADING](_state, flag) {
     _state.overview.uiFlags.isFetchingAgentConversationMetric = flag;
-  },
-  [types.default.SET_TRIGGERS_REPORTS](_state, data) {
-    _state.triggers.data = data;
-  },
-  [types.default.SET_TRIGGERS_REPORTS_PROCESSED](_state, data) {
-    _state.triggers.processed = data;
-  },
-  [types.default.SET_TRIGGERS_REPORTS_METRICS](_state, data) {
-    _state.triggers.metrics = data;
-  },
-  [types.default.SET_TEAMS_METRICS](_state, data) {
-    _state.overview.teams = data;
-  },
-  [types.default.TOGGLE_TEAMS_METRICS_LOADING](_state, flag) {
-    _state.overview.uiFlags.isFetchingTeams = flag;
-  },
-  [types.default.TOGGLE_TRIGGER_REPORT_LOADING](_state, { isFetching }) {
-    _state.triggers.isFetching = isFetching;
-  },
-  [types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING](
-    _state,
-    { isFetching }
-  ) {
-    _state.triggers.isFetchingProcessed = isFetching;
-  },
-  [types.default.TOGGLE_TRIGGER_REPORT_METRIC_LOADING](_state, { isFetching }) {
-    _state.triggers.isFetchingMetrics = isFetching;
   },
 };
 

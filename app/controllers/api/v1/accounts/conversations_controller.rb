@@ -3,7 +3,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   include DateRangeHelper
   include HmacConcern
 
-  before_action :conversation, except: [:index, :meta, :search, :create, :filter, :need_to_assign_agent]
+  before_action :conversation, except: [:index, :meta, :search, :create, :filter]
   before_action :inbox, :contact, :contact_inbox, only: [:create]
 
   def index
@@ -27,9 +27,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @attachments = @conversation.attachments
   end
 
-  def show
-    raise CustomExceptions::Conversation::AuthenticationRequired if current_user.agent? && (current_user.id != @conversation.assignee_id)
-  end
+  def show; end
 
   def create
     ActiveRecord::Base.transaction do
@@ -38,10 +36,18 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     end
   end
 
+  def update
+    @conversation.update!(permitted_update_params)
+  end
+
   def filter
     result = ::Conversations::FilterService.new(params.permit!, current_user).perform
     @conversations = result[:conversations]
     @conversations_count = result[:count]
+  rescue CustomExceptions::CustomFilter::InvalidAttribute,
+         CustomExceptions::CustomFilter::InvalidOperator,
+         CustomExceptions::CustomFilter::InvalidValue => e
+    render_could_not_create_error(e.message)
   end
 
   def mute
@@ -61,23 +67,27 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     head :ok
   end
 
-  def need_to_assign_agent
-    result = Api::V1::ConversationsHelper.assign_open_conversations(current_user, Current.account)
-    if result.is_a?(Hash) && result[:error]
-      render json: { error: result[:error] }, status: :unprocessable_entity
-    else
-      render json: result
-    end
-  end
-
   def toggle_status
-    if params[:status].present?
+    # FIXME: move this logic into a service object
+    if pending_to_open_by_bot?
+      @conversation.bot_handoff!
+    elsif params[:status].present?
       set_conversation_status
       @status = @conversation.save!
     else
       @status = @conversation.toggle_status
     end
-    assign_conversation if @conversation.status == 'open' && Current.user.is_a?(User) && Current.user&.agent?
+    assign_conversation if should_assign_conversation?
+  end
+
+  def pending_to_open_by_bot?
+    return false unless Current.user.is_a?(AgentBot)
+
+    @conversation.status == 'pending' && params[:status] == 'open'
+  end
+
+  def should_assign_conversation?
+    @conversation.status == 'open' && Current.user.is_a?(User) && Current.user&.agent?
   end
 
   def toggle_priority
@@ -106,18 +116,16 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @conversation.save!
   end
 
-  def whatsapp_groups_participants
-    return render json: { error: 'Invalid inbox type' }, status: :unprocessable_entity unless @conversation.whatsapp?
-    return render json: { error: 'Invalid contact identifier' }, status: :unprocessable_entity if @conversation.contact.identifier.blank?
-
-    render json: Evolution::FindParticipantsService.new(@conversation.inbox.name, @conversation.contact.identifier).perform
-  end
-
   private
+
+  def permitted_update_params
+    # TODO: Move the other conversation attributes to this method and remove specific endpoints for each attribute
+    params.permit(:priority)
+  end
 
   def update_last_seen_on_conversation(last_seen_at, update_assignee)
     # rubocop:disable Rails/SkipsModelValidations
-    @conversation.update_column(:agent_last_seen_at, last_seen_at)
+    @conversation.update_column(:agent_last_seen_at, last_seen_at) && UpdateLastSeenJob.perform_later(@conversation.id, current_user, last_seen_at)
     @conversation.update_column(:assignee_last_seen_at, last_seen_at) if update_assignee.present?
     # rubocop:enable Rails/SkipsModelValidations
   end
@@ -181,3 +189,5 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @conversation.assignee_id? && Current.user == @conversation.assignee
   end
 end
+
+Api::V1::Accounts::ConversationsController.prepend_mod_with('Api::V1::Accounts::ConversationsController')

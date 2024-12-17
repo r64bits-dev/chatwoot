@@ -74,12 +74,10 @@ export const actions = {
     }
   },
 
-  show: async ({ commit }, { id, conversationId = null }) => {
+  show: async ({ commit }, { id }) => {
     commit(types.SET_CONTACT_UI_FLAG, { isFetchingItem: true });
     try {
-      const response = await ContactAPI.show(id, {
-        conversationId: conversationId,
-      });
+      const response = await ContactAPI.show(id);
       commit(types.SET_CONTACT_ITEM, response.data.payload);
       commit(types.SET_CONTACT_UI_FLAG, {
         isFetchingItem: false,
@@ -140,9 +138,10 @@ export const actions = {
     }
   },
 
-  export: async ({ commit }) => {
+  export: async ({ commit }, { payload, label }) => {
     try {
-      await ContactAPI.exportContacts();
+      await ContactAPI.exportContacts({ payload, label });
+
       commit(types.SET_CONTACT_UI_FLAG, { isCreating: false });
     } catch (error) {
       commit(types.SET_CONTACT_UI_FLAG, { isCreating: false });

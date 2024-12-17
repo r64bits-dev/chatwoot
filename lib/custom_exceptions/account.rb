@@ -3,7 +3,9 @@
 module CustomExceptions::Account
   class InvalidEmail < CustomExceptions::Base
     def message
-      if @data[:disposable]
+      if @data[:domain_blocked]
+        I18n.t 'errors.signup.blocked_domain'
+      elsif @data[:disposable]
         I18n.t 'errors.signup.disposable_email'
       elsif !@data[:valid]
         I18n.t 'errors.signup.invalid_email'
@@ -14,6 +16,12 @@ module CustomExceptions::Account
   class UserExists < CustomExceptions::Base
     def message
       I18n.t('errors.signup.email_already_exists', email: @data[:email])
+    end
+  end
+
+  class InvalidParams < CustomExceptions::Base
+    def message
+      I18n.t 'errors.signup.invalid_params'
     end
   end
 
@@ -32,18 +40,6 @@ module CustomExceptions::Account
   class PlanUpgradeRequired < CustomExceptions::Base
     def message
       I18n.t 'errors.plan_upgrade_required.failed'
-    end
-  end
-
-  class InvalidProviderConfig < CustomExceptions::Base
-    def message
-      I18n.t 'errors.inboxes.integrations.whatsapp.invalid_provider_config'
-    end
-  end
-
-  class ErrorReply < CustomExceptions::Base
-    def message
-      I18n.t 'errors.inboxes.integrations.whatsapp.error_reply'
     end
   end
 end

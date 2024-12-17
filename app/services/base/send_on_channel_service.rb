@@ -16,9 +16,6 @@ class Base::SendOnChannelService
     return if invalid_message?
 
     perform_reply
-  rescue StandardError => e
-    Rails.logger.error e.message
-    message.update!(status: :failed, external_error: e.message)
   end
 
   private

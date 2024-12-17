@@ -15,8 +15,6 @@ do
   sleep 2;
 done
 
-export NODE_OPTIONS=--openssl-legacy-provider
-
 echo "Ready to run webpack development server."
 
 exec "$@"

@@ -1,3 +1,36 @@
+<script>
+import { mapGetters } from 'vuex';
+
+export default {
+  emits: ['update', 'close', 'assign'],
+  data() {
+    return {
+      query: '',
+      selectedLabels: [],
+    };
+  },
+  computed: {
+    ...mapGetters({ labels: 'labels/getLabels' }),
+    filteredLabels() {
+      return this.labels.filter(label =>
+        label.title.toLowerCase().includes(this.query.toLowerCase())
+      );
+    },
+  },
+  methods: {
+    isLabelSelected(label) {
+      return this.selectedLabels.includes(label);
+    },
+    assignLabels(key) {
+      this.$emit('update', key);
+    },
+    onClose() {
+      this.$emit('close');
+    },
+  },
+};
+</script>
+
 <template>
   <div v-on-clickaway="onClose" class="labels-container">
     <div class="triangle">
@@ -5,7 +38,7 @@
         <path d="M20 12l-8-8-12 12" fill-rule="evenodd" stroke-width="1px" />
       </svg>
     </div>
-    <div class="header flex-between">
+    <div class="flex items-center justify-between header">
       <span>{{ $t('BULK_ACTION.LABELS.ASSIGN_LABELS') }}</span>
       <woot-button
         size="tiny"
@@ -17,13 +50,14 @@
     </div>
     <div class="labels-list">
       <header class="labels-list__header">
-        <div class="label-list-search flex-between">
+        <div
+          class="flex items-center justify-between h-8 gap-2 label-list-search"
+        >
           <fluent-icon icon="search" class="search-icon" size="16" />
           <input
-            ref="search"
             v-model="query"
             type="search"
-            placeholder="Search"
+            :placeholder="$t('BULK_ACTION.SEARCH_INPUT_PLACEHOLDER')"
             class="label--search_input"
           />
         </div>
@@ -45,7 +79,7 @@
               class="label-checkbox"
             />
             <span
-              class="label-title overflow-hidden whitespace-nowrap text-ellipsis"
+              class="overflow-hidden label-title whitespace-nowrap text-ellipsis"
             >
               {{ label.title }}
             </span>
@@ -70,40 +104,6 @@
     </div>
   </div>
 </template>
-
-<script>
-import { mixin as clickaway } from 'vue-clickaway';
-import { mapGetters } from 'vuex';
-
-export default {
-  mixins: [clickaway],
-  data() {
-    return {
-      query: '',
-      selectedLabels: [],
-    };
-  },
-  computed: {
-    ...mapGetters({ labels: 'labels/getTeamLabels' }),
-    filteredLabels() {
-      return this.labels.filter(label =>
-        label.title.toLowerCase().includes(this.query.toLowerCase())
-      );
-    },
-  },
-  methods: {
-    isLabelSelected(label) {
-      return this.selectedLabels.includes(label);
-    },
-    assignLabels(key) {
-      this.$emit('update', key);
-    },
-    onClose() {
-      this.$emit('close');
-    },
-  },
-};
-</script>
 
 <style scoped lang="scss">
 .labels-list {
@@ -138,7 +138,7 @@ export default {
   }
 
   .label--search_input {
-    @apply border-0 text-xs m-0 dark:bg-transparent bg-transparent h-[unset];
+    @apply border-0 text-xs m-0 dark:bg-transparent bg-transparent h-[unset] w-full;
   }
 }
 

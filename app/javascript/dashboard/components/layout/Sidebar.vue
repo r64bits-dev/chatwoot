@@ -1,67 +1,81 @@
-<template>
-  <aside class="h-full flex">
-    <primary-sidebar
-      :logo-source="globalConfig.logoThumbnail"
-      :installation-name="globalConfig.installationName"
-      :is-a-custom-branded-instance="isACustomBrandedInstance"
-      :account-id="accountId"
-      :menu-items="primaryMenuItems"
-      :active-menu-item="activePrimaryMenu.key"
-      @toggle-accounts="toggleAccountModal"
-      @key-shortcut-modal="toggleKeyShortcutModal"
-      @open-notification-panel="openNotificationPanel"
-    />
-    <secondary-sidebar
-      v-if="showSecondarySidebar"
-      :class="sidebarClassName"
-      :account-id="accountId"
-      :inboxes="inboxes"
-      :labels="labels"
-      :teams="teams"
-      :custom-views="customViews"
-      :menu-config="activeSecondaryMenu"
-      :current-role="currentRole"
-      :is-on-chatwoot-cloud="isOnChatwootCloud"
-      @add-label="showAddLabelPopup"
-      @toggle-accounts="toggleAccountModal"
-    />
-  </aside>
-</template>
-
 <script>
 import { mapGetters } from 'vuex';
-import adminMixin from '../../mixins/isAdmin';
 import { getSidebarItems } from './config/default-sidebar';
-import alertMixin from 'shared/mixins/alertMixin';
+import { useKeyboardEvents } from 'dashboard/composables/useKeyboardEvents';
+import { useAccount } from 'dashboard/composables/useAccount';
+import { useRoute, useRouter } from 'vue-router';
 
 import PrimarySidebar from './sidebarComponents/Primary.vue';
 import SecondarySidebar from './sidebarComponents/Secondary.vue';
+import { routesWithPermissions } from '../../routes';
 import {
-  hasPressedAltAndCKey,
-  hasPressedAltAndRKey,
-  hasPressedAltAndSKey,
-  hasPressedAltAndVKey,
-  hasPressedCommandAndForwardSlash,
-  isEscape,
-} from 'shared/helpers/KeyboardHelpers';
-import eventListenerMixins from 'shared/mixins/eventListenerMixins';
-import router from '../../routes';
+  getUserPermissions,
+  hasPermissions,
+} from '../../helper/permissionsHelper';
 
 export default {
   components: {
     PrimarySidebar,
     SecondarySidebar,
   },
-  mixins: [adminMixin, alertMixin, eventListenerMixins],
   props: {
     showSecondarySidebar: {
       type: Boolean,
       default: true,
     },
-    sidebarClassName: {
-      type: String,
-      default: '',
-    },
+  },
+  emits: [
+    'toggleAccountModal',
+    'showAddLabelPopup',
+    'openNotificationPanel',
+    'closeKeyShortcutModal',
+    'openKeyShortcutModal',
+  ],
+  setup(props, { emit }) {
+    const route = useRoute();
+    const router = useRouter();
+    const { accountId } = useAccount();
+
+    const toggleKeyShortcutModal = () => {
+      emit('openKeyShortcutModal');
+    };
+    const closeKeyShortcutModal = () => {
+      emit('closeKeyShortcutModal');
+    };
+    const isCurrentRouteSameAsNavigation = routeName => {
+      return route.name === routeName;
+    };
+    const navigateToRoute = routeName => {
+      if (!isCurrentRouteSameAsNavigation(routeName)) {
+        router.push({ name: routeName });
+      }
+    };
+    const keyboardEvents = {
+      '$mod+Slash': {
+        action: toggleKeyShortcutModal,
+      },
+      '$mod+Escape': {
+        action: closeKeyShortcutModal,
+      },
+      'Alt+KeyC': {
+        action: () => navigateToRoute('home'),
+      },
+      'Alt+KeyV': {
+        action: () => navigateToRoute('contacts_dashboard'),
+      },
+      'Alt+KeyR': {
+        action: () => navigateToRoute('account_overview_reports'),
+      },
+      'Alt+KeyS': {
+        action: () => navigateToRoute('agent_list'),
+      },
+    };
+    useKeyboardEvents(keyboardEvents);
+
+    return {
+      toggleKeyShortcutModal,
+      accountId,
+    };
   },
   data() {
     return {
@@ -71,9 +85,6 @@ export default {
 
   computed: {
     ...mapGetters({
-      accountId: 'getCurrentAccountId',
-      currentRole: 'getCurrentRole',
-      currentPermissions: 'getCurrentPermissions',
       currentUser: 'getCurrentUser',
       globalConfig: 'globalConfig/get',
       inboxes: 'inboxes/getInboxes',
@@ -82,6 +93,7 @@ export default {
       isOnChatwootCloud: 'globalConfig/isOnChatwootCloud',
       labels: 'labels/getLabelsOnSidebar',
       teams: 'teams/getMyTeams',
+      currentRole: 'getCurrentRole',
     }),
     activeCustomView() {
       if (this.activePrimaryMenu.key === 'contacts') {
@@ -90,10 +102,6 @@ export default {
       if (this.activePrimaryMenu.key === 'conversations') {
         return 'conversation';
       }
-      if (this.activePrimaryMenu.key === 'tickets') {
-        return 'ticket';
-      }
-
       return '';
     },
     customViews() {
@@ -111,13 +119,20 @@ export default {
       return getSidebarItems(this.accountId);
     },
     primaryMenuItems() {
+      const userPermissions = getUserPermissions(
+        this.currentUser,
+        this.accountId
+      );
       const menuItems = this.sideMenuConfig.primaryMenu;
-
       return menuItems.filter(menuItem => {
-        const isAvailableForTheUser = menuItem.roles.includes(this.currentRole);
-        const isUserHasAccess = this.currentPermissions[menuItem.key] ?? true;
-
-        if (!isAvailableForTheUser || !isUserHasAccess) {
+        if (menuItem.key === 'contacts' && this.hideContactsForAgents) {
+          return false;
+        }
+        const isAvailableForTheUser = hasPermissions(
+          routesWithPermissions[menuItem.toStateName],
+          userPermissions
+        );
+        if (!isAvailableForTheUser) {
           return false;
         }
         if (
@@ -152,6 +167,25 @@ export default {
         ) || {};
       return activePrimaryMenu;
     },
+    hasSecondaryMenu() {
+      return (
+        this.activeSecondaryMenu.menuItems &&
+        this.activeSecondaryMenu.menuItems.length
+      );
+    },
+    hasSecondarySidebar() {
+      // if it is explicitly stated to show and it has secondary menu items to show
+      // showSecondarySidebar corresponds to the UI settings, indicating if the user has toggled it
+      return this.showSecondarySidebar && this.hasSecondaryMenu;
+    },
+    hideContactsForAgents() {
+      return (
+        this.isFeatureEnabledonAccount(
+          this.accountId,
+          'hide_contacts_for_agent'
+        ) && this.currentRole !== 'administrator'
+      );
+    },
   },
 
   watch: {
@@ -165,7 +199,6 @@ export default {
     this.$store.dispatch('notifications/unReadCount');
     this.$store.dispatch('teams/get');
     this.$store.dispatch('attributes/get');
-    this.$store.dispatch('tickets/getLabels');
     this.fetchCustomViews();
   },
 
@@ -173,56 +206,49 @@ export default {
     fetchCustomViews() {
       if (this.isConversationOrContactActive) {
         this.$store.dispatch('customViews/get', this.activeCustomView);
-        this.$store.dispatch('teams/countConversationsUnassigned');
       }
-    },
-    toggleKeyShortcutModal() {
-      this.$emit('open-key-shortcut-modal');
-    },
-    closeKeyShortcutModal() {
-      this.$emit('close-key-shortcut-modal');
-    },
-    handleKeyEvents(e) {
-      if (hasPressedCommandAndForwardSlash(e)) {
-        this.toggleKeyShortcutModal();
-      }
-      if (isEscape(e)) {
-        this.closeKeyShortcutModal();
-      }
-
-      if (hasPressedAltAndCKey(e)) {
-        if (!this.isCurrentRouteSameAsNavigation('home')) {
-          router.push({ name: 'home' });
-        }
-      } else if (hasPressedAltAndVKey(e)) {
-        if (!this.isCurrentRouteSameAsNavigation('contacts_dashboard')) {
-          router.push({ name: 'contacts_dashboard' });
-        }
-      } else if (hasPressedAltAndRKey(e)) {
-        if (!this.isCurrentRouteSameAsNavigation('settings_account_reports')) {
-          router.push({ name: 'settings_account_reports' });
-        }
-      } else if (hasPressedAltAndSKey(e)) {
-        if (!this.isCurrentRouteSameAsNavigation('agent_list')) {
-          router.push({ name: 'agent_list' });
-        }
-      }
-    },
-    isCurrentRouteSameAsNavigation(routeName) {
-      return this.$route.name === routeName;
     },
     toggleSupportChatWindow() {
       window.$chatwoot.toggle();
     },
     toggleAccountModal() {
-      this.$emit('toggle-account-modal');
+      this.$emit('toggleAccountModal');
     },
     showAddLabelPopup() {
-      this.$emit('show-add-label-popup');
+      this.$emit('showAddLabelPopup');
     },
     openNotificationPanel() {
-      this.$emit('open-notification-panel');
+      this.$emit('openNotificationPanel');
     },
   },
 };
 </script>
+
+<template>
+  <aside class="flex h-full">
+    <PrimarySidebar
+      :logo-source="globalConfig.logoThumbnail"
+      :installation-name="globalConfig.installationName"
+      :is-a-custom-branded-instance="isACustomBrandedInstance"
+      :account-id="accountId"
+      :menu-items="primaryMenuItems"
+      :active-menu-item="activePrimaryMenu.key"
+      @toggle-accounts="toggleAccountModal"
+      @open-key-shortcut-modal="toggleKeyShortcutModal"
+      @open-notification-panel="openNotificationPanel"
+    />
+    <SecondarySidebar
+      v-if="hasSecondarySidebar"
+      :account-id="accountId"
+      :inboxes="inboxes"
+      :labels="labels"
+      :teams="teams"
+      :custom-views="customViews"
+      :menu-config="activeSecondaryMenu"
+      :current-user="currentUser"
+      :is-on-chatwoot-cloud="isOnChatwootCloud"
+      @add-label="showAddLabelPopup"
+      @toggle-accounts="toggleAccountModal"
+    />
+  </aside>
+</template>

@@ -15,6 +15,7 @@ class ConversationApi extends ApiClient {
     teamId,
     conversationType,
     sortBy,
+    updatedWithin,
   }) {
     return axios.get(this.url, {
       params: {
@@ -26,6 +27,7 @@ class ConversationApi extends ApiClient {
         labels,
         conversation_type: conversationType,
         sort_by: sortBy,
+        updated_within: updatedWithin,
       },
     });
   }
@@ -130,20 +132,6 @@ class ConversationApi extends ApiClient {
 
   getAllAttachments(conversationId) {
     return axios.get(`${this.url}/${conversationId}/attachments`);
-  }
-
-  getWhatsAppParticipants(conversationId) {
-    return axios.get(
-      `${this.url}/${conversationId}/whatsapp_groups_participants`
-    );
-  }
-
-  checkNeedToAssignAgent({ userId }) {
-    return axios.get(`${this.url}/need_to_assign_agent`, {
-      params: {
-        user_id: userId,
-      },
-    });
   }
 }
 

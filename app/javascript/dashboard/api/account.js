@@ -10,18 +10,11 @@ class AccountAPI extends ApiClient {
     return axios.post(`${this.apiVersion}/accounts`, data);
   }
 
-  getPermissionsByUser(userId) {
-    this.setApiVersion('v2');
-    const url = `${this.apiVersion}/accounts/${this.accountIdFromRoute}/permissions/${userId}`;
-    return axios.get(url);
-  }
-
-  updatePermissionsByUser(userId, data) {
-    this.setApiVersion('v2');
-    const url = `${this.apiVersion}/accounts/${this.accountIdFromRoute}/permissions/${userId}`;
-    return axios.put(url, {
-      permissions: data,
-    });
+  async getCacheKeys() {
+    const response = await axios.get(
+      `/api/v1/accounts/${this.accountIdFromRoute}/cache_keys`
+    );
+    return response.data.cache_keys;
   }
 }
 

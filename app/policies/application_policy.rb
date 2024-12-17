@@ -41,12 +41,6 @@ class ApplicationPolicy
     Pundit.policy_scope!(user_context, record.class)
   end
 
-  protected
-
-  def can_access?(feature)
-    @account_user.can_access?(feature)
-  end
-
   class Scope
     attr_reader :user_context, :user, :scope, :account, :account_user
 

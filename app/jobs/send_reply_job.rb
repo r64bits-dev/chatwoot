@@ -1,5 +1,6 @@
 class SendReplyJob < ApplicationJob
   queue_as :high
+  retry_on ActiveRecord::RecordNotFound, wait: 30.seconds, attempts: 5
 
   def perform(message_id)
     message = Message.find(message_id)
@@ -12,7 +13,8 @@ class SendReplyJob < ApplicationJob
       'Channel::Line' => ::Line::SendOnLineService,
       'Channel::Telegram' => ::Telegram::SendOnTelegramService,
       'Channel::Whatsapp' => ::Whatsapp::SendOnWhatsappService,
-      'Channel::Sms' => ::Sms::SendOnSmsService
+      'Channel::Sms' => ::Sms::SendOnSmsService,
+      'Channel::NotificaMe' => ::NotificaMe::SendOnNotificaMeService
     }
 
     case channel_name

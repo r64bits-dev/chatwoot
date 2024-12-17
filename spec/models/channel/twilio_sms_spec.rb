@@ -64,10 +64,23 @@ RSpec.describe Channel::TwilioSms do
       allow(twilio_client).to receive(:messages).and_return(twilio_messages)
     end
 
-    skip 'TODO: twilio sms to send client, skip by base user' do
+    it 'sends via twilio client' do
+      expect(twilio_messages).to receive(:create).with(
+        messaging_service_sid: channel.messaging_service_sid,
+        to: '+15555550111',
+        body: 'hello world',
+        status_callback: 'http://localhost:3000/twilio/delivery_status'
+      ).once
+
+      channel.send_message(to: '+15555550111', body: 'hello world')
+    end
+
+    context 'with a "from" phone number' do
+      let(:channel) { create(:channel_twilio_sms, :with_phone_number) }
+
       it 'sends via twilio client' do
         expect(twilio_messages).to receive(:create).with(
-          messaging_service_sid: channel.messaging_service_sid,
+          from: channel.phone_number,
           to: '+15555550111',
           body: 'hello world',
           status_callback: 'http://localhost:3000/twilio/delivery_status'
@@ -75,34 +88,19 @@ RSpec.describe Channel::TwilioSms do
 
         channel.send_message(to: '+15555550111', body: 'hello world')
       end
+    end
 
-      context 'with a "from" phone number' do
-        let(:channel) { create(:channel_twilio_sms, :with_phone_number) }
+    context 'with media urls' do
+      it 'supplies a media url' do
+        expect(twilio_messages).to receive(:create).with(
+          messaging_service_sid: channel.messaging_service_sid,
+          to: '+15555550111',
+          body: 'hello world',
+          media_url: ['https://example.com/1.jpg'],
+          status_callback: 'http://localhost:3000/twilio/delivery_status'
+        ).once
 
-        it 'sends via twilio client' do
-          expect(twilio_messages).to receive(:create).with(
-            from: channel.phone_number,
-            to: '+15555550111',
-            body: 'hello world',
-            status_callback: 'http://localhost:3000/twilio/delivery_status'
-          ).once
-
-          channel.send_message(to: '+15555550111', body: 'hello world')
-        end
-      end
-
-      context 'with media urls' do
-        it 'supplies a media url' do
-          expect(twilio_messages).to receive(:create).with(
-            messaging_service_sid: channel.messaging_service_sid,
-            to: '+15555550111',
-            body: 'hello world',
-            media_url: ['https://example.com/1.jpg'],
-            status_callback: 'http://localhost:3000/twilio/delivery_status'
-          ).once
-
-          channel.send_message(to: '+15555550111', body: 'hello world', media_url: ['https://example.com/1.jpg'])
-        end
+        channel.send_message(to: '+15555550111', body: 'hello world', media_url: ['https://example.com/1.jpg'])
       end
     end
   end

@@ -32,7 +32,6 @@ class Account < ApplicationRecord
     check_for_column: false
   }.freeze
 
-  validates :name, presence: true
   validates :auto_resolve_duration, numericality: { greater_than_or_equal_to: 1, less_than_or_equal_to: 999, allow_nil: true }
   validates :domain, length: { maximum: 100 }
 
@@ -75,26 +74,16 @@ class Account < ApplicationRecord
   has_many :web_widgets, dependent: :destroy_async, class_name: '::Channel::WebWidget'
   has_many :webhooks, dependent: :destroy_async
   has_many :whatsapp_channels, dependent: :destroy_async, class_name: '::Channel::Whatsapp'
+  has_many :notifica_me_channels, dependent: :destroy_async, class_name: '::Channel::NotificaMe'
   has_many :working_hours, dependent: :destroy_async
-  has_many :triggers, foreign_key: :companyId, dependent: :destroy_async, class_name: '::Trigger', inverse_of: :account
-  has_many :tickets, inverse_of: :account, dependent: :destroy
-
-  # Checkout
-  has_many :carts, dependent: :destroy
-  has_many :account_products, dependent: :destroy
-  has_many :products, through: :account_products
-  has_one :account_plan, dependent: :destroy
 
   has_one_attached :contacts_export
-
-  accepts_nested_attributes_for :account_plan
 
   enum locale: LANGUAGES_CONFIG.map { |key, val| [val[:iso_639_1_code], key] }.to_h
   enum status: { active: 0, suspended: 1 }
 
   before_validation :validate_limit_keys
   after_create_commit :notify_creation
-  after_create :set_product_basic_plan, if: -> { products.blank? }
   after_destroy :remove_account_sequences
 
   def agents
@@ -105,10 +94,6 @@ class Account < ApplicationRecord
     users.where(account_users: { role: :administrator })
   end
 
-  def supervisors
-    users.where(account_users: { role: :supervisor })
-  end
-
   def all_conversation_tags
     # returns array of tags
     conversation_ids = conversations.pluck(:id)
@@ -116,7 +101,7 @@ class Account < ApplicationRecord
                              .where(context: 'labels',
                                     taggable_type: 'Conversation',
                                     taggable_id: conversation_ids)
-                             .map { |_| _.tag.name }
+                             .map { |tagging| tagging.tag.name }
   end
 
   def webhook_data
@@ -127,11 +112,12 @@ class Account < ApplicationRecord
   end
 
   def inbound_email_domain
-    domain || GlobalConfig.get('MAILER_INBOUND_EMAIL_DOMAIN')['MAILER_INBOUND_EMAIL_DOMAIN'] || ENV.fetch('MAILER_INBOUND_EMAIL_DOMAIN', false)
+    domain.presence || GlobalConfig.get('MAILER_INBOUND_EMAIL_DOMAIN')['MAILER_INBOUND_EMAIL_DOMAIN'] || ENV.fetch('MAILER_INBOUND_EMAIL_DOMAIN',
+                                                                                                                   false)
   end
 
   def support_email
-    super || ENV.fetch('MAILER_SENDER_EMAIL') { GlobalConfig.get('MAILER_SUPPORT_EMAIL')['MAILER_SUPPORT_EMAIL'] }
+    super.presence || ENV.fetch('MAILER_SENDER_EMAIL') { GlobalConfig.get('MAILER_SUPPORT_EMAIL')['MAILER_SUPPORT_EMAIL'] }
   end
 
   def usage_limits
@@ -162,25 +148,6 @@ class Account < ApplicationRecord
   def remove_account_sequences
     ActiveRecord::Base.connection.exec_query("drop sequence IF EXISTS camp_dpid_seq_#{id}")
     ActiveRecord::Base.connection.exec_query("drop sequence IF EXISTS conv_dpid_seq_#{id}")
-  end
-
-  def set_product_basic_plan
-    basic_product = find_or_create_basic_product
-    errors.add(:products, 'must be a existing plan') if basic_product.blank?
-
-    products << basic_product
-  end
-
-  def find_or_create_basic_product
-    Product.find_or_create_by(identifier: 'standard', product_type: 'plan') do |product|
-      product.name = 'Standard'
-      product.price = Product::MINIMUM_PRICE
-      product.description = 'Standard plan'
-      product.details = {
-        'number_of_conversations' => Product::MAXIMUM_CONVERSATIONS,
-        'number_of_agents' => Product::MAXIMUM_AGENTS
-      }
-    end
   end
 end
 

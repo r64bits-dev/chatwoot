@@ -9,23 +9,19 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     end
   end
 
-  def send_template(phone_number, template_info)
-    request_payload = {
-      messaging_product: 'whatsapp',
-      to: format_phone_number(phone_number),
-      template: template_body_parameters(template_info),
-      type: 'template'
-    }.to_json
-
+  def send_template(message, phone_number, template_info)
     response = HTTParty.post(
       "#{phone_id_path}/messages",
       headers: api_headers,
-      body: request_payload
+      body: {
+        messaging_product: 'whatsapp',
+        to: phone_number,
+        template: template_body_parameters(template_info),
+        type: 'template'
+      }.to_json
     )
-    Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
-    raise CustomExceptions::Account::ErrorReply unless response.success?
 
-    process_response(response)
+    process_response(message, response)
   end
 
   def sync_templates
@@ -37,7 +33,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def fetch_whatsapp_templates(url)
     response = HTTParty.get(url)
-    Rails.logger.info response.body
     return [] unless response.success?
 
     next_url = next_url(response)
@@ -53,9 +48,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def validate_provider_config?
     response = HTTParty.get("#{business_account_path}/message_templates?access_token=#{whatsapp_channel.provider_config['api_key']}")
-    Rails.logger.info "#{response.inspect} response code: #{response.code} request provider config: #{whatsapp_channel.provider_config}"
-    raise CustomExceptions::Account::InvalidProviderConfig unless response.success?
-
     response.success?
   end
 
@@ -67,13 +59,40 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     "#{api_base_path}/v13.0/#{media_id}"
   end
 
+  def message_update_payload(message)
+    payload = {
+      messaging_product: 'whatsapp',
+      status: message[:status],
+      message_id: message[:source_id],
+      recipient_id: message[:sender][:phone_number]
+    }
+    if message[:conversation][:contact_inbox][:source_id].include?('@g.us')
+      payload.merge({ group_id: message[:conversation][:contact_inbox][:source_id] })
+    end
+    payload
+  end
+
+  def message_update_http_method
+    :post
+  end
+
+  def message_path(_message)
+    messages_path
+  end
+
+  private
+
   def api_base_path
-    ENV.fetch('WHATSAPP_CLOUD_BASE_URL', 'https://graph.facebook.com')
+    whatsapp_channel.provider_config['url'] || ENV.fetch('WHATSAPP_CLOUD_BASE_URL', 'https://graph.facebook.com')
   end
 
   # TODO: See if we can unify the API versions and for both paths and make it consistent with out facebook app API versions
   def phone_id_path
     "#{api_base_path}/v13.0/#{whatsapp_channel.provider_config['phone_number_id']}"
+  end
+
+  def messages_path
+    "#{phone_id_path}/messages"
   end
 
   def business_account_path
@@ -82,19 +101,26 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def send_text_message(phone_number, message)
     response = HTTParty.post(
-      "#{phone_id_path}/messages",
+      messages_path,
       headers: api_headers,
       body: {
         messaging_product: 'whatsapp',
         context: whatsapp_reply_context(message),
-        to: format_phone_number(phone_number),
-        text: { body: message.content },
+        to: phone_number,
+        text: { body: format_content(message) },
         type: 'text'
       }.to_json
     )
 
-    Rails.logger.info response.inspect
-    process_response(response)
+    process_response(message, response)
+  end
+
+  def format_content(message)
+    feature = whatsapp_channel.inbox.account.feature_enabled?('send_agent_name_in_whatsapp_message')
+    config = whatsapp_channel.provider_config['send_agent_name']
+    return message.content if !feature && !config
+
+    message.sender_name&.present? ? "*#{message&.sender_name}*: #{message.content}" : message.content
   end
 
   def send_attachment_message(phone_number, message)
@@ -117,7 +143,40 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
-    process_response(response)
+    process_response(message, response)
+  end
+
+  def process_response(message, response)
+    if response.success?
+      response['messages'].first['id']
+    else
+      Rails.logger.error response.body
+      message.update!(status: :failed, external_error: response.body)
+      nil
+    end
+  end
+
+  def template_body_parameters(template_info)
+    {
+      name: template_info[:name],
+      language: {
+        policy: 'deterministic',
+        code: template_info[:lang_code]
+      },
+      components: [{
+        type: 'body',
+        parameters: template_info[:parameters]
+      }]
+    }
+  end
+
+  def whatsapp_reply_context(message)
+    reply_to = message.content_attributes[:in_reply_to_external_id]
+    return nil if reply_to.blank?
+
+    {
+      message_id: reply_to
+    }
   end
 
   def send_interactive_text_message(phone_number, message)
@@ -134,63 +193,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
-    process_response(response)
-  end
-
-  def process_response(response)
-    if response.success?
-      response['messages'].first['id']
-    else
-      Rails.logger.error response.body
-      nil
-    end
-  end
-
-  def template_body_parameters(template_info)
-    Rails.logger.info "template_info: #{template_info}"
-    {
-      name: template_info[:name],
-      language: {
-        policy: 'deterministic',
-        code: template_info[:locale] || 'pt_BR'
-      },
-      components: build_components(template_info)
-    }
-  end
-
-  def build_components(template_info)
-    return [] if template_info[:parameters].blank?
-
-    components = build_body_component(template_info[:parameters])
-    components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
-    Rails.logger.info "build_components: #{components}"
-    components
-  end
-
-  def build_body_component(parameters)
-    [{
-      type: 'body',
-      parameters: parameters.map do |param|
-        { type: 'text', text: param[:text].presence || '' }
-      end
-    }]
-  end
-
-  def build_button_component(buttons)
-    {
-      type: 'button',
-      sub_type: 'URL',
-      index: buttons[:index],
-      parameters: buttons[:parameters].map { |param| { type: param['type'], text: param['text'] || '' } }
-    }
-  end
-
-  def whatsapp_reply_context(message)
-    reply_to = message.content_attributes[:in_reply_to_external_id]
-    return nil if reply_to.blank?
-
-    {
-      message_id: reply_to
-    }
+    process_response(message, response)
   end
 end

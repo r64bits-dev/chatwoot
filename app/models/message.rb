@@ -7,7 +7,6 @@
 #  content                   :text
 #  content_attributes        :json
 #  content_type              :integer          default("text"), not null
-#  external_error            :string
 #  external_source_ids       :jsonb
 #  message_type              :integer          not null
 #  private                   :boolean          default(FALSE), not null
@@ -21,10 +20,11 @@
 #  conversation_id           :integer          not null
 #  inbox_id                  :integer          not null
 #  sender_id                 :bigint
-#  source_id                 :string
+#  source_id                 :string(510)
 #
 # Indexes
 #
+#  index_messages_on_account_created_type               (account_id,created_at,message_type)
 #  index_messages_on_account_id                         (account_id)
 #  index_messages_on_account_id_and_inbox_id            (account_id,inbox_id)
 #  index_messages_on_additional_attributes_campaign_id  (((additional_attributes -> 'campaign_id'::text))) USING gin
@@ -60,6 +60,7 @@ class Message < ApplicationRecord
   }.to_json.freeze
 
   before_validation :ensure_content_type
+  before_validation :prevent_message_flooding
   before_save :ensure_processed_message_content
   before_save :ensure_in_reply_to
 
@@ -73,6 +74,7 @@ class Message < ApplicationRecord
 
   validates :content_type, presence: true
   validates :content, length: { maximum: 150_000 }
+  validates :source_id, length: { maximum: 510 }
   validates :processed_message_content, length: { maximum: 150_000 }
 
   # when you have a temperory id in your frontend and want it echoed back via action cable
@@ -93,7 +95,7 @@ class Message < ApplicationRecord
     integrations: 10,
     sticker: 11
   }
-  enum status: { sent: 0, delivered: 1, read: 2, failed: 3 }
+  enum status: { progress: -1, sent: 0, delivered: 1, read: 2, failed: 3 }
   # [:submitted_email, :items, :submitted_values] : Used for bot message types
   # [:email] : Used by conversation_continuity incoming email messages
   # [:in_reply_to] : Used to reply to a particular tweet in threads
@@ -102,11 +104,16 @@ class Message < ApplicationRecord
   # [:external_error : Can specify if the message creation failed due to an error at external API
   store :content_attributes, accessors: [:submitted_email, :items, :submitted_values, :email, :in_reply_to, :deleted,
                                          :external_created_at, :story_sender, :story_id, :external_error,
-                                         :translations, :in_reply_to_external_id], coder: JSON
+                                         :translations, :in_reply_to_external_id, :is_unsupported], coder: JSON
 
   store :external_source_ids, accessors: [:slack], coder: JSON, prefix: :external_source_id
 
   scope :created_since, ->(datetime) { where('created_at > ?', datetime) }
+  # .succ is a hack to avoid https://makandracards.com/makandra/1057-why-two-ruby-time-objects-are-not-equal-although-they-appear-to-be
+  scope :unread_since, ->(datetime) { where('EXTRACT(EPOCH FROM created_at) > (?)', datetime.to_i.succ) }
+  scope :to_read, lambda { |datetime|
+    where('EXTRACT(EPOCH FROM updated_at) <= (?) and message_type = 0 and status < 2', datetime.to_i.succ)
+  }
   scope :chat, -> { where.not(message_type: :activity).where(private: false) }
   scope :non_activity_messages, -> { where.not(message_type: :activity).reorder('id desc') }
   scope :today, -> { where("date_trunc('day', created_at) = ?", Date.current) }
@@ -119,19 +126,15 @@ class Message < ApplicationRecord
   belongs_to :account
   belongs_to :inbox
   belongs_to :conversation, touch: true
-  belongs_to :sender, polymorphic: true, required: false
+  belongs_to :sender, polymorphic: true, optional: true
 
   has_many :attachments, dependent: :destroy, autosave: true, before_add: :validate_attachments_limit
   has_one :csat_survey_response, dependent: :destroy_async
   has_many :notifications, as: :primary_actor, dependent: :destroy_async
 
-  scope :with_agents_ids, lambda { |agent_ids|
-    where(sender_id: agent_ids) if agent_ids.present?
-  }
-
   after_create_commit :execute_after_create_commit_callbacks
+
   after_update_commit :dispatch_update_event
-  after_create_commit :message_cost
 
   def channel_token
     @token ||= inbox.channel.try(:page_access_token)
@@ -144,8 +147,8 @@ class Message < ApplicationRecord
       conversation_id: conversation.display_id,
       conversation: conversation_push_event_data
     )
-    data.merge!(echo_id: echo_id) if echo_id.present?
-    data.merge!(attachments: attachments.map(&:push_event_data)) if attachments.present?
+    data[:echo_id] = echo_id if echo_id.present?
+    data[:attachments] = attachments.map(&:push_event_data) if attachments.present?
     merge_sender_attributes(data)
   end
 
@@ -168,9 +171,13 @@ class Message < ApplicationRecord
   end
 
   def merge_sender_attributes(data)
-    data.merge!(sender: sender.push_event_data) if sender && !sender.is_a?(AgentBot)
-    data.merge!(sender: sender.push_event_data(inbox)) if sender.is_a?(AgentBot)
+    data[:sender] = sender.push_event_data if sender && !sender.is_a?(AgentBot)
+    data[:sender] = sender.push_event_data(inbox) if sender.is_a?(AgentBot)
     data
+  end
+
+  def sender_name
+    sender&.try(:available_name) || sender&.try(:name)
   end
 
   def webhook_data
@@ -185,11 +192,12 @@ class Message < ApplicationRecord
       id: id,
       inbox: inbox.webhook_data,
       message_type: message_type,
+      status: status,
       private: private,
       sender: sender.try(:webhook_data),
       source_id: source_id
     }
-    data.merge!(attachments: attachments.map(&:push_event_data)) if attachments.present?
+    data[:attachments] = attachments.map(&:push_event_data) if attachments.present?
     data
   end
 
@@ -232,6 +240,18 @@ class Message < ApplicationRecord
 
   private
 
+  def prevent_message_flooding
+    # Added this to cover the validation specs in messages
+    # We can revisit and see if we can remove this later
+    return if conversation.blank?
+
+    # there are cases where automations can result in message loops, we need to prevent such cases.
+    if conversation.messages.where('created_at >= ?', 1.minute.ago).count >= Limits.conversation_message_per_minute_limit
+      Rails.logger.error "Too many message: Account Id - #{account_id} : Conversation id - #{conversation_id}"
+      errors.add(:base, 'Too many messages')
+    end
+  end
+
   def ensure_processed_message_content
     text_content_quoted = content_attributes.dig(:email, :text_content, :quoted)
     html_content_quoted = content_attributes.dig(:email, :html_content, :quoted)
@@ -261,7 +281,6 @@ class Message < ApplicationRecord
     reopen_conversation
     notify_via_mail
     set_conversation_activity
-    update_message_sentiments
     dispatch_create_events
     send_reply
     execute_message_template_hooks
@@ -304,8 +323,20 @@ class Message < ApplicationRecord
   end
 
   def dispatch_update_event
+    # ref: https://github.com/rails/rails/issues/44500
+    # we want to skip the update event if the message is not updated
+    return if previous_changes.blank?
+
     Rails.configuration.dispatcher.dispatch(MESSAGE_UPDATED, Time.zone.now, message: self, performed_by: Current.executed_by,
                                                                             previous_changes: previous_changes)
+
+    if additional_attributes['campaign_id'].present?
+      CampaignMessageUpdateJob.perform_later(
+        additional_attributes['campaign_id'],
+        additional_attributes['audience_id'],
+        status
+      )
+    end
   end
 
   def send_reply
@@ -393,14 +424,6 @@ class Message < ApplicationRecord
     # rubocop:disable Rails/SkipsModelValidations
     conversation.update_columns(last_activity_at: created_at)
     # rubocop:enable Rails/SkipsModelValidations
-  end
-
-  def update_message_sentiments
-    # override in the enterprise ::Enterprise::SentimentAnalysisJob.perform_later(self)
-  end
-
-  def message_cost
-    account.increase_usage_messages(message_type)
   end
 end
 

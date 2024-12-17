@@ -5,7 +5,6 @@
 #  id                :bigint           not null, primary key
 #  allow_auto_assign :boolean          default(TRUE)
 #  description       :text
-#  level             :integer          default("level_1"), not null
 #  name              :string           not null
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
@@ -24,13 +23,9 @@ class Team < ApplicationRecord
   has_many :members, through: :team_members, source: :user
   has_many :conversations, dependent: :nullify
 
-  enum level: { level_1: 1, level_2: 2, level_3: 3 }
-
   validates :name,
             presence: { message: I18n.t('errors.validations.presence') },
             uniqueness: { scope: :account_id }
-
-  scope :find_id_or_title, ->(id_or_title) { where(id: id_or_title).or(where(name: id_or_title)) }
 
   before_validation do
     self.name = name.downcase if attribute_present?('name')
@@ -57,22 +52,6 @@ class Team < ApplicationRecord
       id: id,
       name: name
     }
-  end
-
-  def self.minimum_level
-    Team.minimum(:level).to_i
-  end
-
-  def self.maximum_level
-    Team.maximum(:level).to_i
-  end
-
-  def self.max_assignment_limit
-    ENV.fetch('MAXIMUM_TEAM_ASSIGNMENT_LIMIT', 10).to_i
-  end
-
-  def self.max_assignment_limit_team_per_person
-    ENV.fetch('MAXIMUM_TEAM_ASSIGNMENT_LIMIT_PER_PERSON', nil).to_i
   end
 end
 

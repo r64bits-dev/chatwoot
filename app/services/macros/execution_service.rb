@@ -22,9 +22,14 @@ class Macros::ExecutionService < ActionService
 
   private
 
+  def send_webhook_event(webhook_url)
+    payload = @conversation.webhook_data.merge(event: "macro_event.#{@macro.name}")
+    WebhookJob.perform_later(webhook_url[0], payload)
+  end
+
   def assign_agent(agent_ids)
     agent_ids = agent_ids.map { |id| id == 'self' ? @user.id : id }
-    super
+    super(agent_ids)
   end
 
   def add_private_note(message)

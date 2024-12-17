@@ -1,7 +1,10 @@
 {
   "INBOX_MGMT": {
     "HEADER": "Entradas",
-    "SIDEBAR_TXT": "<p><b>Bandeja de entrada</b></p> <p> Cuando conecta un sitio web o una página de Facebook a Omni, se llama una <b>Bandeja de entrada</b>. Puede tener bandejas de entrada ilimitadas en su cuenta de Omni. </p><p> Haga clic en <b>Añadir bandeja de entrada</b> para conectar un sitio web o una página de Facebook. </p><p> en el panel, puede ver todas las conversaciones de todas su bandejas de entrada en un solo lugar y responder a ellas en la pestaña `Conversaciones`. </p><p> También puede ver conversaciones específicas de una bandeja de entrada haciendo clic en el nombre de la bandeja de entrada en el menú izquierdo del panel. </p>",
+    "DESCRIPTION": "A channel is the mode of communication your customer chooses to interact with you. An inbox is where you manage interactions for a specific channel. It can include communications from various sources such as email, live chat, and social media.",
+    "LEARN_MORE": "Learn more about inboxes",
+    "RECONNECTION_REQUIRED": "Tu bandeja de entrada está desconectada. No recibirás mensajes nuevos hasta que lo vuelvas a autorizar.",
+    "CLICK_TO_RECONNECT": "Haga clic aquí para volver a conectar.",
     "LIST": {
       "404": "No hay entradas adjuntas a esta cuenta."
     },
@@ -9,7 +12,7 @@
       {
         "title": "Elegir canal",
         "route": "settings_inbox_new",
-        "body": "Elija el proveedor que desea integrar con Omni."
+        "body": "Elija el proveedor que desea integrar con Chatwoot."
       },
       {
         "title": "Crear bandeja de entrada",
@@ -22,7 +25,7 @@
         "body": "Añadir agentes a la bandeja de entrada creada."
       },
       {
-        "title": "Voila!",
+        "title": "Voilà!",
         "route": "settings_inbox_finish",
         "body": "¡Todo está listo!"
       }
@@ -38,7 +41,7 @@
         "PLACEHOLDER": "Introduzca el nombre de su sitio web (por ejemplo: Acme Inc)"
       },
       "FB": {
-        "HELP": "PS: Al iniciar sesión, sólo tenemos acceso a los mensajes de tu Página. Tus mensajes privados nunca pueden ser accedidos por Omni.",
+        "HELP": "PS: Al iniciar sesión, sólo tenemos acceso a los mensajes de tu Página. Tus mensajes privados nunca pueden ser accedidos por Chatwoot.",
         "CHOOSE_PAGE": "Elegir página",
         "CHOOSE_PLACEHOLDER": "Seleccione una página de la lista",
         "INBOX_NAME": "Nombre de la bandeja de entrada",
@@ -62,7 +65,7 @@
         },
         "CHANNEL_WEBHOOK_URL": {
           "LABEL": "URL de Webhook",
-          "PLACEHOLDER": "Ingrese su URL de Webhook",
+          "PLACEHOLDER": "Por favor, introduzca su URL de Webhook",
           "ERROR": "Por favor, introduzca una URL válida"
         },
         "CHANNEL_DOMAIN": {
@@ -143,7 +146,7 @@
           "ERROR": "Este campo es obligatorio"
         },
         "PHONE_NUMBER": {
-          "LABEL": "Número de teléfono",
+          "LABEL": "Número telefónico",
           "PLACEHOLDER": "Por favor, introduzca el número de teléfono desde el que se enviará el mensaje.",
           "ERROR": "Por favor, proporcione un número de teléfono válido que comience con un signo `+` y no contenga espacios."
         },
@@ -340,21 +343,21 @@
       },
       "AUTH": {
         "TITLE": "Elija un canal",
-        "DESC": "Omni soporta widgets de Live Chat, Facebook Messenger, perfiles de Twitter, WhatsApp, correos electrónicos, etc., como canales. Si quieres construir un canal personalizado, puedes crearlo usando el canal API. Para empezar, elige uno de los canales a continuación."
+        "DESC": "Chatwoot soporta widgets de Live Chat, Facebook Messenger, perfiles de Twitter, WhatsApp, correos electrónicos, etc., como canales. Si quieres construir un canal personalizado, puedes crearlo usando el canal API. Para empezar, elige uno de los canales a continuación."
       },
       "AGENTS": {
         "TITLE": "Agentes",
         "DESC": "Aquí puede agregar agentes para administrar su recién creada bandeja de entrada. Sólo estos agentes seleccionados tendrán acceso a su bandeja de entrada. Los agentes que no forman parte de esta bandeja de entrada no podrán ver o responder a los mensajes de esta bandeja de entrada cuando inicien sesión. <br> <b>PS:</b> Como administrador, si necesita acceso a todas las bandejas, debes añadirte como agente a todas las bandejas de entrada que crees.",
-        "VALIDATION_ERROR": "Añadir al menos un agente a su nueva bandeja de entrada",
+        "VALIDATION_ERROR": "Añade al menos un agente a tu nueva bandeja de entrada",
         "PICK_AGENTS": "Elegir agentes para la bandeja de entrada"
       },
       "DETAILS": {
         "TITLE": "Detalles de la bandeja de entrada",
-        "DESC": "En el menú desplegable de abajo, selecciona la página de Facebook que quieres conectar a Omni. También puede dar un nombre personalizado a su bandeja de entrada para una mejor identificación."
+        "DESC": "En el menú desplegable de abajo, selecciona la página de Facebook que quieres conectar a Chatwoot. También puede dar un nombre personalizado a su bandeja de entrada para una mejor identificación."
       },
       "FINISH": {
         "TITLE": "¡Se ha clavado!",
-        "DESC": "Has terminado de integrar correctamente tu página de Facebook con Omni. La próxima vez que un cliente envíe un mensaje a tu Página, la conversación aparecerá automáticamente en tu bandeja de entrada.<br>También le estamos proporcionando un script de widget que puede agregar fácilmente a su sitio web. Una vez que esto está en vivo en tu sitio web, los clientes pueden enviarle mensajes directamente desde su sitio web sin la ayuda de ninguna herramienta externa y la conversación aparecerá aquí, en Omni.<br>¿Genial, eh? Bueno, estamos seguros de que intentaremos ser :)"
+        "DESC": "Has terminado de integrar correctamente tu página de Facebook con Chatwoot. La próxima vez que un cliente envíe un mensaje a tu Página, la conversación aparecerá automáticamente en tu bandeja de entrada.<br>También le estamos proporcionando un script de widget que puede agregar fácilmente a su sitio web. Una vez que esto está en vivo en tu sitio web, los clientes pueden enviarle mensajes directamente desde su sitio web sin la ayuda de ninguna herramienta externa y la conversación aparecerá aquí, en Chatwoot.<br>¿Genial, eh? Bueno, estamos seguros de que intentaremos ser :)"
       },
       "EMAIL_PROVIDER": {
         "TITLE": "Selecciona tu proveedor de correo",
@@ -364,12 +367,20 @@
         "TITLE": "Microsoft Email",
         "DESCRIPTION": "Haga clic en el botón Iniciar sesión con Microsoft para empezar. Serás redirigido a la página de inicio de sesión de correo electrónico. Una vez que aceptes los permisos solicitados, serás redirigido al paso de creación de la bandeja de entrada.",
         "EMAIL_PLACEHOLDER": "Introduzca la dirección de correo",
-        "HELP": "Para añadir su cuenta de Microsoft como un canal, debe autenticar su cuenta de Microsoft haciendo clic en 'Iniciar sesión con Microsoft' ",
+        "SIGN_IN": "Iniciar sesión con Microsoft",
         "ERROR_MESSAGE": "Hubo un error al conectarse a Microsoft, por favor inténtalo de nuevo"
+      },
+      "GOOGLE": {
+        "TITLE": "Google Email",
+        "DESCRIPTION": "Click on the Sign in with Google button to get started. You will redirected to the email sign in page. Once you accept the requested permissions, you would be redirected back to the inbox creation step.",
+        "SIGN_IN": "Sign in with Google",
+        "EMAIL_PLACEHOLDER": "Introduzca la dirección de correo",
+        "ERROR_MESSAGE": "There was an error connecting to Google, please try again"
       }
     },
     "DETAILS": {
       "LOADING_FB": "Autenticándote con Facebook...",
+      "ERROR_FB_LOADING": "Error loading Facebook SDK. Please disable any ad-blockers and try again from a different browser.",
       "ERROR_FB_AUTH": "Algo salió mal, Por favor actualiza la página...",
       "ERROR_FB_UNAUTHORIZED": "No estás autorizado a realizar esta acción. ",
       "ERROR_FB_UNAUTHORIZED_HELP": "Asegúrate de tener acceso a la página de Facebook con control completo. Puedes leer más sobre los roles de Facebook <a href=\" https://www.facebook.com/help/187316341316631\">here</a>.",
@@ -728,12 +739,25 @@
         "USER_MESSAGE": "Hola",
         "AGENT_MESSAGE": "Hola"
       },
-      "BRANDING_TEXT": "Desarrollado por Omni",
+      "BRANDING_TEXT": "Desarrollado por Chatwoot",
       "SCRIPT_SETTINGS": "\n      window.chatwootSettings = {options};"
     },
     "EMAIL_PROVIDERS": {
       "MICROSOFT": "Microsoft",
+      "GOOGLE": "Google",
       "OTHER_PROVIDERS": "Otros proveedores"
+    },
+    "CHANNELS": {
+      "MESSENGER": "Messenger",
+      "WEB_WIDGET": "Sitio web",
+      "TWITTER_PROFILE": "Twitter",
+      "TWILIO_SMS": "Twilio SMS",
+      "WHATSAPP": "WhatsApp",
+      "SMS": "SMS",
+      "EMAIL": "E-mail",
+      "TELEGRAM": "Telegram",
+      "LINE": "Line",
+      "API": "Canal API"
     }
   }
 }

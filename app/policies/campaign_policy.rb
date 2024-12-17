@@ -1,6 +1,6 @@
 class CampaignPolicy < ApplicationPolicy
   def index?
-   true
+    @account_user.administrator?
   end
 
   def update?

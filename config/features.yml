@@ -3,38 +3,54 @@
   enabled: true
 - name: channel_email
   enabled: true
+  help_url: https://chwt.app/hc/email
 - name: channel_facebook
   enabled: true
+  help_url: https://chwt.app/hc/fb
 - name: channel_twitter
   enabled: true
+- name: channel_whatsapp
+  enabled: false
+- name: channel_api
+  enabled: false
+- name: channel_notifica_me
+  enabled: false
 - name: ip_lookup
   enabled: false
 - name: disable_branding
   enabled: false
+  premium: true
 - name: email_continuity_on_api_channel
   enabled: false
 - name: help_center
   enabled: true
+  help_url: https://chwt.app/hc/help-center
 - name: agent_bots
   enabled: false
+  help_url: https://chwt.app/hc/agent-bots
 - name: macros
   enabled: true
 - name: agent_management
   enabled: true
 - name: team_management
   enabled: true
+  help_url: https://chwt.app/hc/teams
 - name: inbox_management
   enabled: true
 - name: labels
   enabled: true
+  help_url: https://chwt.app/hc/labels
 - name: custom_attributes
   enabled: true
+  help_url: https://chwt.app/hc/custom-attributes
 - name: automations
   enabled: true
 - name: canned_responses
   enabled: true
+  help_url: https://chwt.app/hc/canned
 - name: integrations
   enabled: true
+  help_url: https://chwt.app/hc/integrations
 - name: voice_recorder
   enabled: true
 - name: mobile_v2
@@ -43,8 +59,10 @@
   enabled: true
 - name: campaigns
   enabled: true
+  help_url: https://chwt.app/hc/campaigns
 - name: reports
   enabled: true
+  help_url: https://chwt.app/hc/reports
 - name: crm
   enabled: true
 - name: auto_resolve_conversations
@@ -55,9 +73,46 @@
   enabled: false
 - name: audit_logs
   enabled: false
+  premium: true
 - name: response_bot
   enabled: false
+  premium: true
 - name: message_reply_to
   enabled: false
+  help_url: https://chwt.app/hc/reply-to
 - name: insert_article_in_reply
+  enabled: false
+- name: inbox_view
+  enabled: false
+- name: sla
+  enabled: false
+  premium: true
+  help_url: https://chwt.app/hc/sla
+- name: help_center_embedding_search
+  enabled: false
+  premium: true
+- name: linear_integration
+  enabled: false
+- name: captain_integration
+  enabled: false
+- name: custom_roles
+  enabled: false
+  premium: true
+- name: hide_all_chats_for_agent
+  enabled: false
+- name: hide_contacts_for_agent
+  enabled: false
+- name: hide_filters_for_agent
+  enabled: false
+- name: send_agent_name_in_whatsapp_message
+  enabled: true
+- name: read_message
+  enabled: true
+- name: disable_whatsapp_messaging_window
+  enabled: false
+- name: agent_conversation_viewed
+  enabled: true
+- name: hide_unassigned_for_agent
+  enabled: false
+- name: hide_delete_message_for_agent
   enabled: false

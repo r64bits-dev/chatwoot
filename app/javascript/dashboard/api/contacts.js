@@ -1,6 +1,5 @@
 /* global axios */
 import ApiClient from './ApiClient';
-import { convertObjectKeysToSnakeCase } from './utils/string';
 
 export const buildContactParams = (page, sortAttr, label, search) => {
   let params = `include_contact_inboxes=false&page=${page}&sort=${sortAttr}`;
@@ -16,15 +15,6 @@ export const buildContactParams = (page, sortAttr, label, search) => {
 class ContactAPI extends ApiClient {
   constructor() {
     super('contacts', { accountScoped: true });
-  }
-
-  show(id, requestParams = {}) {
-    const snakeCaseParams = convertObjectKeysToSnakeCase(requestParams);
-    return axios.get(`${this.url}/${id}`, {
-      params: {
-        ...snakeCaseParams,
-      },
-    });
   }
 
   get(page, sortAttr = 'name', label = '') {
@@ -87,14 +77,8 @@ class ContactAPI extends ApiClient {
     return axios.delete(`${this.url}/${contactId}/avatar`);
   }
 
-  exportContacts() {
-    return axios.get(`${this.url}/export`);
-  }
-
-  fetchPreviousMessages({ contactId, conversationId, page }) {
-    return axios.get(
-      `${this.url}/${contactId}/conversations/${conversationId}/messages?page=${page}`
-    );
+  exportContacts(queryPayload) {
+    return axios.post(`${this.url}/export`, queryPayload);
   }
 }
 

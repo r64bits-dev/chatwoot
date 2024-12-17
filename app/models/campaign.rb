@@ -48,7 +48,7 @@ class Campaign < ApplicationRecord
   has_many :conversations, dependent: :nullify, autosave: true
 
   before_validation :ensure_correct_campaign_attributes
-  after_commit :set_display_id, unless: :display_id?
+  after_create_commit :load_attributes_created_by_db_triggers
 
   def trigger!
     return unless one_off?
@@ -56,25 +56,41 @@ class Campaign < ApplicationRecord
 
     Twilio::OneoffSmsCampaignService.new(campaign: self).perform if inbox.inbox_type == 'Twilio SMS'
     Sms::OneoffSmsCampaignService.new(campaign: self).perform if inbox.inbox_type == 'Sms'
+    one_off_unoapi
   end
 
   private
 
-  def set_display_id
-    reload
+  def one_off_unoapi
+    return unless inbox.channel_type == 'Channel::Whatsapp' && inbox&.channel&.provider == 'unoapi'
+
+    Whatsapp::OneoffUnoapiCampaignService.new(campaign: self).perform
+  end
+
+  def load_attributes_created_by_db_triggers
+    # Display id is set via a trigger in the database
+    # So we need to specifically fetch it after the record is created
+    # We can't use reload because it will clear the previous changes, which we need for the dispatcher
+    obj_from_db = self.class.find(id)
+    self[:display_id] = obj_from_db[:display_id]
+  rescue ActiveRecord::RecordNotFound
+    Rails.logger.error("Ignore raise ActiveRecord::RecordNotFound on load campaign id #{id}")
   end
 
   def validate_campaign_inbox
     return unless inbox
 
-    errors.add :inbox, 'Unsupported Inbox type' unless ['Website', 'Twilio SMS', 'Sms'].include? inbox.inbox_type
+    errors.add :inbox, 'Unsupported Inbox type' unless ['Website', 'Twilio SMS', 'Sms', 'Whatsapp'].include? inbox.inbox_type
+    return unless inbox.inbox_type == 'Whatsapp' && inbox.channel.provider != 'unoapi'
+
+    errors.add :inbox, 'Unsupported Whatsapp provider'
   end
 
   # TO-DO we clean up with better validations when campaigns evolve into more inboxes
   def ensure_correct_campaign_attributes
     return if inbox.blank?
 
-    if ['Twilio SMS', 'Sms'].include?(inbox.inbox_type)
+    if ['Twilio SMS', 'Sms', 'Whatsapp'].include?(inbox.inbox_type)
       self.campaign_type = 'one_off'
       self.scheduled_at ||= Time.now.utc
     else

@@ -1,67 +1,72 @@
 export const MACRO_ACTION_TYPES = [
   {
     key: 'assign_team',
-    label: 'Atribuir a equipe', // traduzido
+    label: 'Assign a team',
     inputType: 'search_select',
   },
   {
     key: 'assign_agent',
-    label: 'Atribuir a agente', // traduzido
+    label: 'Assign an agent',
     inputType: 'search_select',
   },
   {
     key: 'add_label',
-    label: 'Adicionar uma etiqueta', // traduzido
+    label: 'Add a label',
     inputType: 'multi_select',
   },
   {
     key: 'remove_label',
-    label: 'Remover uma etiqueta', // traduzido
+    label: 'Remove a label',
     inputType: 'multi_select',
   },
   {
     key: 'remove_assigned_team',
-    label: 'Remover equipe atribuída', // traduzido
+    label: 'Remove Assigned Team',
     inputType: null,
   },
   {
     key: 'send_email_transcript',
-    label: 'Enviar uma transcrição de e-mail', // traduzido
+    label: 'Send an email transcript',
     inputType: 'email',
   },
   {
     key: 'mute_conversation',
-    label: 'Silenciar conversa', // traduzido
+    label: 'Mute conversation',
     inputType: null,
   },
   {
     key: 'snooze_conversation',
-    label: 'Adiar conversa', // traduzido
+    label: 'Snooze conversation',
     inputType: null,
   },
   {
     key: 'resolve_conversation',
-    label: 'Resolver conversa', // traduzido
+    label: 'Resolve conversation',
     inputType: null,
   },
   {
+    key: 'send_webhook_event',
+    label: 'Send Webhook Event',
+    inputType: 'url',
+  },
+  {
     key: 'send_attachment',
-    label: 'Enviar anexo', // traduzido
+    label: 'Send Attachment',
     inputType: 'attachment',
   },
   {
     key: 'send_message',
-    label: 'Enviar uma mensagem', // traduzido
+    label: 'Send a message',
     inputType: 'textarea',
   },
   {
     key: 'add_private_note',
-    label: 'Adicionar uma nota privada', // traduzido
+    label: 'Add a private note',
     inputType: 'textarea',
   },
   {
     key: 'change_priority',
-    label: 'Alterar prioridade', // traduzido
+    label: 'Change Priority',
     inputType: 'search_select',
   },
 ];

@@ -1,9 +1,9 @@
 {
   "LOGIN": {
-    "TITLE": "Đăng nhập Omni",
+    "TITLE": "Đăng nhập Chatwoot",
     "EMAIL": {
       "LABEL": "Email",
-      "PLACEHOLDER": "example@companyname.com",
+      "PLACEHOLDER": "example{'@'}companyname.com",
       "ERROR": "Vui lòng nhập một địa chỉ email hợp lệ"
     },
     "PASSWORD": {

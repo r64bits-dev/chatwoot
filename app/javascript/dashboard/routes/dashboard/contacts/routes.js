@@ -1,5 +1,4 @@
 /* eslint arrow-body-style: 0 */
-import { AllRoles } from '../../../featureFlags';
 import { frontendURL } from '../../../helper/URLHelper';
 const ContactsView = () => import('./components/ContactsView.vue');
 const ContactManageView = () => import('./pages/ContactManageView.vue');
@@ -8,13 +7,17 @@ export const routes = [
   {
     path: frontendURL('accounts/:accountId/contacts'),
     name: 'contacts_dashboard',
-    roles: AllRoles,
+    meta: {
+      permissions: ['administrator', 'agent', 'contact_manage'],
+    },
     component: ContactsView,
   },
   {
     path: frontendURL('accounts/:accountId/contacts/custom_view/:id'),
     name: 'contacts_segments_dashboard',
-    roles: AllRoles,
+    meta: {
+      permissions: ['administrator', 'agent', 'contact_manage'],
+    },
     component: ContactsView,
     props: route => {
       return { segmentsId: route.params.id };
@@ -23,7 +26,9 @@ export const routes = [
   {
     path: frontendURL('accounts/:accountId/labels/:label/contacts'),
     name: 'contacts_labels_dashboard',
-    roles: AllRoles,
+    meta: {
+      permissions: ['administrator', 'agent', 'contact_manage'],
+    },
     component: ContactsView,
     props: route => {
       return { label: route.params.label };
@@ -32,7 +37,9 @@ export const routes = [
   {
     path: frontendURL('accounts/:accountId/contacts/:contactId'),
     name: 'contact_profile_dashboard',
-    roles: AllRoles,
+    meta: {
+      permissions: ['administrator', 'agent', 'contact_manage'],
+    },
     component: ContactManageView,
     props: route => {
       return { contactId: route.params.contactId };

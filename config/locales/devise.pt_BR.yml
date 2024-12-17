@@ -1,24 +1,14 @@
+#Additional translations at https://github.com/plataformatec/devise/wiki/I18n
 pt_BR:
-  secure_password:
-    password_has_required_content:
-      errors:
-        messages:
-          minimum_characters: "deve conter pelo menos %{count} caracteres"
-          maximum_characters: "não pode ter mais de %{count} caracteres"
-          minimum_letters: "deve conter pelo menos %{count} letras"
-          maximum_letters: "não pode ter mais de %{count} letras"
-          minimum_numbers: "deve conter pelo menos %{count} números"
-          maximum_numbers: "não pode ter mais de %{count} números"
-          minimum_symbols: "deve conter pelo menos %{count} símbolos"
   devise:
     confirmations:
       confirmed: "Seu e-mail foi confirmado com sucesso."
       send_instructions: "Dentro de minutos, você receberá um e-mail com instruções sobre como confirmar seu e-mail."
-      send_paranoid_instructions: "Se o seu e-mail existir em nosso banco de dados, dentro de minutos, você receberá um e-mail com instruções sobre como confirmar seu e-mail."
+      send_paranoid_instructions: "Se o seu e-mail existir em nosso banco de dados, Dentro de minutos, você receberá um e-mail com instruções sobre como confirmar seu de e-mail."
     failure:
       already_authenticated: "Você já está conectado."
       inactive: "Sua conta ainda não está ativada."
-      invalid: "Senha ou conta inválida %{authentication_keys} ainda não foi verificada."
+      invalid: "/senha ou conta inválida %{authentication_keys} ainda não foi verificada."
       locked: "Sua conta está bloqueada."
       last_attempt: "Você tem mais uma tentativa antes que sua conta seja bloqueada."
       not_found_in_database: "%{authentication_keys} ou senha inválidos."
@@ -26,32 +16,14 @@ pt_BR:
       unauthenticated: "Você precisa entrar ou se cadastrar antes de continuar."
       unconfirmed: "Antes de continuar, você precisa confirmar seu endereço de e-mail."
     mailer:
-      unlock_instructions:
-        subject: "Instruções para desbloqueio"
-        greeting: "Olá %{email}!"
-        locked_account: "Sua conta foi bloqueada devido a um número excessivo de tentativas de login sem sucesso."
-        instructions: "Clique no link abaixo para desbloquear sua conta:"
-        unlock_account: "Desbloquear minha conta"
-      reset_password_instructions:
-        subject: "Instruções para alteração de senha"
-        greeting: "Olá %{email}!"
-        request: "Alguém solicitou um link para alterar sua senha. Você pode fazer isso através do link abaixo."
-        change_password: "Alterar minha senha"
-        ignore: "Se você não solicitou isso, por favor ignore este e-mail."
-        no_change: "Sua senha não será alterada até que você acesse o link acima e crie uma nova."
-      password_change:
-        subject: "Senha Alterada"
-        greeting: "Olá %{email}!"
-        notification: "Estamos entrando em contato para notificá-lo de que sua senha foi alterada."
       confirmation_instructions:
         subject: "Instruções de Confirmação"
-        greeting: "Olá %{name},"
-        inviter_message: "%{inviter_name}, com %{account_name}, convidou você para experimentar %{brand_name}."
-        confirmed_login: "Você pode fazer login na sua conta %{brand_name} através do link abaixo:"
-        welcome_message: "Bem-vindo ao %{brand_name}! Temos um conjunto de ferramentas poderosas para você explorar. Antes disso, precisamos verificar seu endereço de e-mail para saber que é realmente você."
-        activate_account: "Por favor, reserve um momento e clique no link abaixo para ativar sua conta."
-        confirm_account: "Confirmar minha conta"
-        login_account: "Entrar na minha conta"
+      reset_password_instructions:
+        subject: "Instruções para alteração de senha"
+      unlock_instructions:
+        subject: "Instruções para desbloqueio"
+      password_change:
+        subject: "Senha Alterada"
     omniauth_callbacks:
       failure: "Não foi possível autenticar você a partir de %{kind} porque \"%{reason}\"."
       success: "Autenticado com sucesso pela conta %{kind}."
@@ -77,10 +49,6 @@ pt_BR:
       send_instructions: "Você receberá um e-mail com instruções sobre como desbloquear sua conta em alguns minutos."
       send_paranoid_instructions: "Se sua conta existir, você receberá em alguns minutos um e-mail com instruções sobre como desbloqueá-la."
       unlocked: "Sua conta foi desbloqueada com sucesso. Por favor, faça login para continuar."
-  devise_token_auth:
-    sessions:
-      bad_credentials: "Email ou senha inválidos."
-
   errors:
     messages:
       already_confirmed: "já foi confirmado, por favor, tente iniciar sessão"

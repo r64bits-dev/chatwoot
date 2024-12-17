@@ -30,7 +30,8 @@ module Whatsapp::IncomingMessageServiceHelpers
       message.dig(:button, :text) ||
       message.dig(:interactive, :button_reply, :title) ||
       message.dig(:interactive, :list_reply, :title) ||
-      message.dig(:name, :formatted_name)
+      message.dig(:name, :formatted_name) ||
+      message.dig(message_type.to_sym, :caption)
   end
 
   def file_content_type(file_type)
@@ -44,7 +45,7 @@ module Whatsapp::IncomingMessageServiceHelpers
   end
 
   def unprocessable_message_type?(message_type)
-    %w[reaction ephemeral unsupported].include?(message_type)
+    %w[reaction ephemeral unsupported request_welcome].include?(message_type)
   end
 
   def brazil_phone_number?(phone_number)
@@ -60,7 +61,7 @@ module Whatsapp::IncomingMessageServiceHelpers
     number = phone_number[4, phone_number.length - 4]
     normalised_number = "55#{ddd}#{number}"
     # insert 9 to convert the number to the new mobile number format
-    normalised_number = "55#{ddd}9#{number}" if normalised_number.length != 13
+    normalised_number = "55#{ddd}9#{number}" if %w[6 7 8 9].include?(number[0]) && normalised_number.length != 13
     normalised_number
   end
 

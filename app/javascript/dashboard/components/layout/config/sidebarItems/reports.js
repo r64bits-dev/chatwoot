@@ -1,18 +1,18 @@
+import { FEATURE_FLAGS } from '../../../../featureFlags';
 import { frontendURL } from '../../../../helper/URLHelper';
 
 const reports = accountId => ({
   parentNav: 'reports',
   routes: [
     'account_overview_reports',
-    'triggers_reports',
     'conversation_reports',
     'csat_reports',
+    'bot_reports',
     'agent_reports',
     'label_reports',
     'inbox_reports',
     'team_reports',
-    'invoice_reports',
-    'tickets_reports',
+    'sla_reports',
   ],
   menuItems: [
     {
@@ -21,13 +21,6 @@ const reports = accountId => ({
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/reports/overview`),
       toStateName: 'account_overview_reports',
-    },
-    {
-      icon: 'triggers',
-      label: 'TRIGGER_REPORTS',
-      hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/reports/triggers`),
-      toStateName: 'triggers_reports',
     },
     {
       icon: 'chat',
@@ -42,6 +35,14 @@ const reports = accountId => ({
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/reports/csat`),
       toStateName: 'csat_reports',
+    },
+    {
+      icon: 'bot',
+      label: 'REPORTS_BOT',
+      hasSubMenu: false,
+      featureFlag: FEATURE_FLAGS.RESPONSE_BOT,
+      toState: frontendURL(`accounts/${accountId}/reports/bot`),
+      toStateName: 'bot_reports',
     },
     {
       icon: 'people',
@@ -72,18 +73,12 @@ const reports = accountId => ({
       toStateName: 'team_reports',
     },
     {
-      icon: 'invoice',
-      label: 'REPORTS_INVOICE',
+      icon: 'document-list-clock',
+      label: 'REPORTS_SLA',
       hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/reports/invoices`),
-      toStateName: 'invoice_reports',
-    },
-    {
-      icon: 'ticket',
-      label: 'REPORTS_TICKETS',
-      hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/reports/tickets`),
-      toStateName: 'tickets_reports',
+      featureFlag: FEATURE_FLAGS.SLA,
+      toState: frontendURL(`accounts/${accountId}/reports/sla`),
+      toStateName: 'sla_reports',
     },
   ],
 });

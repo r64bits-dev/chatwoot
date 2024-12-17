@@ -14,10 +14,6 @@
         "TITLE": "Configurações gerais",
         "NOTE": ""
       },
-      "PLAN": {
-        "TITLE": "Plano da Conta",
-        "NOTE": "Esse é o plano que sua conta está associada, aqui está o nome e sua descrição"
-      },
       "ACCOUNT_ID": {
         "TITLE": "ID da Conta",
         "NOTE": "Este ID é necessário se você está construindo uma integração baseada em API"
@@ -52,10 +48,10 @@
         "CUSTOM_EMAIL_DOMAIN_ENABLED": "Você pode receber e-mails em seu domínio personalizado agora."
       }
     },
-    "UPDATE_CHATWOOT": "Uma atualização %{latestChatwootVersion} para o MaisOmni está disponível. Por favor, atualize sua instância.",
+    "UPDATE_CHATWOOT": "Uma atualização {latestChatwootVersion} para o Chatwoot está disponível. Por favor, atualize sua instância.",
     "LEARN_MORE": "Saiba mais",
-    "PAYMENT_PENDING": "Seu pagamento está pendente. Por favor, atualize suas informações de pagamento para continuar usando o Omni",
-    "LIMITS_UPGRADE": "Sua conta excedeu os limites de uso. Por favor, faça um upgrade do seu plano para continuar usando o Omni",
+    "PAYMENT_PENDING": "Seu pagamento está pendente. Por favor, atualize suas informações de pagamento para continuar usando o Chatwoot",
+    "LIMITS_UPGRADE": "Sua conta excedeu os limites de uso. Por favor, faça um upgrade do seu plano para continuar usando o Chatwoot",
     "OPEN_BILLING": "Abrir faturamento"
   },
   "FORMS": {
@@ -91,12 +87,17 @@
       "conversation_assignment": "Conversa Atribuída",
       "assigned_conversation_new_message": "Nova Mensagem",
       "participating_conversation_new_message": "Nova Mensagem",
-      "conversation_mention": "Menção"
+      "conversation_mention": "Menção",
+      "sla_missed_first_response": "",
+      "sla_missed_next_response": "",
+      "sla_missed_resolution": ""
     }
   },
   "NETWORK": {
     "NOTIFICATION": {
-      "TEXT": "Desconectado "
+      "OFFLINE": "Desconectado",
+      "RECONNECTING": "Reconectando...",
+      "RECONNECT_SUCCESS": "Reconectado"
     },
     "BUTTON": {
       "REFRESH": "Atualizar"
@@ -108,6 +109,7 @@
       "GENERAL": "Geral",
       "REPORTS": "Relatórios",
       "CONVERSATION": "Conversas",
+      "BULK_ACTIONS": "Ações em massa",
       "CHANGE_ASSIGNEE": "Alterar Responsável",
       "CHANGE_PRIORITY": "Alterar Prioridade",
       "CHANGE_TEAM": "Alterar a Equipe",
@@ -116,7 +118,8 @@
       "REMOVE_LABEL": "Remover etiqueta da conversa",
       "SETTINGS": "Confirgurações",
       "AI_ASSIST": "Assistente Open AI",
-      "APPEARANCE": "Tema"
+      "APPEARANCE": "Tema",
+      "SNOOZE_NOTIFICATION": "Adiar Notificação"
     },
     "COMMANDS": {
       "GO_TO_CONVERSATION_DASHBOARD": "Ir para Painel de Conversação",
@@ -153,11 +156,12 @@
       "UNTIL_TOMORROW": "Até amanhã",
       "UNTIL_NEXT_MONTH": "Até o próximo mês",
       "AN_HOUR_FROM_NOW": "Até daqui a uma hora",
-      "CUSTOM": "Personalizar...",
+      "UNTIL_CUSTOM_TIME": "Personalizar...",
       "CHANGE_APPEARANCE": "Alterar Tema",
       "LIGHT_MODE": "Claro",
       "DARK_MODE": "Escuro",
-      "SYSTEM_MODE": "Sistema"
+      "SYSTEM_MODE": "Sistema",
+      "SNOOZE_NOTIFICATION": "Adiar Notificação"
     }
   },
   "DASHBOARD_APPS": {

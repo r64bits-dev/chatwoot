@@ -115,7 +115,7 @@ RSpec.describe Conversation do
     let!(:conversation) do
       create(:conversation, status: 'open', account: account, assignee: old_assignee)
     end
-    let(:assignment_mailer) { double(deliver: true) }
+    let(:assignment_mailer) { instance_double(AssignmentMailer, deliver: true) }
     let(:label) { create(:label, account: account) }
 
     before do
@@ -142,7 +142,7 @@ RSpec.describe Conversation do
     it 'runs after_update callbacks' do
       conversation.update(
         status: :resolved,
-        contact_last_seen_at: Time.now,
+        contact_last_seen_at: Time.zone.now,
         assignee: new_assignee
       )
       status_change = conversation.status_change
@@ -156,7 +156,7 @@ RSpec.describe Conversation do
                                                                  changed_attributes: nil, performed_by: nil)
       expect(Rails.configuration.dispatcher).to have_received(:dispatch)
         .with(described_class::ASSIGNEE_CHANGED, kind_of(Time), conversation: conversation, notifiable_assignee_change: true,
-                                                                changed_attributes: nil, performed_by: nil)
+                                                                changed_attributes: changed_attributes, performed_by: nil)
       expect(Rails.configuration.dispatcher).to have_received(:dispatch)
         .with(described_class::CONVERSATION_UPDATED, kind_of(Time), conversation: conversation, notifiable_assignee_change: true,
                                                                     changed_attributes: changed_attributes, performed_by: nil)
@@ -193,7 +193,7 @@ RSpec.describe Conversation do
     it 'creates conversation activities' do
       conversation.update(
         status: :resolved,
-        contact_last_seen_at: Time.now,
+        contact_last_seen_at: Time.zone.now,
         assignee: new_assignee,
         label_list: [label.title]
       )
@@ -372,9 +372,9 @@ RSpec.describe Conversation do
       expect(conversation.reload.resolved?).to be(true)
     end
 
-    it 'marks conversation as muted in redis' do
+    it 'blocks the contact' do
       mute!
-      expect(Redis::Alfred.get(conversation.send(:mute_key))).not_to be_nil
+      expect(conversation.reload.contact.blocked?).to be(true)
     end
 
     it 'creates mute message' do
@@ -400,10 +400,9 @@ RSpec.describe Conversation do
       expect { unmute! }.not_to(change { conversation.reload.status })
     end
 
-    it 'marks conversation as muted in redis' do
-      expect { unmute! }
-        .to change { Redis::Alfred.get(conversation.send(:mute_key)) }
-        .to nil
+    it 'unblocks the contact' do
+      unmute!
+      expect(conversation.reload.contact.blocked?).to be(false)
     end
 
     it 'creates unmute message' do
@@ -526,6 +525,7 @@ RSpec.describe Conversation do
         id: conversation.display_id,
         messages: [],
         labels: [],
+        last_activity_at: conversation.last_activity_at.to_i,
         inbox_id: conversation.inbox_id,
         status: conversation.status,
         contact_inbox: conversation.contact_inbox,
@@ -546,6 +546,17 @@ RSpec.describe Conversation do
 
     it 'returns push event payload' do
       expect(push_event_data).to eq(expected_data)
+    end
+  end
+
+  describe 'when conversation is created by blocked contact' do
+    let(:account) { create(:account) }
+    let(:blocked_contact) { create(:contact, account: account, blocked: true) }
+    let(:inbox) { create(:inbox, account: account) }
+
+    it 'creates conversation in resolved state' do
+      conversation = create(:conversation, account: account, contact: blocked_contact, inbox: inbox)
+      expect(conversation.status).to eq('resolved')
     end
   end
 
@@ -602,7 +613,7 @@ RSpec.describe Conversation do
       let!(:conversation) { create(:conversation, inbox: facebook_inbox, account: facebook_channel.account) }
 
       context 'when instagram channel' do
-        it 'return true with HUMAN_AGENT if it is outside of 24 hour window', skip: true do
+        it 'return true with HUMAN_AGENT if it is outside of 24 hour window' do
           InstallationConfig.where(name: 'ENABLE_MESSENGER_CHANNEL_HUMAN_AGENT').first_or_create(value: true)
 
           conversation.update(additional_attributes: { type: 'instagram_direct_message' })
@@ -611,7 +622,7 @@ RSpec.describe Conversation do
             account: conversation.account,
             inbox: facebook_inbox,
             conversation: conversation,
-            created_at: Time.now - 48.hours
+            created_at: 48.hours.ago
           )
 
           expect(conversation.can_reply?).to be true
@@ -626,7 +637,7 @@ RSpec.describe Conversation do
             account: conversation.account,
             inbox: facebook_inbox,
             conversation: conversation,
-            created_at: Time.now - 48.hours
+            created_at: 48.hours.ago
           )
 
           expect(conversation.can_reply?).to be false
@@ -646,7 +657,7 @@ RSpec.describe Conversation do
             account: conversation.account,
             inbox: api_channel.inbox,
             conversation: conversation,
-            created_at: Time.now - 13.hours
+            created_at: 13.hours.ago
           )
 
           expect(api_channel.additional_attributes['agent_reply_time_window']).to be_nil
@@ -662,7 +673,7 @@ RSpec.describe Conversation do
             account: conversation.account,
             inbox: api_channel_with_limit.inbox,
             conversation: conversation,
-            created_at: Time.now - 13.hours
+            created_at: 13.hours.ago
           )
 
           expect(api_channel_with_limit.additional_attributes['agent_reply_time_window']).to eq '12'
@@ -734,140 +745,175 @@ RSpec.describe Conversation do
         ]
       end
 
-      it 'Sort conversations based on created_at', skip: true do
+      it 'returns the list in ascending order by default' do
         records = described_class.sort_on_created_at
-        expect(records.first.id).to eq(conversation_7.id)
-        expect(records.last.id).to eq(conversation_2.id)
+        expect(records.map(&:id)).to eq created_desc_order.reverse
       end
 
       it 'returns the list in descending order if desc is passed as sort direction' do
         records = described_class.sort_on_created_at(:desc)
         expect(records.map(&:id)).to eq created_desc_order
       end
+    end
 
-      describe 'sort_on_last_activity_at' do
-        let(:last_activity_asc_order) do
-          [
-            conversation_7.id, conversation_5.id, conversation_4.id, conversation_6.id, conversation_3.id,
-            conversation_1.id, conversation_2.id
-          ]
-        end
-
-        it 'returns the list in descending order by default' do
-          records = described_class.sort_on_last_activity_at
-          expect(records.map(&:id)).to eq last_activity_asc_order.reverse
-        end
-
-        it 'returns the list in asc order if asc is passed as sort direction' do
-          records = described_class.sort_on_last_activity_at(:asc)
-          expect(records.map(&:id)).to eq last_activity_asc_order
-        end
+    describe 'sort_on_last_activity_at' do
+      let(:last_activity_asc_order) do
+        [
+          conversation_7.id, conversation_5.id, conversation_4.id, conversation_6.id, conversation_3.id,
+          conversation_1.id, conversation_2.id
+        ]
       end
 
-      context 'when last_activity_at updated by some actions' do
-        before do
-          create(:message, conversation_id: conversation_1.id, message_type: :incoming, created_at: DateTime.now - 8.days)
-          create(:message, conversation_id: conversation_2.id, message_type: :incoming, created_at: DateTime.now - 6.days)
-          create(:message, conversation_id: conversation_3.id, message_type: :incoming, created_at: DateTime.now - 2.days)
-        end
-
-        it 'sort conversations with latest resolved conversation at first', skip: true do
-          records = described_class.latest
-          expect(records.first.id).to eq(conversation_3.id)
-
-          conversation_1.toggle_status
-          perform_enqueued_jobs do
-            Conversations::ActivityMessageJob.perform_later(
-              conversation_1,
-              account_id: conversation_1.account_id,
-              inbox_id: conversation_1.inbox_id,
-              message_type: :activity,
-              content: 'Conversation was marked resolved by system due to days of inactivity'
-            )
-          end
-          records = described_class.sort_on_last_activity_at
-
-          expect(records.first.id).to eq(conversation_1.id)
-        end
-
-        it 'Sort conversations with latest message' do
-          create(:message, conversation_id: conversation_3.id, message_type: :incoming, created_at: DateTime.now)
-          records = described_class.sort_on_last_activity_at
-
-          expect(records.first.id).to eq(conversation_3.id)
-        end
+      it 'returns the list in descending order by default' do
+        records = described_class.sort_on_last_activity_at
+        expect(records.map(&:id)).to eq last_activity_asc_order.reverse
       end
 
-      context 'when sort on priority', skip: true do
-        it 'Sort conversations with the following order high > medium > low > nil' do
-          # ensure they are not pre-sorted
-          records = described_class.sort_on_created_at
-          expect(records.pluck(:priority)).not_to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
-
-          records = described_class.sort_on_priority
-          expect(records.pluck(:priority)).to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
-          expect(records.pluck(:id)).to eq(
-            [
-              conversation_4.id, conversation_5.id, conversation_2.id, conversation_1.id, conversation_3.id,
-              conversation_6.id, conversation_7.id
-            ]
-          )
-        end
-
-        it 'return list with the following order low > medium > high > urgent > nil by default' do
-          # ensure they are not pre-sorted
-          records = described_class.sort_on_created_at
-          expect(records.pluck(:priority)).not_to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
-
-          records = described_class.sort_on_priority(:asc)
-          expect(records.pluck(:priority)).to eq(['low', 'medium', 'high', 'urgent', 'urgent', nil, nil])
-          expect(records.pluck(:id)).to eq(
-            [
-              conversation_3.id, conversation_1.id, conversation_2.id, conversation_4.id, conversation_5.id,
-              conversation_6.id, conversation_7.id
-            ]
-          )
-        end
-
-        it 'sorts conversation with last_activity for the same priority' do
-          records = described_class.where(priority: 'urgent').sort_on_priority
-          # ensure that the conversation 4 last_activity_at is more recent than conversation 5
-          expect(conversation_4.last_activity_at > conversation_5.last_activity_at).to be(true)
-          expect(records.pluck(:priority, :id)).to eq([['urgent', conversation_4.id], ['urgent', conversation_5.id]])
-
-          records = described_class.where(priority: nil).sort_on_priority
-          # ensure that the conversation 6 last_activity_at is more recent than conversation 7
-          expect(conversation_6.last_activity_at > conversation_7.last_activity_at).to be(true)
-          expect(records.pluck(:priority, :id)).to eq([[nil, conversation_6.id], [nil, conversation_7.id]])
-        end
-      end
-
-      describe 'sort_on_waiting_since' do
-        it 'returns the list in ascending order by default' do
-          records = described_class.sort_on_waiting_since
-          expect(records.map(&:id)).to eq [
-            conversation_4.id, conversation_5.id, conversation_6.id, conversation_7.id, conversation_3.id, conversation_1.id,
-            conversation_2.id
-          ]
-        end
-
-        it 'returns the list in desc order if asc is passed as sort direction' do
-          records = described_class.sort_on_waiting_since(:desc)
-          expect(records.map(&:id)).to eq [
-            conversation_2.id, conversation_1.id, conversation_3.id, conversation_7.id, conversation_6.id, conversation_5.id,
-            conversation_4.id
-          ]
-        end
+      it 'returns the list in asc order if asc is passed as sort direction' do
+        records = described_class.sort_on_last_activity_at(:asc)
+        expect(records.map(&:id)).to eq last_activity_asc_order
       end
     end
 
-    describe 'cached_label_list_array' do
-      let(:conversation) { create(:conversation) }
+    context 'when last_activity_at updated by some actions' do
+      before do
+        create(:message, conversation_id: conversation_1.id, message_type: :incoming, created_at: DateTime.now - 8.days)
+        create(:message, conversation_id: conversation_2.id, message_type: :incoming, created_at: DateTime.now - 6.days)
+        create(:message, conversation_id: conversation_3.id, message_type: :incoming, created_at: DateTime.now - 2.days)
+      end
 
-      it 'returns the correct list of labels' do
-        conversation.update(label_list: %w[customer-support enterprise paid-customer])
+      it 'sort conversations with latest resolved conversation at first' do
+        records = described_class.sort_on_last_activity_at
 
-        expect(conversation.cached_label_list_array).to eq %w[customer-support enterprise paid-customer]
+        expect(records.first.id).to eq(conversation_3.id)
+
+        conversation_1.toggle_status
+        perform_enqueued_jobs do
+          Conversations::ActivityMessageJob.perform_later(
+            conversation_1,
+            account_id: conversation_1.account_id,
+            inbox_id: conversation_1.inbox_id,
+            message_type: :activity,
+            content: 'Conversation was marked resolved by system due to days of inactivity'
+          )
+        end
+        records = described_class.sort_on_last_activity_at
+
+        expect(records.first.id).to eq(conversation_1.id)
+      end
+
+      it 'Sort conversations with latest message' do
+        create(:message, conversation_id: conversation_3.id, message_type: :incoming, created_at: DateTime.now)
+        records = described_class.sort_on_last_activity_at
+
+        expect(records.first.id).to eq(conversation_3.id)
+      end
+    end
+
+    describe 'sort_on_priority' do
+      it 'return list with the following order urgent > high > medium > low > nil by default' do
+        # ensure they are not pre-sorted
+        records = described_class.sort_on_created_at
+        expect(records.pluck(:priority)).not_to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
+
+        records = described_class.sort_on_priority
+        expect(records.pluck(:priority)).to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
+        expect(records.pluck(:id)).to eq(
+          [
+            conversation_4.id, conversation_5.id, conversation_2.id, conversation_1.id, conversation_3.id,
+            conversation_6.id, conversation_7.id
+          ]
+        )
+      end
+
+      it 'return list with the following order low > medium > high > urgent > nil by default' do
+        # ensure they are not pre-sorted
+        records = described_class.sort_on_created_at
+        expect(records.pluck(:priority)).not_to eq(['urgent', 'urgent', 'high', 'medium', 'low', nil, nil])
+
+        records = described_class.sort_on_priority(:asc)
+        expect(records.pluck(:priority)).to eq(['low', 'medium', 'high', 'urgent', 'urgent', nil, nil])
+        expect(records.pluck(:id)).to eq(
+          [
+            conversation_3.id, conversation_1.id, conversation_2.id, conversation_4.id, conversation_5.id,
+            conversation_6.id, conversation_7.id
+          ]
+        )
+      end
+
+      it 'sorts conversation with last_activity for the same priority' do
+        records = described_class.where(priority: 'urgent').sort_on_priority
+        # ensure that the conversation 4 last_activity_at is more recent than conversation 5
+        expect(conversation_4.last_activity_at > conversation_5.last_activity_at).to be(true)
+        expect(records.pluck(:priority, :id)).to eq([['urgent', conversation_4.id], ['urgent', conversation_5.id]])
+
+        records = described_class.where(priority: nil).sort_on_priority
+        # ensure that the conversation 6 last_activity_at is more recent than conversation 7
+        expect(conversation_6.last_activity_at > conversation_7.last_activity_at).to be(true)
+        expect(records.pluck(:priority, :id)).to eq([[nil, conversation_6.id], [nil, conversation_7.id]])
+      end
+    end
+
+    describe 'sort_on_waiting_since' do
+      it 'returns the list in ascending order by default' do
+        records = described_class.sort_on_waiting_since
+        expect(records.map(&:id)).to eq [
+          conversation_4.id, conversation_5.id, conversation_6.id, conversation_7.id, conversation_3.id, conversation_1.id,
+          conversation_2.id
+        ]
+      end
+
+      it 'returns the list in desc order if asc is passed as sort direction' do
+        records = described_class.sort_on_waiting_since(:desc)
+        expect(records.map(&:id)).to eq [
+          conversation_2.id, conversation_1.id, conversation_3.id, conversation_7.id, conversation_6.id, conversation_5.id,
+          conversation_4.id
+        ]
+      end
+    end
+  end
+
+  describe 'cached_label_list_array' do
+    let(:conversation) { create(:conversation) }
+
+    it 'returns the correct list of labels' do
+      conversation.update(label_list: %w[customer-support enterprise paid-customer])
+
+      expect(conversation.cached_label_list_array).to eq %w[customer-support enterprise paid-customer]
+    end
+  end
+
+  describe '#last_activity_at' do
+    let(:conversation) { create(:conversation) }
+    let(:message_params) do
+      {
+        conversation: conversation,
+        account: conversation.account,
+        inbox: conversation.inbox,
+        sender: conversation.assignee
+      }
+    end
+
+    context 'when a new conversation is created' do
+      it 'sets last_activity_at to the created_at time' do
+        expect(conversation.last_activity_at).to eq(conversation.created_at)
+      end
+    end
+
+    context 'when a new message is added' do
+      it 'updates the last_activity_at to the new message\'s created_at time' do
+        message = create(:message, created_at: 1.hour.from_now, **message_params)
+        conversation.reload
+        expect(conversation.last_activity_at).to be_within(1.second).of(message.created_at)
+      end
+    end
+
+    context 'when multiple messages are added' do
+      it 'sets last_activity_at to the most recent message\'s created_at time' do
+        create(:message, created_at: 2.hours.ago, **message_params)
+        latest_message = create(:message, created_at: 1.hour.from_now, **message_params)
+        conversation.reload
+        expect(conversation.last_activity_at).to be_within(1.second).of(latest_message.created_at)
       end
     end
   end

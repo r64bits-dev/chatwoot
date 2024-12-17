@@ -41,6 +41,9 @@
     "SAVE_CONTACT": "Salvar",
     "UPLOADING_ATTACHMENTS": "Enviando anexos...",
     "REPLIED_TO_STORY": "Respondido ao seu story",
+    "UNSUPPORTED_MESSAGE": "Esta mensagem não é suportada.",
+    "UNSUPPORTED_MESSAGE_FACEBOOK": "Esta mensagem não é suportada. Você pode ver esta mensagem no aplicativo Facebook Messenger.",
+    "UNSUPPORTED_MESSAGE_INSTAGRAM": "Esta mensagem não é suportada. Você pode ver esta mensagem no aplicativo do Instagram.",
     "SUCCESS_DELETE_MESSAGE": "Mensagem excluída com sucesso",
     "FAIL_DELETE_MESSSAGE": "Não foi possível excluir a mensagem! Tente novamente",
     "NO_RESPONSE": "Sem resposta",
@@ -55,7 +58,6 @@
       "RESOLVE_ACTION": "Resolver",
       "REOPEN_ACTION": "Reabrir",
       "OPEN_ACTION": "Abrir",
-      "NEW_TICKET": "Novo Ticket",
       "OPEN": "Mais",
       "CLOSE": "Fechar",
       "DETAILS": "detalhes",
@@ -63,10 +65,12 @@
       "SNOOZED_UNTIL_TOMORROW": "Adiado até amanhã",
       "SNOOZED_UNTIL_NEXT_WEEK": "Adiada até a próxima semana",
       "SNOOZED_UNTIL_NEXT_REPLY": "Adiado até a próxima resposta",
-      "CONVERSATION_LABELS": {
-        "TITLE": "Marcadores da conversa (optional)",
-        "CANCEL": "Cancelar",
-        "DESC": "Os marcadores da conversa permitem que você adicione marcadores a uma conversa para facilitar a organização de suas conversas."
+      "SLA_STATUS": {
+        "FRT": "FRT {status}",
+        "NRT": "NRT {status}",
+        "RT": "RT {status}",
+        "MISSED": "perdidos(as)",
+        "DUE": "devido"
       }
     },
     "RESOLVE_DROPDOWN": {
@@ -78,18 +82,6 @@
         "TOMORROW": "Amanhã",
         "NEXT_WEEK": "Próxima semana"
       }
-    },
-    "CUSTOM_TICKET": {
-      "TITLE": "Criar um ticket",
-      "SUBTITLE": "Criar um ticket para o agente",
-      "NAME": "Nome do Ticket",
-      "NAME_PLACEHOLDER": "Título do Ticket",
-      "DESCRIPTION": "Descrição do Ticket",
-      "DESCRIPTION_PLACEHOLDER": "Descrição do Ticket",
-      "CREATE": "Criar Ticket",
-      "CANCEL": "Cancelar",
-      "SUCCESS_MESSAGE": "Ticket criado com sucesso",
-      "ERROR_MESSAGE": "Não foi possível criar o ticket, por favor tente novamente"
     },
     "CUSTOM_SNOOZE": {
       "TITLE": "Suspender até",
@@ -109,7 +101,7 @@
         "SELECT_PLACEHOLDER": "Nenhuma",
         "INPUT_PLACEHOLDER": "Selecionar prioridade",
         "NO_RESULTS": "Nenhum resultado encontrado",
-        "SUCCESSFUL": "Alterada a prioridade do ID da conversa %{conversationId} para %{priority}",
+        "SUCCESSFUL": "Alterada a prioridade do ID da conversa {conversationId} para {priority}",
         "FAILED": "Não foi possível alterar a prioridade. Por favor, tente novamente."
       }
     },
@@ -130,15 +122,15 @@
       "ASSIGN_TEAM": "Atribuir equipe",
       "API": {
         "AGENT_ASSIGNMENT": {
-          "SUCCESFUL": "ID da conversa %{conversationId} atribuído para \"%{agentName}\"",
+          "SUCCESFUL": "ID da conversa {conversationId} atribuído para \"{agentName}\"",
           "FAILED": "Não foi possível atribuir agente. Por favor, tente novamente."
         },
         "LABEL_ASSIGNMENT": {
-          "SUCCESFUL": "Etiqueta #%{labelName} atribuída para o id de conversa %{conversationId}",
+          "SUCCESFUL": "Etiqueta #{labelName} atribuída para o id de conversa {conversationId}",
           "FAILED": "Não foi possível atribuir etiqueta. Por favor, tente novamente."
         },
         "TEAM_ASSIGNMENT": {
-          "SUCCESFUL": "Equipe %{team} atribuído para o id de conversa %{conversationId}",
+          "SUCCESFUL": "Equipe {team} atribuído para o id de conversa {conversationId}",
           "FAILED": "Não foi possível atribuir equipe. Por favor, tente novamente."
         }
       }
@@ -150,18 +142,21 @@
       "MSG_INPUT": "Shift + enter para nova linha. Digite '/' para atalhos.",
       "PRIVATE_MSG_INPUT": "A mensagem será visível apenas para agentes",
       "MESSAGE_SIGNATURE_NOT_CONFIGURED": "A assinatura da mensagem não está configurada. Por favor, configure-a nas configurações do perfil.",
-      "CLICK_HERE": "Clique aqui para atualizar"
+      "CLICK_HERE": "Clique aqui para atualizar",
+      "WHATSAPP_TEMPLATES": "Templates do Whatsapp"
     },
     "REPLYBOX": {
       "REPLY": "Responder",
       "PRIVATE_NOTE": "Mensagem Privada",
       "SEND": "Enviar",
       "CREATE": "Enviar",
+      "INSERT_READ_MORE": "Saiba mais",
       "DISMISS_REPLY": "Dispensar resposta",
       "REPLYING_TO": "Respondendo a:",
       "TIP_FORMAT_ICON": "Mostrar editor de texto completo",
       "TIP_EMOJI_ICON": "Mostrar seletor de emoji",
       "TIP_ATTACH_ICON": "Anexar arquivos",
+      "TIP_ATTACH_SINGLE": "Você não pode adicionar mais de um arquivo para essa mensagem",
       "TIP_AUDIORECORDER_ICON": "Gravar áudio",
       "TIP_AUDIORECORDER_PERMISSION": "Permitir acesso ao áudio",
       "TIP_AUDIORECORDER_ERROR": "Não foi possível abrir o áudio",
@@ -225,10 +220,6 @@
         "DELETE": "Excluir",
         "CANCEL": "Cancelar"
       }
-    },
-    "PREVIOUS_CONVERSATIONS": {
-      "BUTTON": "Ver conversas anteriores",
-      "DIVIDER_TITLE": "Protocolo Id: %{conversationId}"
     }
   },
   "EMAIL_TRANSCRIPT": {
@@ -249,27 +240,31 @@
     }
   },
   "ONBOARDING": {
-    "TITLE": "Olá, 👋. Bem-vindo ao %{installationName}!",
-    "DESCRIPTION": "Obrigado por se inscrever. Queremos que você aproveite o máximo de %{installationName}. Aqui estão algumas coisas que você consegue fazer no(a) %{installationName} para que tenha uma experiência agradável.",
+    "TITLE": "Olá, 👋. Bem-vindo ao {installationName}!",
+    "DESCRIPTION": "Obrigado por se inscrever. Queremos que você aproveite o máximo de {installationName}. Aqui estão algumas coisas que você consegue fazer no(a) {installationName} para que tenha uma experiência agradável.",
+    "GREETING_MORNING": "👋 Bom dia, {name}. Bem-vindo a {installationName}.",
+    "GREETING_AFTERNOON": "👋 Boa tarde, {name}. Bem-vindo a {installationName}.",
+    "GREETING_EVENING": "👋 Boa noite, {name}. Bem-vindo a {installationName}.",
     "READ_LATEST_UPDATES": "Leia as últimas atualizações",
     "ALL_CONVERSATION": {
       "TITLE": "Todas as suas conversas em um só lugar",
-      "DESCRIPTION": "Veja todas as conversas dos seus clientes em um único painel. Você pode filtrar as conversas pelo canal de entrada, rótulo e status."
+      "DESCRIPTION": "Veja todas as conversas dos seus clientes em um único painel. Você pode filtrar as conversas pelo canal de entrada, rótulo e status.",
+      "NEW_LINK": "Clique aqui para criar uma caixa de entrada"
     },
     "TEAM_MEMBERS": {
       "TITLE": "Convidar membros da sua equipe",
       "DESCRIPTION": "Já que você está se preparando para conversar com seu cliente, traga seus colegas para ajudá-lo. Você pode convidar seus colegas de equipe adicionando os endereços de e-mail deles na lista de agentes.",
       "NEW_LINK": "Clique aqui para convidar um membro da equipe"
     },
-    "INBOXES": {
-      "TITLE": "Conectar caixas de entrada",
-      "DESCRIPTION": "Conecte vários canais através dos quais seus clientes estariam conversando com você. Podendo ser a partir de um chat ao vivo no seu website, sua página do Facebook ou Twitter ou até mesmo seu número do WhatsApp.",
-      "NEW_LINK": "Clique aqui para criar uma caixa de entrada"
-    },
     "LABELS": {
       "TITLE": "Organizar conversas com marcadores",
       "DESCRIPTION": "Etiquetas fornecem uma forma mais fácil de organizar a sua conversa. Criar algumas estiquetas como #solicitação-suporte, #fatura-assunto etc., assim você poderá futuramente utiliza-las em uma conversa posteriormente.",
       "NEW_LINK": "Clique aqui para criar marcadores"
+    },
+    "CANNED_RESPONSES": {
+      "TITLE": "Criar respostas prontas",
+      "DESCRIPTION": "Os modelos de resposta rápida ajudam você a responder rapidamente a uma conversa. Os agentes podem digitar o caractere '/' seguido pelo atalho para inserir uma resposta.",
+      "NEW_LINK": "Clique aqui para criar uma resposta pronta"
     }
   },
   "CONVERSATION_SIDEBAR": {
@@ -286,12 +281,12 @@
       "CONVERSATION_INFO": "Informação da conversa",
       "CONTACT_ATTRIBUTES": "Atributos do contato",
       "PREVIOUS_CONVERSATION": "Conversas anteriores",
-      "MACROS": "Macros",
-      "CONVERSATION_TICKETS": "Tickets"
+      "MACROS": "Macros"
     }
   },
   "CONVERSATION_CUSTOM_ATTRIBUTES": {
     "ADD_BUTTON_TEXT": "Criar atributo",
+    "NO_RECORDS_FOUND": "Nenhum atributo encontrado",
     "UPDATE": {
       "SUCCESS": "Atributo atualizado com sucesso",
       "ERROR": "Não foi possível atualizar o atributo. Por favor, tente mais tarde"
@@ -323,27 +318,23 @@
     "SIDEBAR_TITLE": "Participantes da conversa",
     "NO_RECORDS_FOUND": "Nenhum resultado encontrado",
     "ADD_PARTICIPANTS": "Selecionar participantes",
-    "REMANING_PARTICIPANTS_TEXT": "+%{count} participantes",
-    "REMANING_PARTICIPANT_TEXT": "+%{count} participante",
-    "TOTAL_PARTICIPANTS_TEXT": "%{count} pessoas estão participando.",
-    "TOTAL_PARTICIPANT_TEXT": "%{count} pessoa está participando.",
+    "REMANING_PARTICIPANTS_TEXT": "+{count} participantes",
+    "REMANING_PARTICIPANT_TEXT": "+{count} participante",
+    "TOTAL_PARTICIPANTS_TEXT": "{count} pessoas estão participando.",
+    "TOTAL_PARTICIPANT_TEXT": "{count} pessoa está participando.",
     "NO_PARTICIPANTS_TEXT": "Ninguém está participando!",
     "WATCH_CONVERSATION": "Participar da conversa",
     "YOU_ARE_WATCHING": "Você está participando",
     "API": {
       "ERROR_MESSAGE": "Não foi possível atualizar, tente novamente!",
       "SUCCESS_MESSAGE": "Participantes atualizados!"
-    },
-    "WHATSAPP": {
-      "TITLE":"Whatsapp Participantes",
-      "NO_PARTICIPANTS":"Nenhum participante encontrado"
     }
   },
   "TRANSLATE_MODAL": {
     "TITLE": "Ver conteúdo traduzido",
     "DESC": "Você pode visualizar o conteúdo traduzido em cada idioma.",
     "ORIGINAL_CONTENT": "Conteúdo original",
-    "TRANSLATED_CONTENT": "Conteúdo Traduzido",
+    "TRANSLATED_CONTENT": "Conteúdo traduzido",
     "NO_TRANSLATIONS_AVAILABLE": "Nenhuma tradução está disponível para este conteúdo"
   }
 }

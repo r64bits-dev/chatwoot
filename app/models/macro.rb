@@ -21,7 +21,7 @@ class Macro < ApplicationRecord
 
   belongs_to :account
   belongs_to :created_by,
-             class_name: :User, optional: true
+             class_name: :User, optional: true, inverse_of: :macros
   belongs_to :updated_by,
              class_name: :User, optional: true
   has_many_attached :files
@@ -30,7 +30,7 @@ class Macro < ApplicationRecord
 
   validate :json_actions_format
 
-  ACTIONS_ATTRS = %w[send_message add_label assign_team assign_agent mute_conversation change_status remove_label remove_assigned_team
+  ACTIONS_ATTRS = %w[send_message add_label assign_team assign_agent mute_conversation change_status remove_label remove_assigned_team send_webhook_event
                      resolve_conversation snooze_conversation change_priority send_email_transcript send_attachment add_private_note].freeze
 
   def set_visibility(user, params)
@@ -40,7 +40,7 @@ class Macro < ApplicationRecord
 
   def self.with_visibility(user, _params)
     records = Current.account.macros.global
-    records = records.or(personal.where(created_by_id: user.id))
+    records = records.or(personal.where(created_by_id: user.id, account_id: Current.account.id))
     records.order(:id)
   end
 

@@ -1,8 +1,6 @@
 class AgentBotPolicy < ApplicationPolicy
-  FEATURE = 'agent_bots'.freeze
-
   def index?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def update?
@@ -10,7 +8,7 @@ class AgentBotPolicy < ApplicationPolicy
   end
 
   def show?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def create?

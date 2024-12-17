@@ -283,6 +283,22 @@ RSpec.describe ConversationReplyMailer do
       end
     end
 
+    context 'when smtp enabled for google email channel' do
+      let(:ms_smtp_email_channel) do
+        create(:channel_email, imap_login: 'smtp@gmail.com',
+                               imap_enabled: true, account: account, provider: 'google', provider_config: { access_token: 'access_token' })
+      end
+      let(:conversation) { create(:conversation, assignee: agent, inbox: ms_smtp_email_channel.inbox, account: account).reload }
+      let(:message) { create(:message, conversation: conversation, account: account, message_type: 'outgoing', content: 'Outgoing Message 2') }
+
+      it 'use smtp mail server' do
+        mail = described_class.email_reply(message)
+        expect(mail.delivery_method.settings.empty?).to be false
+        expect(mail.delivery_method.settings[:address]).to eq 'smtp.gmail.com'
+        expect(mail.delivery_method.settings[:port]).to eq 587
+      end
+    end
+
     context 'when smtp disabled for email channel', :test do
       let(:conversation) { create(:conversation, assignee: agent, inbox: email_channel.inbox, account: account).reload }
       let(:message) { create(:message, conversation: conversation, account: account, message_type: 'outgoing', content: 'Outgoing Message 2') }
@@ -305,7 +321,7 @@ RSpec.describe ConversationReplyMailer do
         expect(mail.to).to eq([message&.conversation&.contact&.email])
       end
 
-      it 'renders the reply to email', skip: true do
+      it 'renders the reply to email' do
         expect(mail.reply_to).to eq([message&.conversation&.assignee&.email])
       end
 
@@ -324,7 +340,7 @@ RSpec.describe ConversationReplyMailer do
       let!(:message) { create(:message, conversation: conversation, account: account) }
       let(:mail) { described_class.reply_with_summary(message.conversation, message.id).deliver_now }
 
-      it 'set reply to email address as inbox email address', skip: true do
+      it 'set reply to email address as inbox email address' do
         expect(mail.from).to eq([inbox.email_address])
         expect(mail.reply_to).to eq([inbox.email_address])
       end

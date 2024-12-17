@@ -15,7 +15,6 @@ json.working_hours resource.weekly_schedule
 json.timezone resource.timezone
 json.callback_webhook_url resource.callback_webhook_url
 json.allow_messages_after_resolved resource.allow_messages_after_resolved
-json.init_by_agent resource.init_by_agent
 json.lock_to_single_conversation resource.lock_to_single_conversation
 json.sender_name_type resource.sender_name_type
 json.business_name resource.business_name
@@ -72,8 +71,11 @@ if resource.email?
     json.imap_address resource.channel.try(:imap_address)
     json.imap_port resource.channel.try(:imap_port)
     json.imap_enabled resource.channel.try(:imap_enabled)
-    json.microsoft_reauthorization resource.channel.try(:microsoft?) && resource.channel.try(:provider_config).empty?
     json.imap_enable_ssl resource.channel.try(:imap_enable_ssl)
+
+    if resource.channel.try(:microsoft?) || resource.channel.try(:google?) || resource.channel.try(:legacy_google?)
+      json.reauthorization_required resource.channel.try(:provider_config).empty? || resource.channel.try(:reauthorization_required?)
+    end
   end
 
   ## SMTP
@@ -105,4 +107,12 @@ json.provider resource.channel.try(:provider)
 if resource.whatsapp?
   json.message_templates resource.channel.try(:message_templates)
   json.provider_config resource.channel.try(:provider_config) if Current.account_user&.administrator?
+  unless Current.account_user&.administrator?
+    provider_config = { wavoip_token: (resource.channel.try(:provider_config) || {})['wavoip_token'] }
+    puts ">>>>>>>> 1 #{provider_config}"
+    json.provider_config provider_config
+  end
 end
+
+### NotificaMe Channel
+json.message_templates resource.channel.try(:message_templates) if resource.notifica_me? && resource.channel.try(:whatsapp?)

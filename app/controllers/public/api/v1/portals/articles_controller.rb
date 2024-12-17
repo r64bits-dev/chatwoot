@@ -1,27 +1,24 @@
 class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::BaseController
-  before_action :authenticate_user!, only: [:content]
-
-  before_action :ensure_custom_domain_request, only: [:show, :index, :content]
+  before_action :ensure_custom_domain_request, only: [:show, :index]
   before_action :portal
-  before_action :set_category, except: [:index, :show, :content]
-  before_action :set_article, only: [:show, :content]
-  before_action :check_permissions, only: [:show, :index]
-  before_action :check_article_access, only: [:content]
-
+  before_action :set_category, except: [:index, :show]
+  before_action :set_article, only: [:show]
   layout 'portal'
 
   def index
-    @articles = @portal.articles
-    @articles = @articles.search(list_params) if list_params.present?
+    @articles = @portal.articles.published
+    search_articles
     order_by_sort_param
     @articles.page(list_params[:page]) if list_params[:page].present?
   end
 
   def show; end
 
-  def content; end
-
   private
+
+  def search_articles
+    @articles = @articles.search(list_params) if list_params.present?
+  end
 
   def order_by_sort_param
     @articles = if list_params[:sort].present? && list_params[:sort] == 'views'
@@ -57,25 +54,6 @@ class Public::Api::V1::Portals::ArticlesController < Public::Api::V1::Portals::B
   def render_article_content(content)
     ChatwootMarkdownRenderer.new(content).render_article
   end
-
-  def check_permissions
-    render 'public/api/v1/portals/articles/private/show' unless article_access?
-  end
-
-  def article_access?
-    @article.visibility_public? || article_private_access?
-  end
-
-  def article_private_access?
-    return false unless @article.visibility_private?
-    return false unless current_user
-
-    @article.teams.any? { |team| current_user.teams.include?(team) }
-  end
-
-  def check_article_access
-    return if article_private_access?
-
-    render json: { error: 'You are not authorized to view this content' }, status: :forbidden
-  end
 end
+
+Public::Api::V1::Portals::ArticlesController.prepend_mod_with('Public::Api::V1::Portals::ArticlesController')

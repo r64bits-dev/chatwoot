@@ -5,6 +5,7 @@ import InboxesAPI from '../../api/inboxes';
 import WebChannel from '../../api/channel/webChannel';
 import FBChannel from '../../api/channel/fbChannel';
 import TwilioChannel from '../../api/channel/twilioChannel';
+import NotificaMeChannel from '../../api/channel/notificaMeChannel';
 import { throwErrorMessage } from '../utils/api';
 import AnalyticsHelper from '../../helper/AnalyticsHelper';
 import { ACCOUNT_EVENTS } from '../../helper/AnalyticsHelper/events';
@@ -138,7 +139,7 @@ export const actions = {
   get: async ({ commit }) => {
     commit(types.default.SET_INBOXES_UI_FLAG, { isFetching: true });
     try {
-      const response = await InboxesAPI.get(true);
+      const response = await InboxesAPI.get(false);
       commit(types.default.SET_INBOXES_UI_FLAG, { isFetching: false });
       commit(types.default.SET_INBOXES, response.data.payload);
     } catch (error) {
@@ -173,6 +174,19 @@ export const actions = {
       return throwErrorMessage(error);
     }
   },
+  createNotificaMeChannel: async ({ commit }, params) => {
+    try {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
+      const response = await NotificaMeChannel.create(params);
+      commit(types.default.ADD_INBOXES, response.data);
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      sendAnalyticsEvent('notifica_me');
+      return response.data;
+    } catch (error) {
+      commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
+      throw new Error(error);
+    }
+  },
   createTwilioChannel: async ({ commit }, params) => {
     try {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: true });
@@ -183,7 +197,7 @@ export const actions = {
       return response.data;
     } catch (error) {
       commit(types.default.SET_INBOXES_UI_FLAG, { isCreating: false });
-      throw new Error(error);
+      throw error;
     }
   },
   createFBChannel: async ({ commit }, params) => {

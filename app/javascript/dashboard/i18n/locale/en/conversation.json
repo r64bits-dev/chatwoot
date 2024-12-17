@@ -41,6 +41,9 @@
     "SAVE_CONTACT": "Save",
     "UPLOADING_ATTACHMENTS": "Uploading attachments...",
     "REPLIED_TO_STORY": "Replied to your story",
+    "UNSUPPORTED_MESSAGE": "This message is unsupported.",
+    "UNSUPPORTED_MESSAGE_FACEBOOK": "This message is unsupported. You can view this message on the Facebook Messenger app.",
+    "UNSUPPORTED_MESSAGE_INSTAGRAM": "This message is unsupported. You can view this message on the Instagram app.",
     "SUCCESS_DELETE_MESSAGE": "Message deleted successfully",
     "FAIL_DELETE_MESSSAGE": "Couldn't delete message! Try again",
     "NO_RESPONSE": "No response",
@@ -53,7 +56,6 @@
     },
     "HEADER": {
       "RESOLVE_ACTION": "Resolve",
-      "NEW_TICKET": "New Ticket",
       "REOPEN_ACTION": "Reopen",
       "OPEN_ACTION": "Open",
       "OPEN": "More",
@@ -63,10 +65,12 @@
       "SNOOZED_UNTIL_TOMORROW": "Snoozed until tomorrow",
       "SNOOZED_UNTIL_NEXT_WEEK": "Snoozed until next week",
       "SNOOZED_UNTIL_NEXT_REPLY": "Snoozed until next reply",
-      "CONVERSATION_LABELS": {
-        "TITLE": "Conversation Labels (optional)",
-        "CANCEL": "Cancel",
-        "DESC": "Conversation labels allow you to add labels to a conversation to help organize your conversations."
+      "SLA_STATUS": {
+        "FRT": "FRT {status}",
+        "NRT": "NRT {status}",
+        "RT": "RT {status}",
+        "MISSED": "missed",
+        "DUE": "due"
       }
     },
     "RESOLVE_DROPDOWN": {
@@ -78,18 +82,6 @@
         "TOMORROW": "Tomorrow",
         "NEXT_WEEK": "Next week"
       }
-    },
-    "CUSTOM_TICKET": {
-      "TITLE": "Create a ticket",
-      "SUBTITLE": "Create a ticket for the agent",
-      "NAME": "Ticket Name",
-      "NAME_PLACEHOLDER": "Ticket Title",
-      "DESCRIPTION": "Ticket Description",
-      "DESCRIPTION_PLACEHOLDER": "Ticket Description",
-      "CREATE": "Create Ticket",
-      "CANCEL": "Cancel",
-      "SUCCESS_MESSAGE": "Ticket created successfully",
-      "ERROR_MESSAGE": "Couldn't create the ticket. Please try again"
     },
     "CUSTOM_SNOOZE": {
       "TITLE": "Snooze until",
@@ -109,7 +101,7 @@
         "SELECT_PLACEHOLDER": "None",
         "INPUT_PLACEHOLDER": "Select priority",
         "NO_RESULTS": "No results found",
-        "SUCCESSFUL": "Changed priority of conversation id %{conversationId} to %{priority}",
+        "SUCCESSFUL": "Changed priority of conversation id {conversationId} to {priority}",
         "FAILED": "Couldn't change priority. Please try again."
       }
     },
@@ -130,15 +122,15 @@
       "ASSIGN_TEAM": "Assign team",
       "API": {
         "AGENT_ASSIGNMENT": {
-          "SUCCESFUL": "Conversation id %{conversationId} assigned to \"%{agentName}\"",
+          "SUCCESFUL": "Conversation id {conversationId} assigned to \"{agentName}\"",
           "FAILED": "Couldn't assign agent. Please try again."
         },
         "LABEL_ASSIGNMENT": {
-          "SUCCESFUL": "Assigned label #%{labelName} to conversation id %{conversationId}",
+          "SUCCESFUL": "Assigned label #{labelName} to conversation id {conversationId}",
           "FAILED": "Couldn't assign label. Please try again."
         },
         "TEAM_ASSIGNMENT": {
-          "SUCCESFUL": "Assigned team \"%{team}\" to conversation id %{conversationId}",
+          "SUCCESFUL": "Assigned team \"{team}\" to conversation id {conversationId}",
           "FAILED": "Couldn't assign team. Please try again."
         }
       }
@@ -150,7 +142,8 @@
       "MSG_INPUT": "Shift + enter for new line. Start with '/' to select a Canned Response.",
       "PRIVATE_MSG_INPUT": "Shift + enter for new line. This will be visible only to Agents",
       "MESSAGE_SIGNATURE_NOT_CONFIGURED": "Message signature is not configured, please configure it in profile settings.",
-      "CLICK_HERE": "Click here to update"
+      "CLICK_HERE": "Click here to update",
+      "WHATSAPP_TEMPLATES": "Whatsapp Templates"
     },
     "REPLYBOX": {
       "REPLY": "Reply",
@@ -163,6 +156,7 @@
       "TIP_FORMAT_ICON": "Show rich text editor",
       "TIP_EMOJI_ICON": "Show emoji selector",
       "TIP_ATTACH_ICON": "Attach files",
+      "TIP_ATTACH_SINGLE": "You cannot attach more files to this message",
       "TIP_AUDIORECORDER_ICON": "Record audio",
       "TIP_AUDIORECORDER_PERMISSION": "Allow access to audio",
       "TIP_AUDIORECORDER_ERROR": "Could not open the audio",
@@ -226,10 +220,6 @@
         "DELETE": "Delete",
         "CANCEL": "Cancel"
       }
-    },
-    "PREVIOUS_CONVERSATIONS": {
-      "BUTTON": "See previous conversations",
-      "DIVIDER_TITLE": "Conversation Id: %{conversationId}"
     }
   },
   "EMAIL_TRANSCRIPT": {
@@ -250,27 +240,31 @@
     }
   },
   "ONBOARDING": {
-    "TITLE": "Hey 👋, Welcome to %{installationName}!",
-    "DESCRIPTION": "Thanks for signing up. We want you to get the most out of %{installationName}. Here are a few things you can do in %{installationName} to make the experience delightful.",
+    "TITLE": "Hey 👋, Welcome to {installationName}!",
+    "DESCRIPTION": "Thanks for signing up. We want you to get the most out of {installationName}. Here are a few things you can do in {installationName} to make the experience delightful.",
+    "GREETING_MORNING": "👋 Good morning, {name}. Welcome to {installationName}.",
+    "GREETING_AFTERNOON": "👋 Good afternoon, {name}. Welcome to {installationName}.",
+    "GREETING_EVENING": "👋 Good evening, {name}. Welcome to {installationName}.",
     "READ_LATEST_UPDATES": "Read our latest updates",
     "ALL_CONVERSATION": {
       "TITLE": "All your conversations in one place",
-      "DESCRIPTION": "View all the conversations from your customers in one single dashboard. You can filter the conversations by the incoming channel, label and status."
+      "DESCRIPTION": "View all the conversations from your customers in one single dashboard. You can filter the conversations by the incoming channel, label and status.",
+      "NEW_LINK": "Click here to create an inbox"
     },
     "TEAM_MEMBERS": {
       "TITLE": "Invite your team members",
       "DESCRIPTION": "Since you are getting ready to talk to your customer, bring in your teammates to assist you. You can invite your teammates by adding their email addresses to the agent list.",
       "NEW_LINK": "Click here to invite a team member"
     },
-    "INBOXES": {
-      "TITLE": "Connect Inboxes",
-      "DESCRIPTION": "Connect various channels through which your customers would be talking to you. It can be a website live-chat, your Facebook page or even your WhatsApp number.",
-      "NEW_LINK": "Click here to create an inbox"
-    },
     "LABELS": {
       "TITLE": "Organize conversations with labels",
       "DESCRIPTION": "Labels provide an easier way to categorize your conversation. Create some labels like #support-enquiry, #billing-question etc., so that you can use them in a conversation later.",
       "NEW_LINK": "Click here to create tags"
+    },
+    "CANNED_RESPONSES": {
+      "TITLE": "Create canned responses",
+      "DESCRIPTION": "Pre-written quick reply templates help you quickly respond to a conversation. Agents can type the '/' character followed by the shortcode to insert a response.",
+      "NEW_LINK": "Click here to create a canned response"
     }
   },
   "CONVERSATION_SIDEBAR": {
@@ -287,12 +281,12 @@
       "CONVERSATION_INFO": "Conversation Information",
       "CONTACT_ATTRIBUTES": "Contact Attributes",
       "PREVIOUS_CONVERSATION": "Previous Conversations",
-      "MACROS": "Macros",
-      "CONVERSATION_TICKETS": "Tickets"
+      "MACROS": "Macros"
     }
   },
   "CONVERSATION_CUSTOM_ATTRIBUTES": {
     "ADD_BUTTON_TEXT": "Create attribute",
+    "NO_RECORDS_FOUND": "No attributes found",
     "UPDATE": {
       "SUCCESS": "Attribute updated successfully",
       "ERROR": "Unable to update attribute. Please try again later"
@@ -324,20 +318,16 @@
     "SIDEBAR_TITLE": "Conversation participants",
     "NO_RECORDS_FOUND": "No results found",
     "ADD_PARTICIPANTS": "Select participants",
-    "REMANING_PARTICIPANTS_TEXT": "+%{count} others",
-    "REMANING_PARTICIPANT_TEXT": "+%{count} other",
-    "TOTAL_PARTICIPANTS_TEXT": "%{count} people are participating.",
-    "TOTAL_PARTICIPANT_TEXT": "%{count} person is participating.",
+    "REMANING_PARTICIPANTS_TEXT": "+{count} others",
+    "REMANING_PARTICIPANT_TEXT": "+{count} other",
+    "TOTAL_PARTICIPANTS_TEXT": "{count} people are participating.",
+    "TOTAL_PARTICIPANT_TEXT": "{count} person is participating.",
     "NO_PARTICIPANTS_TEXT": "No one is participating!.",
     "WATCH_CONVERSATION": "Join conversation",
     "YOU_ARE_WATCHING": "You are participating",
     "API": {
       "ERROR_MESSAGE": "Could not update, try again!",
       "SUCCESS_MESSAGE": "Participants updated!"
-    },
-    "WHATSAPP": {
-      "TITLE":"Whatsapp Participants",
-      "NO_PARTICIPANTS":"No participants found"
     }
   },
   "TRANSLATE_MODAL": {

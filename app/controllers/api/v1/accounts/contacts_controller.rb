@@ -14,7 +14,6 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   before_action :check_authorization
   before_action :set_current_page, only: [:index, :active, :search, :filter]
   before_action :fetch_contact, only: [:show, :update, :destroy, :avatar, :contactable_inboxes, :destroy_custom_attributes]
-  before_action :fetch_ticket, only: [:show]
   before_action :set_include_contact_inboxes, only: [:index, :search, :filter]
 
   def index
@@ -47,7 +46,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def export
     column_names = params['column_names']
-    Account::ContactsExportJob.perform_later(Current.account.id, column_names)
+    filter_params = { :payload => params.permit!['payload'], :label => params.permit!['label'] }
+    Account::ContactsExportJob.perform_later(Current.account.id, Current.user.id, column_names, filter_params)
     head :ok, message: I18n.t('errors.contacts.export.success')
   end
 
@@ -62,10 +62,14 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   def show; end
 
   def filter
-    result = ::Contacts::FilterService.new(params.permit!, current_user).perform
+    result = ::Contacts::FilterService.new(Current.account, Current.user, params.permit!).perform
     contacts = result[:contacts]
     @contacts_count = result[:count]
     @contacts = fetch_contacts(contacts)
+  rescue CustomExceptions::CustomFilter::InvalidAttribute,
+         CustomExceptions::CustomFilter::InvalidOperator,
+         CustomExceptions::CustomFilter::InvalidValue => e
+    render_could_not_create_error(e.message)
   end
 
   def contactable_inboxes
@@ -90,7 +94,13 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def update
     @contact.assign_attributes(contact_update_params)
-    @contact.save!
+    # 'Channel::TwilioSms', 'Channel::Whatsapp', 'Channel::Sms'
+    Contact.transaction do
+      @contact.contact_inboxes
+        .select{ |ci| ['Channel::Whatsapp'].include?(ci.inbox.channel_type) }
+        .each{ |ci| ci.update_attribute(:source_id, @contact.phone_number.delete('+').to_s) }
+      @contact.save!
+    end
     process_avatar_from_url
   end
 
@@ -149,7 +159,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params
-    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, additional_attributes: {}, custom_attributes: {})
+    params.permit(:name, :identifier, :email, :phone_number, :avatar, :blocked, :avatar_url, additional_attributes: {}, custom_attributes: {})
   end
 
   def contact_custom_attributes
@@ -173,15 +183,6 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def fetch_contact
     @contact = Current.account.contacts.includes(contact_inboxes: [:inbox]).find(params[:id])
-  end
-
-  def fetch_ticket
-    return if params[:conversation_id].blank?
-
-    @conversation = Current.account.conversations.find_by(display_id: params[:conversation_id])
-    return if @conversation
-
-    @conversation = Current.account.conversations.find_by(id: params[:conversation_id])
   end
 
   def process_avatar_from_url

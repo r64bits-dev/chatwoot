@@ -3,8 +3,6 @@ import types from '../mutation-types';
 import LabelsAPI from '../../api/labels';
 import AnalyticsHelper from '../../helper/AnalyticsHelper';
 import { LABEL_EVENTS } from '../../helper/AnalyticsHelper/events';
-import { getters as teamGetters } from './teams/getters';
-import Team from './teams/index';
 
 export const state = {
   records: [],
@@ -23,19 +21,8 @@ export const getters = {
   getUIFlags(_state) {
     return _state.uiFlags;
   },
-  getTeamLabels(_state) {
-    const teams = Object.keys(Team.state.records).map(
-      key => Team.state.records[key]
-    );
-    const myTeams = teamGetters
-      .getMyTeams(teams, { getTeams: teams })
-      .map(team => team.id);
-    return _state.records.filter(
-      label => !label.team_id || myTeams.includes(label.team_id)
-    );
-  },
-  getLabelsOnSidebar(_state, _getters) {
-    return _getters.getTeamLabels
+  getLabelsOnSidebar(_state) {
+    return _state.records
       .filter(record => record.show_on_sidebar)
       .sort((a, b) => a.title.localeCompare(b.title));
   },
@@ -57,7 +44,7 @@ export const actions = {
   get: async function getLabels({ commit }) {
     commit(types.SET_LABEL_UI_FLAG, { isFetching: true });
     try {
-      const response = await LabelsAPI.get();
+      const response = await LabelsAPI.get(true);
       const sortedLabels = response.data.payload.sort((a, b) =>
         a.title.localeCompare(b.title)
       );
@@ -108,14 +95,6 @@ export const actions = {
       commit(types.SET_LABEL_UI_FLAG, { isDeleting: false });
     }
   },
-  updateUsageCount: async function updateUsageCount({ commit }) {
-    try {
-      const response = await LabelsAPI.getConversationsUsageCount();
-      commit(types.SET_LABELS_USAGE_COUNT, response.data);
-    } catch (error) {
-      // Ignore error
-    }
-  },
 };
 
 export const mutations = {
@@ -124,13 +103,6 @@ export const mutations = {
       ..._state.uiFlags,
       ...data,
     };
-  },
-  [types.SET_LABELS_USAGE_COUNT](_state, data) {
-    _state.records.forEach(label => {
-      label.total_used_count = data.find(
-        l => l.id === label.id
-      )?.total_used_count;
-    });
   },
 
   [types.SET_LABELS]: MutationHelpers.set,

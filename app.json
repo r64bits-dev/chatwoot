@@ -1,9 +1,9 @@
 {
-  "name": "Omni",
-  "description": "Omni is a customer support tool for instant messaging channels",
-  "website": "https://portal.brainitsolutions.com.br/",
+  "name": "Chatwoot",
+  "description": "Chatwoot is a customer support tool for instant messaging channels",
+  "website": "https://www.chatwoot.com/",
   "repository": "https://github.com/chatwoot/chatwoot",
-  "logo": "https://maisomni.com.br/assets/img/logo+omni.png",
+  "logo": "https://app.chatwoot.com/brand-assets/logo_thumbnail.svg",
   "keywords": [
     "live chat",
     "customer support",
@@ -26,11 +26,11 @@
       "value": "production"
     },
     "FRONTEND_URL": {
-      "description": "Public root URL of the Omni installation. This will be used in the emails.",
+      "description": "Public root URL of the Chatwoot installation. This will be used in the emails.",
       "value": "https://CHANGE.herokuapp.com"
     },
     "INSTALLATION_ENV": {
-      "description": "Installation method used for Omni.",
+      "description": "Installation method used for Chatwoot.",
       "value": "heroku"
     },
     "REDIS_OPENSSL_VERIFY_MODE":{
@@ -55,7 +55,7 @@
       "plan": "heroku-redis:mini"
     },
     {
-      "plan": "heroku-postgresql:mini"
+      "plan": "heroku-postgresql:essential-0"
     }
   ],
   "stack": "heroku-20",
@@ -71,6 +71,11 @@
     "test": {
       "scripts": {
         "test": "bundle exec rake test"
+      }
+    },
+    "review": {
+      "scripts": {
+        "postdeploy": "bundle exec rails db:seed"
       }
     }
   }

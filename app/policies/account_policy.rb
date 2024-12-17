@@ -1,12 +1,10 @@
 class AccountPolicy < ApplicationPolicy
-  FEATURE = 'accounts'.freeze
-
   def show?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def cache_keys?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def limits?

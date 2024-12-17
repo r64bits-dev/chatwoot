@@ -1,6 +1,6 @@
 {
   "SURVEY": {
-    "DESCRIPTION": "Dragi korisniče 👋, odvojite nekoliko trenutaka i podijelite dojam razogovora koji ste imali s %{inboxName}.",
+    "DESCRIPTION": "Dragi korisniče 👋, odvojite nekoliko trenutaka i podijelite dojam razogovora koji ste imali s {inboxName}.",
     "RATING": {
       "LABEL": "Ocijeni svoj razgovor",
       "SUCCESS_MESSAGE": "Hvala Vam na ocjeni"
@@ -15,5 +15,5 @@
       "ERROR_MESSAGE": "Neuspješno spajanje na Woot Server, Molimo pokušajte kasnije"
     }
   },
-  "POWERED_BY": "Powered by Omni"
+  "POWERED_BY": "Powered by Chatwoot"
 }

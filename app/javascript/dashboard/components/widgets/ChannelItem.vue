@@ -1,11 +1,3 @@
-<template>
-  <channel-selector
-    :class="{ inactive: !isActive }"
-    :title="channel.name"
-    :src="getChannelThumbnail()"
-    @click="onItemClick"
-  />
-</template>
 <script>
 import ChannelSelector from '../ChannelSelector.vue';
 export default {
@@ -20,6 +12,7 @@ export default {
       required: true,
     },
   },
+  emits: ['channelItemClick'],
   computed: {
     hasFbConfigured() {
       return window.chatwootConfig?.fbAppId;
@@ -38,17 +31,20 @@ export default {
       if (key === 'email') {
         return this.enabledFeatures.channel_email;
       }
+      if (key === 'notifica_me') {
+        return this.enabledFeatures.channel_notifica_me;
+      }
+      if (key === 'whatsapp') {
+        return this.enabledFeatures.channel_whatsapp;
+      }
+      if (key === 'website') {
+        return this.enabledFeatures.channel_website;
+      }
+      if (key === 'api') {
+        return this.enabledFeatures.channel_api;
+      }
 
-      return [
-        'website',
-        'twilio',
-        'api',
-        'whatsapp',
-        'sms',
-        'telegram',
-        'line',
-        'qrCode',
-      ].includes(key);
+      return ['twilio', 'sms', 'telegram', 'line'].includes(key);
     },
   },
   methods: {
@@ -60,9 +56,18 @@ export default {
     },
     onItemClick() {
       if (this.isActive) {
-        this.$emit('channel-item-click', this.channel.key);
+        this.$emit('channelItemClick', this.channel.key);
       }
     },
   },
 };
 </script>
+
+<template>
+  <ChannelSelector
+    :class="{ inactive: !isActive }"
+    :title="channel.name"
+    :src="getChannelThumbnail()"
+    @click="onItemClick"
+  />
+</template>

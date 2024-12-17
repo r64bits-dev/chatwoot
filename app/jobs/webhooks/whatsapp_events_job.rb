@@ -1,15 +1,16 @@
 class Webhooks::WhatsappEventsJob < ApplicationJob
-  include PhoneHelper
-
   queue_as :low
+  retry_on ActiveRecord::RecordNotFound, wait: 30.seconds, attempts: 5
 
   def perform(params = {})
     channel = find_channel_from_whatsapp_business_payload(params)
-    return raise('Channel is inactive') if channel_is_inactive?(channel)
+    return if channel_is_inactive?(channel)
 
     case channel.provider
     when 'whatsapp_cloud'
       Whatsapp::IncomingMessageWhatsappCloudService.new(inbox: channel.inbox, params: params).perform
+    when 'unoapi'
+      Whatsapp::IncomingMessageUnoapiService.new(inbox: channel.inbox, params: params).perform
     else
       Whatsapp::IncomingMessageService.new(inbox: channel.inbox, params: params).perform
     end
@@ -41,20 +42,10 @@ class Webhooks::WhatsappEventsJob < ApplicationJob
   end
 
   def get_channel_from_wb_payload(wb_params)
-    # Extrai o número de telefone bruto do payload
-    raw_phone_number = wb_params[:entry].first[:changes].first.dig(:value, :metadata, :display_phone_number)
-
-    # Formata o número de telefone usando o método format_phone_number
-    phone_number = format_phone_number(raw_phone_number)
-    p "phone number, #{phone_number}"
-
+    phone_number = "+#{wb_params[:entry].first[:changes].first.dig(:value, :metadata, :display_phone_number)}"
     phone_number_id = wb_params[:entry].first[:changes].first.dig(:value, :metadata, :phone_number_id)
-    p "phone number id, #{phone_number_id}"
-
-    # Realiza a busca usando o número de telefone formatado
     channel = Channel::Whatsapp.find_by(phone_number: phone_number)
-    p "channel from get channel, #{channel.inspect}"
-
-    channel if channel && channel.provider_config['phone_number_id'] == phone_number_id
+    # validate to ensure the phone number id matches the whatsapp channel
+    return channel if channel && channel.provider_config['phone_number_id'] == phone_number_id
   end
 end

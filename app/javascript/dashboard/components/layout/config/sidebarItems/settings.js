@@ -1,8 +1,4 @@
-import {
-  AdminRoles,
-  AdminSupervisorRoles,
-  FEATURE_FLAGS,
-} from '../../../../featureFlags';
+import { FEATURE_FLAGS } from '../../../../featureFlags';
 import { frontendURL } from '../../../../helper/URLHelper';
 
 const settings = accountId => ({
@@ -28,7 +24,6 @@ const settings = accountId => ({
     'settings_inbox_list',
     'settings_inbox_new',
     'settings_inbox_show',
-    'settings_inbox',
     'settings_inboxes_add_agents',
     'settings_inboxes_page_channel',
     'settings_integrations_dashboard_apps',
@@ -43,13 +38,17 @@ const settings = accountId => ({
     'settings_teams_finish',
     'settings_teams_list',
     'settings_teams_new',
+    'sla_list',
+    'custom_roles_list',
   ],
   menuItems: [
     {
       icon: 'briefcase',
       label: 'ACCOUNT_SETTINGS',
       hasSubMenu: false,
-      roles: [AdminRoles],
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/general`),
       toStateName: 'general_settings_index',
     },
@@ -57,127 +56,164 @@ const settings = accountId => ({
       icon: 'people',
       label: 'AGENTS',
       hasSubMenu: false,
-      key: 'accounts',
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/agents/list`),
       toStateName: 'agent_list',
       featureFlag: FEATURE_FLAGS.AGENT_MANAGEMENT,
-      roles: [AdminSupervisorRoles],
     },
     {
       icon: 'people-team',
       label: 'TEAMS',
-      key: 'teams',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/teams/list`),
       toStateName: 'settings_teams_list',
       featureFlag: FEATURE_FLAGS.TEAM_MANAGEMENT,
-      roles: [AdminSupervisorRoles],
     },
     {
       icon: 'mail-inbox-all',
       label: 'INBOXES',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/inboxes/list`),
       toStateName: 'settings_inbox_list',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.INBOX_MANAGEMENT,
     },
     {
       icon: 'tag',
       label: 'LABELS',
-      key: 'labels',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/labels/list`),
       toStateName: 'labels_list',
       featureFlag: FEATURE_FLAGS.LABELS,
-      roles: [AdminSupervisorRoles],
     },
     {
       icon: 'code',
       label: 'CUSTOM_ATTRIBUTES',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(
         `accounts/${accountId}/settings/custom-attributes/list`
       ),
       toStateName: 'attributes_list',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.CUSTOM_ATTRIBUTES,
     },
     {
       icon: 'automation',
       label: 'AUTOMATION',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/automation/list`),
       toStateName: 'automation_list',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.AUTOMATIONS,
     },
     {
       icon: 'bot',
       label: 'AGENT_BOTS',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       globalConfigFlag: 'csmlEditorHost',
       toState: frontendURL(`accounts/${accountId}/settings/agent-bots`),
       toStateName: 'agent_bots',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.AGENT_BOTS,
     },
     {
       icon: 'flash-settings',
       label: 'MACROS',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator', 'agent'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/macros`),
       toStateName: 'macros_wrapper',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.MACROS,
     },
     {
       icon: 'chat-multiple',
       label: 'CANNED_RESPONSES',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator', 'agent'],
+      },
       toState: frontendURL(
         `accounts/${accountId}/settings/canned-response/list`
       ),
       toStateName: 'canned_list',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.CANNED_RESPONSES,
     },
     {
       icon: 'flash-on',
       label: 'INTEGRATIONS',
       hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
       toState: frontendURL(`accounts/${accountId}/settings/integrations`),
-      toStateName: 'settings_integrations',
-      roles: [AdminRoles],
-      featureFlag: FEATURE_FLAGS.INTEGRATIONS,
-    },
-    {
-      icon: 'star-emphasis',
-      label: 'APPLICATIONS',
-      hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/settings/applications`),
       toStateName: 'settings_applications',
-      roles: [AdminRoles],
       featureFlag: FEATURE_FLAGS.INTEGRATIONS,
-    },
-    {
-      icon: 'credit-card-person',
-      label: 'BILLING',
-      hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/settings/billing`),
-      toStateName: 'billing_settings_index',
-      roles: [AdminRoles],
-      showOnlyOnCloud: true,
     },
     {
       icon: 'key',
       label: 'AUDIT_LOGS',
       hasSubMenu: false,
-      toState: frontendURL(`accounts/${accountId}/settings/audit-log/list`),
+      meta: {
+        permissions: ['administrator'],
+      },
+      toState: frontendURL(`accounts/${accountId}/settings/audit-logs/list`),
       toStateName: 'auditlogs_list',
+      isEnterpriseOnly: true,
       featureFlag: FEATURE_FLAGS.AUDIT_LOGS,
-      roles: [AdminRoles],
+    },
+    {
+      icon: 'scan-person',
+      label: 'CUSTOM_ROLES',
+      hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
+      toState: frontendURL(`accounts/${accountId}/settings/custom-roles/list`),
+      toStateName: 'custom_roles_list',
+      isEnterpriseOnly: true,
       beta: true,
+    },
+    {
+      icon: 'document-list-clock',
+      label: 'SLA',
+      hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
+      toState: frontendURL(`accounts/${accountId}/settings/sla/list`),
+      toStateName: 'sla_list',
+      isEnterpriseOnly: true,
+      featureFlag: FEATURE_FLAGS.SLA,
+      beta: true,
+    },
+    {
+      icon: 'credit-card-person',
+      label: 'BILLING',
+      hasSubMenu: false,
+      meta: {
+        permissions: ['administrator'],
+      },
+      toState: frontendURL(`accounts/${accountId}/settings/billing`),
+      toStateName: 'billing_settings_index',
+      showOnlyOnCloud: true,
     },
   ],
 });

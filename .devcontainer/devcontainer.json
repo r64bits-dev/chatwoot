@@ -1,5 +1,5 @@
 {
-  "name": "Omni Development Codespace",
+  "name": "Chatwoot Development Codespace",
   "service": "app",
   "dockerComposeFile": "docker-compose.yml",
 

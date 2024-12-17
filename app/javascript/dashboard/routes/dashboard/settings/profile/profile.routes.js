@@ -1,7 +1,6 @@
-import { AllRoles } from '../../../../featureFlags';
 import { frontendURL } from '../../../../helper/URLHelper';
 
-const SettingsContent = () => import('../Wrapper.vue');
+const SettingsContent = () => import('./Wrapper.vue');
 const Index = () => import('./Index.vue');
 
 export default {
@@ -9,20 +8,18 @@ export default {
     {
       path: frontendURL('accounts/:accountId/profile'),
       name: 'profile_settings',
-      roles: AllRoles,
-      component: SettingsContent,
-      props: {
-        headerTitle: 'PROFILE_SETTINGS.TITLE',
-        icon: 'edit',
-        showNewButton: false,
-        showSidemenuIcon: false,
+      meta: {
+        permissions: ['administrator', 'agent', 'custom_role'],
       },
+      component: SettingsContent,
       children: [
         {
           path: 'settings',
           name: 'profile_settings_index',
           component: Index,
-          roles: AllRoles,
+          meta: {
+            permissions: ['administrator', 'agent', 'custom_role'],
+          },
         },
       ],
     },

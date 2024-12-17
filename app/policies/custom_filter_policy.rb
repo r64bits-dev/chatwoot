@@ -1,23 +1,21 @@
 class CustomFilterPolicy < ApplicationPolicy
-  FEATURE = 'custom_filters'.freeze
-
   def create?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def show?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def index?
-    true
+    @account_user.administrator? || @account_user.agent?
   end
 
   def update?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 
   def destroy?
-    @account_user.administrator? || can_access?(FEATURE)
+    @account_user.administrator? || @account_user.agent?
   end
 end

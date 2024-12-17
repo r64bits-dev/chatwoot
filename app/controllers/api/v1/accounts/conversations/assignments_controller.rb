@@ -40,7 +40,7 @@ class Api::V1::Accounts::Conversations::AssignmentsController < Api::V1::Account
     agent = Current.account.users.find_by(id: id)
     return if agent.nil?
 
-    raise CustomExceptions::Agent::AgentOfflineError unless agent.availability_status == 'online'
+    raise CustomExceptions::Agent::AgentOfflineError if agent.offline?
 
     agent
   end

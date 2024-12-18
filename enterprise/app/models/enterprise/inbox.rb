@@ -6,6 +6,8 @@ module Enterprise::Inbox
   end
 
   def members_ids_with_assignment_capacity_team(level = nil)
+    return only_agents_in_auto if auto_assignment_only_this_agents_ids.present?
+
     members_ids = available_members_by_team(level)
     overload_agents_ids = if max_assignment_limit_team_per_person.present?
                             get_agent_ids_over_assignment_limit(max_assignment_limit_team_per_person)
@@ -54,6 +56,10 @@ module Enterprise::Inbox
     auto_assignment_config['max_assignment_limit_per_team'].presence || Team.max_assignment_limit
   end
 
+  def auto_assignment_only_this_agents_ids
+    @auto_assignment_only_this_agents_ids ||= auto_assignment_config['only_this_agents'].presence || []
+  end
+
   def max_assignment_limit_team_per_person
     @max_assignment_limit_team_per_person ||=
       auto_assignment_config['max_assignment_limit_team_per_person'].presence ||
@@ -81,5 +87,12 @@ module Enterprise::Inbox
     end
 
     available_member_ids
+  end
+
+  def only_agents_in_auto
+    ids = auto_assignment_only_this_agents_ids
+    return [] if ids.blank?
+
+    User.where(id: ids).pluck(:id)
   end
 end

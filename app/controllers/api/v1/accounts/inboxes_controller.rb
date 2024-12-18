@@ -78,10 +78,10 @@ class Api::V1::Accounts::InboxesController < Api::V1::Accounts::BaseController
   end
 
   def handle_qrcode_channel
-    if params.dig("channel", "provider") == 'qrcode'
-      QrCodeService.new(params).call
-      head :ok
-    end
+    return unless params.dig('channel', 'provider') == 'qrcode'
+
+    QrCodeService.new(params).call
+    head :ok
   end
 
   def fetch_agent_bot

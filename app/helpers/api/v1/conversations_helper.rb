@@ -10,7 +10,7 @@ module Api::V1::ConversationsHelper
 
     true
   rescue StandardError => e
-    Rails.logger.error(e.message, e.backtrace)
+    Rails.logger.error("Error: #{e.message}\nBacktrace: #{e.backtrace.join("\n")}")
     { error: e.message }
   end
 

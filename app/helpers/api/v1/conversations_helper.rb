@@ -5,6 +5,8 @@ module Api::V1::ConversationsHelper
     return { error: 'no open conversations' } if open_inbox.count.zero?
 
     open_inbox.each do |inbox, conversations|
+      next if inbox.blank?
+
       assign_conversations(inbox, conversations, current_user)
     end
 

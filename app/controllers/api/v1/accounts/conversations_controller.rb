@@ -62,7 +62,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def need_to_assign_agent
-    result = Api::V1::ConversationsHelper.assign_open_conversations(current_user, Current.account)
+    result = Api::V1::ConversationsHelper.assign_open_conversations(current_user, current_account)
     if result.is_a?(Hash) && result[:error]
       render json: { error: result[:error] }, status: :unprocessable_entity
     else

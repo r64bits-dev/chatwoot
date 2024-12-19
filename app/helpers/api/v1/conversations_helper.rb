@@ -4,9 +4,7 @@ module Api::V1::ConversationsHelper
 
     return { error: 'no open conversations' } if open_inbox.count.zero?
 
-    open_inbox.each do |inbox, conversations|
-      next if inbox.blank?
-
+    open_inbox do |inbox, conversations|
       assign_conversations(inbox, conversations, current_user)
     end
 
@@ -20,6 +18,7 @@ module Api::V1::ConversationsHelper
     Conversation.open.where(assignee_id: nil)
                 .includes(:inbox)
                 .where(account_id: current_account.id)
+                .where.not(inbox: nil)
                 .group_by(&:inbox)
   end
 

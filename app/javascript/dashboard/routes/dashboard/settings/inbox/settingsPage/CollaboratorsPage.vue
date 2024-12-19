@@ -72,6 +72,24 @@
 
         <!-- Quando switchOption for false, exibe o input de maxAssignmentLimit -->
         <div v-if="switchOption === 'agent'">
+          <woot-input
+            v-model.trim="maxAssignmentLimitTeamPerPerson"
+            type="number"
+            :class="{ error: $v.maxAssignmentLimitTeamPerPerson.$error }"
+            :label="
+              $t(
+                'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_PER_PERSON'
+              )
+            "
+            @blur="$v.maxAssignmentLimitTeamPerPerson.$touch"
+          />
+          <p class="pb-1 text-sm not-italic text-slate-600 dark:text-slate-400">
+            {{
+              $t(
+                'INBOX_MGMT.AUTO_ASSIGNMENT.MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT'
+              )
+            }}
+          </p>
           <multiselect
             v-model="selectedLimitAgents"
             :options="agentList"
@@ -87,9 +105,12 @@
             :deselect-label="$t('FORMS.MULTISELECT.ENTER_TO_REMOVE')"
             @select="$v.selectedLimitAgents.$touch"
           />
-
           <woot-submit-button
             :button-text="$t('INBOX_MGMT.SETTINGS_POPUP.UPDATE')"
+            :disabled="
+              $v.selectedLimitAgents.$invalid ||
+              $v.maxAssignmentLimitTeamPerPerson.$invalid
+            "
             @click="updateInbox"
           />
         </div>
@@ -285,14 +306,10 @@ export default {
             option: this.switchOption,
             only_this_agents:
               this.switchOption === 'agent' ? onlyThisAgents : null,
-            max_assignment_limit:
-              this.switchOption === 'auto' ? this.maxAssignmentLimit : null,
-            max_assignment_limit_per_team:
-              this.switchOption === 'team' ? this.maxAssignmentLimitTeam : null,
+            max_assignment_limit: this.maxAssignmentLimit ?? null,
+            max_assignment_limit_per_team: this.maxAssignmentLimitTeam ?? null,
             max_assignment_limit_team_per_person:
-              this.switchOption === 'team'
-                ? this.maxAssignmentLimitTeamPerPerson
-                : null,
+              this.maxAssignmentLimitTeamPerPerson ?? null,
           },
         };
         await this.$store.dispatch('inboxes/updateInbox', payload);
@@ -310,7 +327,7 @@ export default {
     },
     selectedLimitAgents: {
       isEmpty() {
-        return !!this.selectedAgentsTeam.length;
+        return !!this.selectedLimitAgents.length;
       },
     },
     maxAssignmentLimit: {
@@ -321,6 +338,9 @@ export default {
     },
     maxAssignmentLimitTeamPerPerson: {
       minValue: minValue(1),
+      isEmpty() {
+        return !!this.maxAssignmentLimitTeamPerPerson;
+      },
     },
   },
 };

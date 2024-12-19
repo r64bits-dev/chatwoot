@@ -35,6 +35,12 @@ module Enterprise::Inbox
     @auto_assignment_only_this_agents_ids ||= auto_assignment_config['only_this_agents'].presence || []
   end
 
+  def max_assignment_limit_team_per_person
+    @max_assignment_limit_team_per_person ||=
+      auto_assignment_config['max_assignment_limit_team_per_person'].presence ||
+      Team.max_assignment_limit_team_per_person
+  end
+
   private
 
   def get_agent_ids_over_assignment_limit(limit, ids = nil)
@@ -58,12 +64,6 @@ module Enterprise::Inbox
 
   def max_assignment_limit_per_team
     auto_assignment_config['max_assignment_limit_per_team'].presence || Team.max_assignment_limit
-  end
-
-  def max_assignment_limit_team_per_person
-    @max_assignment_limit_team_per_person ||=
-      auto_assignment_config['max_assignment_limit_team_per_person'].presence ||
-      Team.max_assignment_limit_team_per_person
   end
 
   def available_members_by_team(level)

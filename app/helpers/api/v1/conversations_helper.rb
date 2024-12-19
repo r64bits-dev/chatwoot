@@ -2,7 +2,7 @@ module Api::V1::ConversationsHelper
   def self.assign_open_conversations(current_user, current_account)
     open_inbox = fetch_open_inboxes(current_account)
 
-    return { error: 'no open conversations' } if open_inbox.blank?
+    return { error: 'no open conversations' } if open_inbox.count.zero?
 
     open_inbox.each do |inbox, conversations|
       assign_conversations(inbox, conversations, current_user)
@@ -22,10 +22,11 @@ module Api::V1::ConversationsHelper
   end
 
   def self.assign_conversations(inbox, conversations, current_user)
+    Rails.logger.info 'assign_conversations', inbox.id, conversations.count
     max_limit = inbox.max_assignment_limit_team_per_person.to_i
     user_ids = inbox.auto_assignment_only_this_agents_ids
 
-    return if user_ids.blank? || !user_ids.include?(current_user.id)
+    return if user_ids.blank? || user_ids.exclude?(current_user.id)
     return unless max_limit.positive?
 
     assign_conversations_to_agent(inbox, conversations, current_user, max_limit)

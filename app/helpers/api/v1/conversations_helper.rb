@@ -1,25 +1,34 @@
 module Api::V1::ConversationsHelper
   def self.assign_open_conversations(current_user, current_account)
-    open_inbox = Conversation.open.where(assignee_id: nil)
-                             .includes(:inbox)
-                             .where(account_id: current_account.id)
-                             .group_by(&:inbox)
+    open_inbox = fetch_open_inboxes(current_account)
 
-    return { error: 'no open conversations' } if open_inbox.count.zero?
+    return { error: 'no open conversations' } if open_inbox.blank?
 
     open_inbox.each do |inbox, conversations|
-      # check if has specific users to assign
-      max_limit = inbox.max_assignment_limit_team_per_person.to_i
-      user_ids = inbox.auto_assignment_only_this_agents_ids
-      next if user_ids.blank? && user_ids.exclude?(current_user.id)
-
-      assign_conversations_to_agent(inbox, conversations, current_user, max_limit) if max_limit.positive?
+      assign_conversations(inbox, conversations, current_user)
     end
 
     true
   rescue StandardError => e
     Rails.logger.error e.message
     { error: e.message }
+  end
+
+  def self.fetch_open_inboxes(current_account)
+    Conversation.open.where(assignee_id: nil)
+                .includes(:inbox)
+                .where(account_id: current_account.id)
+                .group_by(&:inbox)
+  end
+
+  def self.assign_conversations(inbox, conversations, current_user)
+    max_limit = inbox.max_assignment_limit_team_per_person.to_i
+    user_ids = inbox.auto_assignment_only_this_agents_ids
+
+    return if user_ids.blank? || !user_ids.include?(current_user.id)
+    return unless max_limit.positive?
+
+    assign_conversations_to_agent(inbox, conversations, current_user, max_limit)
   end
 
   def self.assign_conversations_to_agent(inbox, conversations, current_user, max_limit)

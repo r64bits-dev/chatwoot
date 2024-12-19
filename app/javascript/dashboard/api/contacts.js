@@ -77,6 +77,10 @@ class ContactAPI extends ApiClient {
     });
   }
 
+  blockContact(contactId) {
+    return axios.post(`${this.url}/${contactId}/block_contact`);
+  }
+
   destroyCustomAttributes(contactId, customAttributes) {
     return axios.post(`${this.url}/${contactId}/destroy_custom_attributes`, {
       custom_attributes: customAttributes,

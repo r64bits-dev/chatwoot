@@ -128,7 +128,8 @@
         "LABELS": "View Labels",
         "CUSTOM_VIEWS": "View Custom Views",
         "PEOPLES": "View People",
-        "SEND_MESSAGES": "Send Messages"
+        "SEND_MESSAGES": "Send Messages",
+        "SEE_UNASSIGNED_CONVERSATIONS": "See Unassigned Conversations"
       }
     },
     "SEARCH": {

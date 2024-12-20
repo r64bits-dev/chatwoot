@@ -98,7 +98,7 @@
     />
 
     <chat-type-tabs
-      v-if="!hasAppliedFiltersOrActiveFolders && currentUser.role !== 'agent'"
+      v-if="!hasAppliedFiltersOrActiveFolders && seeTabsPermission"
       :items="assigneeTabItems"
       :active-tab="activeAssigneeTab"
       class="tab--chat-type"
@@ -361,6 +361,14 @@ export default {
         id,
         name,
       };
+    },
+    seeTabsPermission() {
+      if (this.currentUser.role !== 'agent') return true;
+
+      const currentAccount = this.currentUser.accounts.find((account) => account.id === this.currentUser.account_id);
+      const permission = currentAccount.permissions['see_unassigned_conversations'];
+      
+      return permission;
     },
     assigneeTabItems() {
       const ASSIGNEE_TYPE_TAB_KEYS = {

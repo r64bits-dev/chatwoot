@@ -127,7 +127,8 @@
         "LABELS": "Visualizar Etiquetas",
         "CUSTOM_VIEWS": "Visualizar Visualizações Personalizadas",
         "PEOPLES": "Visualizar Pessoais",
-        "SEND_MESSAGES": "Enviar Mensagens"
+        "SEND_MESSAGES": "Enviar Mensagens",
+        "SEE_UNASSIGNED_CONVERSATIONS": "Visualizar Conversas Não Atribuidas"
       }
     },
     "SEARCH": {

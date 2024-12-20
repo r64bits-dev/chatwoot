@@ -1,5 +1,6 @@
 class Api::V1::ProfilesController < Api::BaseController
   before_action :set_user
+  after_action :check_if_need_to_assign_conversation, only: [:availability]
 
   def show; end
 
@@ -65,5 +66,13 @@ class Api::V1::ProfilesController < Api::BaseController
       :password,
       :password_confirmation
     )
+  end
+
+  def current_account
+    profile_params[:account_id].present? ? Account.find(profile_params[:account_id]) : Current.account
+  end
+
+  def check_if_need_to_assign_conversation
+    Api::V1::ConversationsHelper.assign_open_conversations(current_user, current_account)
   end
 end

@@ -374,8 +374,10 @@ export default {
       const ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
         unassigned: 'unAssignedCount',
-        all: 'allCount',
+        
       };
+      if (this.currentUser.role !== 'agent') ASSIGNEE_TYPE_TAB_KEYS["all"] = 'allCount';
+
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;
         return {

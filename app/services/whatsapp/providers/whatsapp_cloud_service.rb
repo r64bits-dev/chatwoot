@@ -154,7 +154,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         policy: 'deterministic',
         code: template_info[:locale] || 'pt_BR'
       },
-      components: build_components(template_info)
+      components: build_components(template_info).concat(build_header_components(template_info[:headers]))
     }
   end
 
@@ -173,6 +173,24 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       parameters: parameters.map do |param|
         { type: 'text', text: param[:text].presence || '' }
       end
+    }]
+  end
+
+  def build_header_components(headers)
+    return [] if headers.blank?
+    return [] if headers['type'].blank?
+
+    parameters = headers['values'].each_with_object([]) do |value, acc|
+      acc << {
+        :type => headers['type'].downcase,
+        headers['type'].downcase => { link: value }
+      }
+      acc
+    end
+
+    [{
+      type: 'header',
+      parameters: parameters
     }]
   end
 

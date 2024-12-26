@@ -22,7 +22,10 @@
       "FORM_ERROR_MESSAGE": "Por favor, preencha todas as variáveis antes de enviar",
       "BUTTONS_LABEL": "Botões",
       "BUTTON_VARIABLES_LABEL": "Variáveis",
-      "BUTTON_TOOLTIP": "O botão será um link para o site, como seguinte exemplo: %{url}"
+      "BUTTON_TOOLTIP": "O botão será um link para o site, como seguinte exemplo: %{url}",
+      "HEADER_VARIABLES_LABEL": "Variáveis do cabeçalho",
+      "IMAGE": "Imagem",
+      "VIDEO": "Vídeo"
     }
   }
 }

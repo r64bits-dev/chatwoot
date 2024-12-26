@@ -1,11 +1,41 @@
 <template>
   <div class="w-full">
+    <div text="text-large">Cabeçalho</div>
+    <div v-if="headerVariables.variables" class="template__variables-container">
+      <p class="variables-label">
+        {{ $t('WHATSAPP_TEMPLATES.PARSER.HEADER_VARIABLES_LABEL') }}
+      </p>
+      <div
+        v-for="(value, key) in headerVariables.variables"
+        :key="key"
+        class="template__variable-item"
+      >
+        <span class="variable-label">
+          {{
+            $t('WHATSAPP_TEMPLATES.PARSER.VARIABLE_PLACEHOLDER', {
+              variable: key,
+            })
+          }}
+        </span>
+        <woot-input
+          v-model.trim="headerVariables.variables[key]"
+          type="text"
+          class="variable-input"
+          :styles="{ marginBottom: 0 }"
+        />
+      </div>
+    </div>
+    <p v-if="$v.$dirty && $v.$invalid" class="error">
+      {{ $t('WHATSAPP_TEMPLATES.PARSER.FORM_ERROR_MESSAGE') }}
+    </p>
+    <div text="text-large">Corpo</div>
     <textarea
       v-model="processedString"
       rows="4"
       readonly
       class="template-input"
     />
+    <division-line />
     <div v-if="variables" class="template__variables-container">
       <p class="variables-label">
         {{ $t('WHATSAPP_TEMPLATES.PARSER.VARIABLES_LABEL') }}
@@ -15,9 +45,7 @@
         :key="key"
         class="template__variable-item"
       >
-        <span class="variable-label">
-          {{ key }}
-        </span>
+        <span class="variable-label">{{ key }}</span>
         <woot-input
           v-model="processedParams.variables[key]"
           type="text"
@@ -85,7 +113,11 @@
       <woot-button variant="smooth" @click="$emit('resetTemplate')">
         {{ $t('WHATSAPP_TEMPLATES.PARSER.GO_BACK_LABEL') }}
       </woot-button>
-      <woot-button type="button" @click="sendMessage">
+      <woot-button
+        type="button"
+        :is-disabled="$v.$invalid"
+        @click="sendMessage"
+      >
         {{ $t('WHATSAPP_TEMPLATES.PARSER.SEND_MESSAGE_LABEL') }}
       </woot-button>
     </footer>
@@ -94,6 +126,8 @@
 
 <script>
 import alertMixin from 'shared/mixins/alertMixin';
+import DivisionLine from 'dashboard/components/widgets/DivisionLine.vue';
+import { validUrl } from 'widget/helpers/linkHelper';
 
 const allKeysRequired = value => {
   const keys = Object.keys(value);
@@ -107,14 +141,22 @@ function hasDynamicParameters(url) {
 
 import { requiredIf } from 'vuelidate/lib/validators';
 export default {
+  components: { DivisionLine },
   mixins: [alertMixin],
   props: {
     template: {
       type: Object,
-      default: () => {},
+      default: () => ({}),
     },
   },
   validations: {
+    'headerVariables.variables': {
+      allUrlsValid() {
+        const values = Object.values(this.headerVariables.variables || {});
+        if (!values.length) return true;
+        return values.every(value => validUrl(value));
+      },
+    },
     'processedParams.variables': {
       requiredIfKeysPresent() {
         return (
@@ -138,9 +180,11 @@ export default {
         variables: {},
         buttons: {},
       },
+      headerVariables: {
+        variables: {},
+      },
     };
   },
-
   computed: {
     variables() {
       const variables = this.templateString.match(/{{([^}]+)}}/g);
@@ -168,7 +212,9 @@ export default {
     },
   },
   mounted() {
+    this.$v.$touch();
     this.generateVariables();
+    this.generateHeaderVariables();
     this.processButtonVariables();
   },
   methods: {
@@ -209,13 +255,17 @@ export default {
             language: this.template.language,
             namespace: this.template.namespace,
             processed_params: this.processedParams.variables,
+            header: {
+              type: 'IMAGE',
+              values: Object.values(this.headerVariables.variables),
+            },
             buttons: buttonsPayload,
           },
         };
         this.$emit('sendMessage', payload);
       } catch (error) {
         // eslint-disable-next-line no-console
-        console.log(error);
+        console.error(error);
         this.showAlert(this.$t('TICKETS.CREATE.ERROR_MESSAGE'));
       }
     },
@@ -228,6 +278,20 @@ export default {
 
       const variables = matchedVariables.map(i => this.processVariable(i));
       this.processedParams.variables = variables.reduce((acc, variable) => {
+        acc[variable] = '';
+        return acc;
+      }, {});
+    },
+    generateHeaderVariables() {
+      const header = this.template.components.find(
+        component => component.type === 'HEADER' && component.format === 'IMAGE'
+      );
+      if (!header || !header.example || !header.example.header_handle) return;
+
+      const variables = header.example.header_handle.map(
+        (_, index) => `header_image_${index + 1}`
+      );
+      this.headerVariables.variables = variables.reduce((acc, variable) => {
         acc[variable] = '';
         return acc;
       }, {});

@@ -2,15 +2,17 @@ module Api::V1::ConversationsHelper
   def self.assign_open_conversations(current_user, current_account)
     open_inbox = fetch_open_inboxes(current_account)
 
-    return { error: 'no open conversations' } if open_inbox.count.zero?
+    return { error: 'no open conversations' } if open_inbox.empty?
 
-    open_inbox do |inbox, conversations|
+    open_inbox.each do |inbox, conversations|
+      next if inbox.nil?
+
       assign_conversations(inbox, conversations, current_user)
     end
 
     true
   rescue StandardError => e
-    Rails.logger.error e.message
+    Rails.logger.error("Error: #{e.message}\nBacktrace: #{e.backtrace.join("\n")}")
     { error: e.message }
   end
 
@@ -23,7 +25,7 @@ module Api::V1::ConversationsHelper
   end
 
   def self.assign_conversations(inbox, conversations, current_user)
-    Rails.logger.info 'assign_conversations', inbox.id, conversations.count
+    Rails.logger.info "assign_conversations - inbox_id: #{inbox.id}, conversations_count: #{conversations.count}"
     max_limit = inbox.max_assignment_limit_team_per_person.to_i
     user_ids = inbox.auto_assignment_only_this_agents_ids
 

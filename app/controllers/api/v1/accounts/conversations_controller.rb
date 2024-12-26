@@ -5,6 +5,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   before_action :conversation, except: [:index, :meta, :search, :create, :filter, :need_to_assign_agent]
   before_action :inbox, :contact, :contact_inbox, only: [:create]
+  after_action :check_assign_conversation, only: [:toggle_status]
 
   def index
     result = conversation_finder.perform
@@ -77,7 +78,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def need_to_assign_agent
-    result = Api::V1::ConversationsHelper.assign_open_conversations(current_user, current_account)
+    result = check_assign_conversation
     if result.is_a?(Hash) && result[:error]
       render json: { error: result[:error] }, status: :unprocessable_entity
     else
@@ -194,5 +195,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def assignee?
     @conversation.assignee_id? && Current.user == @conversation.assignee
+  end
+
+  def check_assign_conversation
+    Api::V1::ConversationsHelper.assign_open_conversations(current_user, current_account)
   end
 end

@@ -41,9 +41,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def filter
     if current_user.agent? && params[:payload].none? { |filter| filter['attribute_key'] == 'team_id' }
-      if params[:payload].present?
-        params[:payload].last['query_operator'] = 'and'
-      end
+      params[:payload].last['query_operator'] = 'and' if params[:payload].present?
 
       team_id = current_user.team_ids.first
       params[:payload] << {
@@ -54,7 +52,7 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
         'custom_attribute_type' => ''
       }
     end
-    
+
     result = ::Conversations::FilterService.new(params.permit!, current_user).perform
     @conversations = result[:conversations]
     @conversations_count = result[:count]

@@ -2,19 +2,30 @@ class ConversationBuilder
   pattr_initialize [:params!, :contact_inbox!]
 
   def perform
-    look_up_exising_conversation || create_new_conversation
+    conversation = nil
+    ActiveRecord::Base.transaction do
+      @contact_inbox.with_lock do
+        existing_conversation = look_up_existing_conversation
+        conversation = existing_conversation || ::Conversation.create!(conversation_params)
+      end
+    end
+    conversation
   end
 
   private
 
-  def look_up_exising_conversation
+  def look_up_existing_conversation
     return unless @contact_inbox.inbox.lock_to_single_conversation?
 
-    @contact_inbox.conversations.last
+    @contact_inbox.conversations.where(status: 'open').last
   end
 
   def create_new_conversation
     ::Conversation.create!(conversation_params)
+  rescue ActiveRecord::RecordNotUnique
+    Rails.logger.warn("Duplicate conversation creation detected for contact_inbox_id: #{@contact_inbox.id}")
+
+    look_up_existing_conversation
   end
 
   def conversation_params

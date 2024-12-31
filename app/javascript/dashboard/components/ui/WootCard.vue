@@ -9,6 +9,9 @@
             <span class="ellipse" /><span>{{ headerStatus.message }}</span>
           </span>
         </div>
+        <div v-if="subHeader" class="card-header--sub-header">
+          <p>{{ subHeader }}</p>
+        </div>
       </div>
       <div v-if="$slots.controls" class="controls">
         <slot name="controls" />
@@ -28,6 +31,10 @@ export default {
   name: 'WootCard',
   props: {
     header: {
+      type: String,
+      default: '',
+    },
+    subHeader: {
       type: String,
       default: '',
     },
@@ -62,6 +69,7 @@ export default {
   gap: var(--space-small) 0px;
   @apply grid flex-grow w-full mb-6;
   padding: 16px;
+  margin-bottom: 0;
 
   .card-header--title-area {
     @apply flex items-center;
@@ -92,6 +100,10 @@ export default {
         @apply bg-red-400 dark:bg-red-400 h-1 w-1 rounded-full mr-1 rtl:mr-0 rtl:ml-0;
       }
     }
+  }
+
+  .card-header--sub-header {
+    @apply text-sm text-slate-500 dark:text-slate-400;
   }
 
   .controls {

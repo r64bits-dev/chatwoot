@@ -19,17 +19,31 @@
     <woot-card
       class="mt-3"
       header="Arquivos Importados"
+      sub-header="Aqui estão os arquivos importados"
       :header-status="{
         status: 'success',
-        message: 'Arquivos importados',
+        message: 'Todos os arquivos foram importados',
       }"
     >
       <template #body>
-        <ul class="list-disc list-inside">
-          <li v-for="file in selectedFiles" :key="file.name">
-            {{ file.name }}
-          </li>
-        </ul>
+        <woot-list :items="selectedFiles">
+          <template #item="{ item }">
+            <!-- Nome do arquivo e tamanho -->
+            <div class="flex items-center">
+              <fluent-icon icon="file-upload" class="default-icon" />
+              <span class="file-name flex-1">{{ item.name }}</span>
+              <span class="file-size text-gray-500 ml-2"
+                >{{ (item.size / 1024).toFixed(2) }} KB</span
+              >
+              <button
+                class="delete-button text-red-500 ml-4"
+                @click="removeFile(item.id)"
+              >
+                Remover
+              </button>
+            </div>
+          </template>
+        </woot-list>
       </template>
     </woot-card>
   </div>
@@ -45,7 +59,21 @@ export default {
   },
   methods: {
     handleFilesSelected(files) {
-      this.selectedFiles = files;
+      // eslint-disable-next-line no-console
+      console.log(files);
+      this.selectedFiles = files.map(file => ({
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        type: file.type,
+        lastModified: file.lastModified,
+      }));
+    },
+    removeFile(fileId) {
+      this.selectedFiles = this.selectedFiles.filter(
+        file => file.id !== fileId
+      );
+      bus.$emit('newToastMessage', 'Arquivo removido');
     },
     async uploadFile() {
       if (this.selectedFiles.length === 0) {

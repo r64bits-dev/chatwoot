@@ -21,12 +21,6 @@
       </button>
       <p>Arraste e solte arquivos ou clique para selecionar</p>
     </div>
-    <ul v-if="files.length" class="file-list">
-      <li v-for="(file, index) in files" :key="index" class="file-list__item">
-        <span>{{ file.name }}</span>
-        <button @click="removeFile(index)">Remover</button>
-      </li>
-    </ul>
     <span v-if="error" class="error-message">{{ error }}</span>
   </div>
 </template>

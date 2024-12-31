@@ -31,6 +31,7 @@ import TabsItem from './ui/Tabs/TabsItem';
 import Thumbnail from './widgets/Thumbnail.vue';
 import InputFile from './widgets/forms/InputFile';
 import Card from './ui/WootCard.vue';
+import List from './ui/WootList.vue';
 
 const WootUIKit = {
   AvatarUploader,
@@ -64,6 +65,7 @@ const WootUIKit = {
   TabsItem,
   Thumbnail,
   Card,
+  List,
   InputFile,
   install(Vue) {
     const keys = Object.keys(this);

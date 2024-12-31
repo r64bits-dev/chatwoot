@@ -1,7 +1,15 @@
 <template>
   <div class="woot-card">
     <div class="woot-card-header">
-      <slot name="header" />
+      <slot v-if="$slots.header" name="header" />
+      <div v-else-if="header" class="card-header">
+        <div class="card-header--title-area">
+          <h3 class="text-xl font-medium">{{ header }}</h3>
+          <span v-if="headerStatus.message" :class="getHeaderStatusClass">
+            <span class="ellipse" /><span>{{ headerStatus.message }}</span>
+          </span>
+        </div>
+      </div>
       <div v-if="$slots.controls" class="controls">
         <slot name="controls" />
       </div>
@@ -18,6 +26,25 @@
 <script>
 export default {
   name: 'WootCard',
+  props: {
+    header: {
+      type: String,
+      default: '',
+    },
+    headerStatus: {
+      type: Object,
+      default: () => ({
+        status: 'pending',
+        message: '',
+      }),
+    },
+  },
+  computed: {
+    getHeaderStatusClass() {
+      const { status } = this.headerStatus;
+      return `${status}`;
+    },
+  },
 };
 </script>
 
@@ -36,10 +63,34 @@ export default {
   @apply grid flex-grow w-full mb-6;
   padding: 16px;
 
-  .title {
-    @apply flex items-center flex-row;
-    h5 {
-      @apply mb-0 text-slate-800 dark:text-slate-100;
+  .card-header--title-area {
+    @apply flex items-center;
+
+    .success {
+      background: rgba(37, 211, 102, 0.1);
+      @apply flex flex-row items-center pr-2 pl-2 m-1 text-green-400 dark:text-green-400 text-xs;
+
+      .ellipse {
+        @apply bg-green-400 dark:bg-green-400 h-1 w-1 rounded-full mr-1 rtl:mr-0 rtl:ml-0;
+      }
+    }
+
+    .pending {
+      background: rgba(255, 193, 7, 0.1);
+      @apply flex flex-row items-center pr-2 pl-2 m-1 text-yellow-400 dark:text-yellow-400 text-xs;
+
+      .ellipse {
+        @apply bg-yellow-400 dark:bg-yellow-400 h-1 w-1 rounded-full mr-1 rtl:mr-0 rtl:ml-0;
+      }
+    }
+
+    .error {
+      background: rgba(239, 68, 68, 0.1);
+      @apply flex flex-row items-center pr-2 pl-2 m-1 text-red-400 dark:text-red-400 text-xs;
+
+      .ellipse {
+        @apply bg-red-400 dark:bg-red-400 h-1 w-1 rounded-full mr-1 rtl:mr-0 rtl:ml-0;
+      }
     }
   }
 

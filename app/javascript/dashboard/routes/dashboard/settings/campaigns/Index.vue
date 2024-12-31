@@ -14,7 +14,10 @@
       icon="add-circle"
       @click="openFileImports"
     >
-      CRIAR INTEGRAÇÃO COM O WHATSAPP
+      <span class="hidden md:inline">Integração com o Whatsapp</span>
+      <div class="inline md:hidden">
+        <fluent-icon icon="whatsapp" />
+      </div>
     </woot-button>
     <campaign />
     <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">

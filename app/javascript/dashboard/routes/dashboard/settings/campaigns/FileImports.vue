@@ -16,13 +16,14 @@
     </form>
 
     <!-- Mostrar os arquivos já importados -->
-    <woot-card class="mt-3">
-      <template #header>
-        <div class="flex justify-between flex-col">
-          <h3 class="text-xl font-medium">Arquivos importados</h3>
-          <p>Esses são os arquivos importados</p>
-        </div>
-      </template>
+    <woot-card
+      class="mt-3"
+      header="Arquivos Importados"
+      :header-status="{
+        status: 'success',
+        message: 'Arquivos importados',
+      }"
+    >
       <template #body>
         <ul class="list-disc list-inside">
           <li v-for="file in selectedFiles" :key="file.name">
@@ -79,6 +80,4 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Add any styles you need here */
-</style>
+<style scoped lang="scss"></style>

@@ -3,6 +3,7 @@
     <label v-if="label" class="file-upload__label">{{ label }}</label>
     <div
       class="file-dropzone"
+      @click="triggerFileSelect"
       @dragover.prevent
       @dragenter.prevent
       @drop.prevent="handleDrop"
@@ -10,11 +11,14 @@
       <input
         ref="fileInput"
         type="file"
+        accept=".csv"
         :multiple="multiple"
         class="file-input"
         @change="handleFileSelect"
       />
-      <button @click="triggerFileSelect">{{ buttonText }}</button>
+      <button class="button--upload">
+        {{ buttonText }}
+      </button>
       <p>Arraste e solte arquivos ou clique para selecionar</p>
     </div>
     <ul v-if="files.length" class="file-list">
@@ -29,6 +33,7 @@
 
 <script>
 export default {
+  name: 'WootFileInput',
   props: {
     label: {
       type: String,
@@ -50,6 +55,7 @@ export default {
   data() {
     return {
       files: [],
+      errorMessage: '',
     };
   },
   methods: {
@@ -65,7 +71,12 @@ export default {
     },
     addFiles(fileList) {
       Array.from(fileList).forEach(file => {
-        this.files.push(file);
+        if (file.name.endsWith('.csv')) {
+          this.files.push(file);
+          this.errorMessage = ''; // Limpa mensagem de erro
+        } else {
+          this.errorMessage = `Arquivo inválido: ${file.name}. Apenas arquivos .csv são permitidos.`;
+        }
       });
       this.$emit('files-selected', this.files);
     },
@@ -89,6 +100,7 @@ export default {
     text-align: center;
     cursor: pointer;
     transition: border-color 0.3s;
+    position: relative;
   }
 
   .file-dropzone:hover {

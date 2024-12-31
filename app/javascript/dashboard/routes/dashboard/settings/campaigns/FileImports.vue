@@ -2,7 +2,35 @@
   <div class="flex-1 overflow-auto p-4">
     <form @submit.prevent="uploadFile">
       <woot-input-file @files-selected="handleFilesSelected" />
+
+      <div class="flex justify-end mt-3">
+        <woot-button
+          variant="smooth"
+          color-scheme="primary"
+          icon="file-upload"
+          @click="uploadFile"
+        >
+          {{ $t('FIlE_IMPORT.SUBMIT') }}
+        </woot-button>
+      </div>
     </form>
+
+    <!-- Mostrar os arquivos já importados -->
+    <woot-card class="mt-3">
+      <template #header>
+        <div class="flex justify-between flex-col">
+          <h3 class="text-xl font-medium">Arquivos importados</h3>
+          <p>Esses são os arquivos importados</p>
+        </div>
+      </template>
+      <template #body>
+        <ul class="list-disc list-inside">
+          <li v-for="file in selectedFiles" :key="file.name">
+            {{ file.name }}
+          </li>
+        </ul>
+      </template>
+    </woot-card>
   </div>
 </template>
 

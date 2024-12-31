@@ -223,3 +223,10 @@ export const INVOICE_SUMMARY_METRICS = {
   total_invoices: 'TOTAL_INVOICES',
   average_invoice_price: 'AVERAGE_INVOICE_PRICE',
 };
+
+export const INVOICE_USAGE_METRICS = {
+  sent_messages: 'SENT_MESSAGES',
+  received_messages: 'RECEIVED_MESSAGES',
+  extra_sent_messages: 'EXTRA_SENT_MESSAGES',
+  extra_received_messages: 'EXTRA_RECEIVED_MESSAGES',
+};

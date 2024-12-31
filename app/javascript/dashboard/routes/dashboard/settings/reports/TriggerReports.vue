@@ -3,6 +3,7 @@
     <report-filters
       type="triggers"
       :group-by-filter-items-list="groupByFilterItemsList"
+      :show-business-hours-switch="false"
       @date-range-change="onDateRangeChange"
       @business-hours-toggle="onBusinessHoursToggle"
       @group-by-filter-change="onGroupByFilterChange"
@@ -28,7 +29,9 @@
       <metric-card :header="$t('TRIGGER_REPORTS.GRAPH_TITLE')">
         <div class="metric-content column">
           <woot-loading-state
-            v-if="triggersMetric.isFetching"
+            v-if="
+              triggersMetric.isFetching || triggersMetric.isFetchingProcessed
+            "
             class="text-xs"
             :message="$t('REPORT.LOADING_CHART')"
           />
@@ -71,6 +74,7 @@ export default {
       from: Math.floor(new Date().setMonth(new Date().getMonth() - 6) / 1000),
       to: Math.floor(Date.now() / 1000),
       groupBy: null,
+      prepareChartTimeout: null,
     };
   },
   computed: {
@@ -95,7 +99,7 @@ export default {
     triggersMetric: {
       immediate: true,
       handler(newVal) {
-        if (!newVal.isFetching && newVal.data) {
+        if (!newVal.isFetching && !newVal.isFetchingProcessed) {
           this.prepareChartData();
         }
       },
@@ -124,18 +128,30 @@ export default {
     },
     prepareChartData() {
       const data = this.triggersMetric.data || [];
+      const values = data.map(item => item.count);
+
+      const processedData = this.triggersMetric.processed || [];
+      const processedValues = processedData.map(item => item.count);
+
       const labels = data.map(item =>
         format(fromUnixTime(item.timestamp), this.getDateFormat(this.groupBy))
       );
-      const values = data.map(item => item.count);
+
       this.chartData = {
         labels,
         datasets: [
           {
-            label: 'Número de Disparos',
+            label: 'Registros Importados',
             data: values,
             backgroundColor: 'rgba(75, 192, 192, 0.2)',
             borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1,
+          },
+          {
+            label: 'Registros Enviados',
+            data: processedValues,
+            backgroundColor: 'rgba(94, 176, 239, 0.2)',
+            borderColor: 'rgba(94, 176, 239, 1)',
             borderWidth: 1,
           },
         ],
@@ -150,6 +166,7 @@ export default {
       }
 
       this.$store.dispatch('fetchTriggersReport', payload);
+      this.$store.dispatch('fetchProcessedTriggersReport', payload);
       this.$store.dispatch('fetchTriggersMetric', payload);
     },
     onDateRangeChange({ from, to }) {

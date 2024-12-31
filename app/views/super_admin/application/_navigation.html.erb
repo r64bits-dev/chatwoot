@@ -40,7 +40,7 @@ as defined by the routes in the `admin/` namespace
           }
         %>
       <% end %>
-      <%# <%= render partial: "nav_item", locals: { icon: 'icon-reports', url: super_admin_reports_url, label: 'Reports' } comment this again %> 
+      <%= render partial: "nav_item", locals: { icon: 'icon-reports', url: super_admin_reports_url, label: 'Reports' } if current_user.ultra_admin? %>
       <hr class="border-slate-100 border-t my-5 mx-4"/>
       <% if InstallationConfig.find_by(name: 'DEPLOYMENT_ENV')&.value == 'cloud' ||  Rails.env.development? %>
         <%= render partial: "nav_item", locals: { icon: 'icon-folder-3-line', url: super_admin_response_sources_url, label: 'Sources' } %>

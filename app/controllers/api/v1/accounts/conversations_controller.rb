@@ -3,8 +3,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   include DateRangeHelper
   include HmacConcern
 
-  before_action :conversation, except: [:index, :meta, :search, :create, :filter]
+  before_action :conversation, except: [:index, :meta, :search, :create, :filter, :need_to_assign_agent]
   before_action :inbox, :contact, :contact_inbox, only: [:create]
+  after_action :check_assign_conversation, only: [:toggle_status]
 
   def index
     result = conversation_finder.perform
@@ -27,7 +28,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     @attachments = @conversation.attachments
   end
 
-  def show; end
+  def show
+    raise CustomExceptions::Conversation::AuthenticationRequired if current_user.agent? && (current_user.id != @conversation.assignee_id)
+  end
 
   def create
     ActiveRecord::Base.transaction do
@@ -37,6 +40,19 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def filter
+    if current_user.agent? && params[:payload].none? { |filter| filter['attribute_key'] == 'team_id' }
+      params[:payload].last['query_operator'] = 'and' if params[:payload].present?
+
+      team_id = current_user.team_ids.first
+      params[:payload] << {
+        'attribute_key' => 'team_id',
+        'filter_operator' => 'equal_to',
+        'values' => [team_id],
+        'attribute_model' => 'standard',
+        'custom_attribute_type' => ''
+      }
+    end
+
     result = ::Conversations::FilterService.new(params.permit!, current_user).perform
     @conversations = result[:conversations]
     @conversations_count = result[:count]
@@ -57,6 +73,15 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
     ConversationReplyMailer.with(account: @conversation.account).conversation_transcript(@conversation, params[:email])&.deliver_later
     head :ok
+  end
+
+  def need_to_assign_agent
+    result = check_assign_conversation
+    if result.is_a?(Hash) && result[:error]
+      render json: { error: result[:error] }, status: :unprocessable_entity
+    else
+      render json: result
+    end
   end
 
   def toggle_status
@@ -168,5 +193,9 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
 
   def assignee?
     @conversation.assignee_id? && Current.user == @conversation.assignee
+  end
+
+  def check_assign_conversation
+    Api::V1::ConversationsHelper.assign_open_conversations(current_user, current_account)
   end
 end

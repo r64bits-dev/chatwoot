@@ -1,6 +1,6 @@
 <template>
   <transition name="network-notification-fade" tag="div">
-    <div v-show="showNotification" class="fixed top-4 left-2 z-50 group">
+    <!-- <div v-show="showNotification" class="fixed top-4 left-2 z-50 group">
       <div
         class="flex items-center justify-between py-1 px-2 w-full rounded-lg shadow-lg bg-yellow-200 dark:bg-yellow-700 relative"
       >
@@ -31,7 +31,7 @@
           @click="closeNotification"
         />
       </div>
-    </div>
+    </div> -->
   </transition>
 </template>
 
@@ -39,6 +39,7 @@
 import globalConfigMixin from 'shared/mixins/globalConfigMixin';
 import { mapGetters } from 'vuex';
 import { BUS_EVENTS } from 'shared/constants/busEvents';
+const TIME_TO_DISCONNECT = 4000; // 4 second
 
 export default {
   mixins: [globalConfigMixin],
@@ -61,7 +62,7 @@ export default {
       // THE CABLE IS FIRING IS VERY COMMON AND THUS INTERFERING USER EXPERIENCE
       setTimeout(() => {
         this.updateOnlineStatus({ type: 'offline' });
-      }, 4000);
+      }, TIME_TO_DISCONNECT);
     });
   },
 

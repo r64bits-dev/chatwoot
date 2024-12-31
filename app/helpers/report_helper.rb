@@ -66,6 +66,11 @@ module ReportHelper
     grouped_reporting_events.average(:createdAt)
   end
 
+  def processed_triggers
+    grouped_reporting_events = get_grouped_values(scope.triggers, :processedAt)
+    grouped_reporting_events.average(:processedAt)
+  end
+
   def avg_first_response_time
     grouped_reporting_events = (get_grouped_values scope.reporting_events.with_agents_ids(agents_ids).where(name: 'first_response',
                                                                                                             account_id: account.id))

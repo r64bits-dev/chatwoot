@@ -168,6 +168,10 @@ export default {
   },
   mixins: [alertMixin, messageFormatterMixin, contentTypeMixin],
   props: {
+    disableReplyButton: {
+      type: Boolean,
+      default: false,
+    },
     data: {
       type: Object,
       required: true,
@@ -286,7 +290,10 @@ export default {
         copy: this.hasText,
         delete: this.hasText || this.hasAttachments,
         cannedResponse: this.isOutgoing && this.hasText,
-        replyTo: !this.data.private && this.inboxSupportsReplyTo.outgoing,
+        replyTo:
+          !this.data.private &&
+          this.inboxSupportsReplyTo.outgoing &&
+          !this.disableReplyButton,
       };
     },
     contentAttributes() {

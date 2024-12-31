@@ -94,6 +94,7 @@ export default {
   mounted() {
     this.initializeColorTheme();
     this.listenToThemeChanges();
+    this.verifyUserHasOpenConversations();
     this.setLocale(window.chatwootConfig.selectedLocale);
   },
   methods: {
@@ -106,6 +107,14 @@ export default {
     },
     setLocale(locale) {
       this.$root.$i18n.locale = locale;
+    },
+    async verifyUserHasOpenConversations() {
+      if (this.currentUser.type === 'SuperAdmin') {
+        return;
+      }
+      await this.$store.dispatch('checkNeedToAssignAgent', {
+        userId: this.currentUser.id,
+      });
     },
     async initializeAccount() {
       await this.$store.dispatch('accounts/get');

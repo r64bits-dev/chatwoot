@@ -117,8 +117,10 @@ pt_BR:
     slack:
       invalid_channel_id: "Canal de slack inválido. Por favor, tente novamente"
     conversations:
+      different_team: Você não pode atribuir um agente para uma conversa que não pertence ao seu time
       need_team_assignee: Você precisa atribuir um time para a conversa antes de atribuir um agente
       invalid_attributes: Atributos inválidos
+      authentication_required: Você precisa ser o agente designado para a conversa
     inboxes:
       integrations:
         whatsapp:
@@ -166,6 +168,11 @@ pt_BR:
         label:
           attributes:
             title:
+              taken: já existe
+        contact:
+          attributes:
+            phone_number:
+              invalid: não é um número de telefone válido
               taken: já existe
   reports:
     period: Reportando o período %{since} a %{until}

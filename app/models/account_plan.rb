@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: account_plans
+# Table name: account_plans <- this is table is to link account and product and register the usage
 #
 #  id                    :bigint           not null, primary key
 #  current_agents        :integer          default(0), not null
@@ -8,6 +8,7 @@
 #  extra_agents          :integer          default(0), not null
 #  extra_conversations   :integer          default(0), not null
 #  extra_inboxes         :integer          default(0)
+#  extra_messages        :integer          default(0), not null
 #  created_at            :datetime         not null
 #  updated_at            :datetime         not null
 #  account_id            :bigint           not null

@@ -67,9 +67,7 @@ export const getters = {
     // filtering out the whatsapp templates with media
     if (messagesTemplates instanceof Array) {
       return messagesTemplates.filter(template => {
-        return !template.components.some(
-          i => i.format === 'IMAGE' || i.format === 'VIDEO'
-        );
+        return !template.components.some(i => i.format === 'VIDEO');
       });
     }
     return [];

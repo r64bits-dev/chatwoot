@@ -193,7 +193,7 @@
         <slot name="additionalFilters" />
       </div>
     </div>
-    <div class="flex items-center my-2">
+    <div v-if="showBusinessHoursSwitch" class="flex items-center my-2">
       <span class="text-sm mx-2 whitespace-nowrap">
         {{ $t('REPORT.BUSINESS_HOURS') }}
       </span>
@@ -241,6 +241,10 @@ export default {
     selectedGroupByFilter: {
       type: Object,
       default: () => {},
+    },
+    showBusinessHoursSwitch: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

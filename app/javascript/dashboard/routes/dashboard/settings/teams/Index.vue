@@ -20,7 +20,7 @@
             <tr v-for="item in teamsList" :key="item.id">
               <td>
                 <span class="agent-name">{{ item.name }}</span>
-                <p>{{ item.description }}</p>
+                <p>{{ item.description }} - ({{ formatLevel(item.level) }})</p>
               </td>
 
               <td>
@@ -142,6 +142,21 @@ export default {
     closeDelete() {
       this.showDeletePopup = false;
       this.selectedTeam = {};
+    },
+
+    formatLevel(level) {
+      switch (level) {
+        case 'level_1':
+          return 'Nível 1';
+        case 'level_2':
+          return 'Nível 2';
+        case 'level_3':
+          return 'Nível 3';
+        case 'level_4':
+          return 'Nível 4';
+        default:
+          return 'Nível 1';
+      }
     },
   },
 };

@@ -63,6 +63,7 @@ export default {
             label: this.$t('INVOICE_REPORTS.GRAPH.PRICE_LABEL'),
             data: values,
             borderWidth: 1,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
           },
         ],
       };

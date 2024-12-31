@@ -1,5 +1,6 @@
 json.website_channel_config do
   json.allow_messages_after_resolved @web_widget.inbox.allow_messages_after_resolved
+  json.init_by_agent @web_widget.inbox.init_by_agent
   json.api_host ENV.fetch('FRONTEND_URL', nil)
   json.auth_token @token
   json.avatar_url @web_widget.inbox.avatar_url

@@ -156,6 +156,15 @@
           "ERROR_MESSAGE": "We were not able to authenticate Twilio credentials, please try again"
         }
       },
+      "QRCODE": {
+        "URL": {
+          "LABEL": "Subdomain",
+          "PLACEHOLDER": "Please enter the Subdomain",
+          "ERROR": "This field is required"
+        },
+        "USE_REOPEN_CONVERSATION": "Reopen closed conversations",
+        "USE_CONVERSATION_PENDING": "Use pending conversations"
+      },
       "SMS": {
         "TITLE": "SMS Channel",
         "DESC": "Start supporting your customers via SMS.",
@@ -215,7 +224,8 @@
           "LABEL": "API Provider",
           "TWILIO": "Twilio",
           "WHATSAPP_CLOUD": "WhatsApp Cloud",
-          "360_DIALOG": "360Dialog"
+          "360_DIALOG": "360Dialog",
+          "QR_CODE": "QR Code"
         },
         "INBOX_NAME": {
           "LABEL": "Inbox Name",
@@ -437,6 +447,10 @@
       },
       "ENABLE_HMAC": {
         "LABEL": "Enable"
+      },
+      "INIT_BY_AGENT": {
+        "ENABLED": "Enabled",
+        "DISABLED": "Disabled"
       }
     },
     "DELETE": {
@@ -507,6 +521,8 @@
       "FORWARD_EMAIL_SUB_TEXT": "Start forwarding your emails to the following email address.",
       "ALLOW_MESSAGES_AFTER_RESOLVED": "Allow messages after conversation resolved",
       "ALLOW_MESSAGES_AFTER_RESOLVED_SUB_TEXT": "Allow the end-users to send messages even after the conversation is resolved.",
+      "ENABLE_INIT_BY_AGENT": "Enable conversation initiation by agents",
+      "ENABLE_INIT_BY_AGENT_SUB_TEXT": "Allow agents to initiate conversations automatically when they receive a message from an agent marked as active.",
       "WHATSAPP_SECTION_SUBHEADER": "This API Key is used for the integration with the WhatsApp APIs.",
       "WHATSAPP_SECTION_UPDATE_SUBHEADER": "Enter the updated key to be used for the integration with the WhatsApp APIs.",
       "WHATSAPP_SECTION_TITLE": "API Key",
@@ -525,9 +541,16 @@
       "SUB_TEXT": "Attach a Help Center with the inbox"
     },
     "AUTO_ASSIGNMENT": {
+      "USE_MAX_ASSIGNMENT_LIMIT": "Use auto assignment limit",
+      "USE_MAX_ASSIGNMENT_LIMIT_TEAM": "Use auto assignment limit per team",
+      "USE_MAX_ASSIGNMENT_LIMIT_TEAM_PERSON": "Use auto assignment limit per team per person",
+      "USE_ONLY_AGENTS": "Use auto assignment limit but only for specific agents",
       "MAX_ASSIGNMENT_LIMIT": "Auto assignment limit",
       "MAX_ASSIGNMENT_LIMIT_RANGE_ERROR": "Please enter a value greater than 0",
-      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent"
+      "MAX_ASSIGNMENT_LIMIT_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_SUB_TEXT": "Limit the maximum number of conversations from this inbox that can be auto assigned to an agent per team",
+      "MAX_ASSIGNMENT_LIMIT_TEAM": "Auto assignment limit per team",
+      "MAX_ASSIGNMENT_LIMIT_TEAM_RANGE_ERROR": "Please enter a value greater than 0"
     },
     "FACEBOOK_REAUTHORIZE": {
       "TITLE": "Reauthorize",

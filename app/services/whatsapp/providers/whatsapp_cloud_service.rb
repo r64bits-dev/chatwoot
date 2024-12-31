@@ -22,7 +22,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: request_payload
     )
-    p "response: #{response.inspect} request payload: #{request_payload}"
+    Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
     raise CustomExceptions::Account::ErrorReply unless response.success?
 
     process_response(response)
@@ -37,7 +37,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def fetch_whatsapp_templates(url)
     response = HTTParty.get(url)
-    p 'fetch whatsapp templates', response
+    Rails.logger.info response.body
     return [] unless response.success?
 
     next_url = next_url(response)
@@ -53,7 +53,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
 
   def validate_provider_config?
     response = HTTParty.get("#{business_account_path}/message_templates?access_token=#{whatsapp_channel.provider_config['api_key']}")
-    p response
+    Rails.logger.info "#{response.inspect} response code: #{response.code} request provider config: #{whatsapp_channel.provider_config}"
     raise CustomExceptions::Account::InvalidProviderConfig unless response.success?
 
     response.success?
@@ -93,8 +93,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
-    p 'send text message', response.inspect
-
+    Rails.logger.info response.inspect
     process_response(response)
   end
 
@@ -148,21 +147,23 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def template_body_parameters(template_info)
-    p template_info
+    Rails.logger.info "template_info: #{template_info}"
     {
       name: template_info[:name],
       language: {
         policy: 'deterministic',
         code: template_info[:locale] || 'pt_BR'
       },
-      components: build_components(template_info)
+      components: build_components(template_info).concat(build_header_components(template_info[:headers]))
     }
   end
 
   def build_components(template_info)
+    return [] if template_info[:parameters].blank?
+
     components = build_body_component(template_info[:parameters])
     components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
-    p components
+    Rails.logger.info "build_components: #{components}"
     components
   end
 
@@ -170,8 +171,26 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     [{
       type: 'body',
       parameters: parameters.map do |param|
-        { type: 'text', text: param[:text] }
+        { type: 'text', text: param[:text].presence || '' }
       end
+    }]
+  end
+
+  def build_header_components(headers)
+    return [] if headers.blank?
+    return [] if headers['type'].blank?
+
+    parameters = headers['values'].each_with_object([]) do |value, acc|
+      acc << {
+        :type => headers['type'].downcase,
+        headers['type'].downcase => { link: value }
+      }
+      acc
+    end
+
+    [{
+      type: 'header',
+      parameters: parameters
     }]
   end
 
@@ -180,7 +199,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       type: 'button',
       sub_type: 'URL',
       index: buttons[:index],
-      parameters: buttons[:parameters].map { |param| { type: param['type'], text: param['text'] } }
+      parameters: buttons[:parameters].map { |param| { type: param['type'], text: param['text'] || '' } }
     }
   end
 

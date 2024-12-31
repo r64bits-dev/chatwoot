@@ -59,7 +59,9 @@ const state = {
   triggers: {
     isFetching: false,
     isFetchingMetrics: false,
+    isFetchingProcessed: false,
     data: [],
+    processed: [],
     metrics: {
       total: 0,
       resolved: 0,
@@ -172,6 +174,22 @@ export const actions = {
       })
       .finally(() => {
         commit(types.default.TOGGLE_TRIGGER_REPORT_LOADING, false);
+      });
+  },
+  fetchProcessedTriggersReport({ commit }, reportObj) {
+    commit(types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING, {
+      isFetching: true,
+    });
+    Report.getReports({
+      ...reportObj,
+      metric: 'processed_triggers',
+      isProcessed: true,
+    })
+      .then(response => {
+        commit(types.default.SET_TRIGGERS_REPORTS_PROCESSED, response.data);
+      })
+      .finally(() => {
+        commit(types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING, false);
       });
   },
   fetchTriggersMetric({ commit }, reportObj) {
@@ -315,6 +333,9 @@ const mutations = {
   [types.default.SET_TRIGGERS_REPORTS](_state, data) {
     _state.triggers.data = data;
   },
+  [types.default.SET_TRIGGERS_REPORTS_PROCESSED](_state, data) {
+    _state.triggers.processed = data;
+  },
   [types.default.SET_TRIGGERS_REPORTS_METRICS](_state, data) {
     _state.triggers.metrics = data;
   },
@@ -326,6 +347,12 @@ const mutations = {
   },
   [types.default.TOGGLE_TRIGGER_REPORT_LOADING](_state, { isFetching }) {
     _state.triggers.isFetching = isFetching;
+  },
+  [types.default.TOGGLE_TRIGGER_REPORT_PROCESSED_LOADING](
+    _state,
+    { isFetching }
+  ) {
+    _state.triggers.isFetchingProcessed = isFetching;
   },
   [types.default.TOGGLE_TRIGGER_REPORT_METRIC_LOADING](_state, { isFetching }) {
     _state.triggers.isFetchingMetrics = isFetching;

@@ -21,7 +21,12 @@ class Api::V1::Widget::BaseController < ApplicationController
   end
 
   def create_conversation
-    ::Conversation.create!(conversation_params)
+    @conversation ||= ::Conversation.transaction do
+      existing_conversation = conversations.last
+      next existing_conversation if existing_conversation.present?
+
+      ::Conversation.create!(conversation_params)
+    end
   end
 
   def inbox

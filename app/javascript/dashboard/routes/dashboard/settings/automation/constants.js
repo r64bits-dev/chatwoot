@@ -10,42 +10,42 @@ export const AUTOMATIONS = {
     conditions: [
       {
         key: 'message_type',
-        name: 'Message Type',
+        name: 'Tipo de Mensagem', // traduzido
         attributeI18nKey: 'MESSAGE_TYPE',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'content',
-        name: 'Message Content',
+        name: 'Conteúdo da Mensagem', // traduzido
         attributeI18nKey: 'MESSAGE_CONTAINS',
         inputType: 'comma_separated_plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'email',
-        name: 'Email',
+        name: 'Email', // traduzido
         attributeI18nKey: 'EMAIL',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'inbox_id',
-        name: 'Inbox',
+        name: 'Caixa de Entrada', // traduzido
         attributeI18nKey: 'INBOX',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'conversation_language',
-        name: 'Conversation Language',
+        name: 'Idioma da Conversa', // traduzido
         attributeI18nKey: 'CONVERSATION_LANGUAGE',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'phone_number',
-        name: 'Phone Number',
+        name: 'Número de Telefone', // traduzido
         attributeI18nKey: 'PHONE_NUMBER',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_6,
@@ -54,63 +54,62 @@ export const AUTOMATIONS = {
     actions: [
       {
         key: 'assign_agent',
-        name: 'Assign to agent',
+        name: 'Atribuir a agente', // traduzido
         attributeI18nKey: 'ASSIGN_AGENT',
       },
       {
         key: 'assign_team',
-        name: 'Assign a team',
+        name: 'Atribuir a equipe', // traduzido
         attributeI18nKey: 'ASSIGN_TEAM',
       },
       {
         key: 'add_label',
-        name: 'Add a label',
+        name: 'Adicionar uma etiqueta', // traduzido
         attributeI18nKey: 'ADD_LABEL',
       },
       {
         key: 'remove_label',
-        name: 'Remove a label',
+        name: 'Remover uma etiqueta', // traduzido
         attributeI18nKey: 'REMOVE_LABEL',
       },
       {
         key: 'send_email_to_team',
-        name: 'Send an email to team',
+        name: 'Enviar um e-mail para a equipe', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TO_TEAM',
       },
       {
         key: 'send_message',
-        name: 'Send a message',
+        name: 'Enviar uma mensagem', // traduzido
         attributeI18nKey: 'SEND_MESSAGE',
       },
       {
         key: 'send_email_transcript',
-        name: 'Send an email transcript',
+        name: 'Enviar uma transcrição de e-mail', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TRANSCRIPT',
       },
       {
         key: 'mute_conversation',
-        name: 'Mute conversation',
+        name: 'Silenciar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'snooze_conversation',
-        name: 'Snooze conversation',
+        name: 'Adiar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
-
       {
         key: 'resolve_conversation',
-        name: 'Resolve conversation',
+        name: 'Resolver conversa', // traduzido
         attributeI18nKey: 'RESOLVE_CONVERSATION',
       },
       {
         key: 'send_webhook_event',
-        name: 'Send Webhook Event',
+        name: 'Enviar evento de webhook', // traduzido
         attributeI18nKey: 'SEND_WEBHOOK_EVENT',
       },
       {
         key: 'send_attachment',
-        name: 'Send Attachment',
+        name: 'Enviar anexo', // traduzido
         attributeI18nKey: 'SEND_ATTACHMENT',
       },
     ],
@@ -119,70 +118,70 @@ export const AUTOMATIONS = {
     conditions: [
       {
         key: 'status',
-        name: 'Status',
+        name: 'Status', // traduzido
         attributeI18nKey: 'STATUS',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'browser_language',
-        name: 'Browser Language',
+        name: 'Idioma do Navegador', // traduzido
         attributeI18nKey: 'BROWSER_LANGUAGE',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'mail_subject',
-        name: 'Email Subject',
+        name: 'Assunto do E-mail', // traduzido
         attributeI18nKey: 'MAIL_SUBJECT',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'country_code',
-        name: 'Country',
+        name: 'País', // traduzido
         attributeI18nKey: 'COUNTRY_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'phone_number',
-        name: 'Phone Number',
+        name: 'Número de Telefone', // traduzido
         attributeI18nKey: 'PHONE_NUMBER',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_6,
       },
       {
         key: 'referer',
-        name: 'Referrer Link',
+        name: 'Link de Referência', // traduzido
         attributeI18nKey: 'REFERER_LINK',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'email',
-        name: 'Email',
+        name: 'Email', // traduzido
         attributeI18nKey: 'EMAIL',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'inbox_id',
-        name: 'Inbox',
+        name: 'Caixa de Entrada', // traduzido
         attributeI18nKey: 'INBOX',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'conversation_language',
-        name: 'Conversation Language',
+        name: 'Idioma da Conversa', // traduzido
         attributeI18nKey: 'CONVERSATION_LANGUAGE',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'priority',
-        name: 'Priority',
+        name: 'Prioridade', // traduzido
         attributeI18nKey: 'PRIORITY',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
@@ -191,57 +190,52 @@ export const AUTOMATIONS = {
     actions: [
       {
         key: 'assign_agent',
-        name: 'Assign to agent',
+        name: 'Atribuir a agente', // traduzido
         attributeI18nKey: 'ASSIGN_AGENT',
       },
       {
         key: 'assign_team',
-        name: 'Assign a team',
+        name: 'Atribuir a equipe', // traduzido
         attributeI18nKey: 'ASSIGN_TEAM',
       },
       {
-        key: 'assign_agent',
-        name: 'Assign an agent',
-        attributeI18nKey: 'ASSIGN_AGENT',
-      },
-      {
         key: 'send_email_to_team',
-        name: 'Send an email to team',
+        name: 'Enviar um e-mail para a equipe', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TO_TEAM',
       },
       {
         key: 'send_message',
-        name: 'Send a message',
+        name: 'Enviar uma mensagem', // traduzido
         attributeI18nKey: 'SEND_MESSAGE',
       },
       {
         key: 'send_email_transcript',
-        name: 'Send an email transcript',
+        name: 'Enviar uma transcrição de e-mail', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TRANSCRIPT',
       },
       {
         key: 'mute_conversation',
-        name: 'Mute conversation',
+        name: 'Silenciar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'snooze_conversation',
-        name: 'Snooze conversation',
+        name: 'Adiar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'resolve_conversation',
-        name: 'Resolve conversation',
+        name: 'Resolver conversa', // traduzido
         attributeI18nKey: 'RESOLVE_CONVERSATION',
       },
       {
         key: 'send_webhook_event',
-        name: 'Send Webhook Event',
+        name: 'Enviar evento de webhook', // traduzido
         attributeI18nKey: 'SEND_WEBHOOK_EVENT',
       },
       {
         key: 'send_attachment',
-        name: 'Send Attachment',
+        name: 'Enviar anexo', // traduzido
         attributeI18nKey: 'SEND_ATTACHMENT',
       },
     ],
@@ -250,84 +244,84 @@ export const AUTOMATIONS = {
     conditions: [
       {
         key: 'status',
-        name: 'Status',
+        name: 'Status', // traduzido
         attributeI18nKey: 'STATUS',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'browser_language',
-        name: 'Browser Language',
+        name: 'Idioma do Navegador', // traduzido
         attributeI18nKey: 'BROWSER_LANGUAGE',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'mail_subject',
-        name: 'Email Subject',
+        name: 'Assunto do E-mail', // traduzido
         attributeI18nKey: 'MAIL_SUBJECT',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'country_code',
-        name: 'Country',
+        name: 'País', // traduzido
         attributeI18nKey: 'COUNTRY_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'referer',
-        name: 'Referrer Link',
+        name: 'Link de Referência', // traduzido
         attributeI18nKey: 'REFERER_LINK',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'phone_number',
-        name: 'Phone Number',
+        name: 'Número de Telefone', // traduzido
         attributeI18nKey: 'PHONE_NUMBER',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_6,
       },
       {
         key: 'assignee_id',
-        name: 'Assignee',
+        name: 'Atribuído', // traduzido
         attributeI18nKey: 'ASSIGNEE_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_3,
       },
       {
         key: 'team_id',
-        name: 'Team',
+        name: 'Equipe', // traduzido
         attributeI18nKey: 'TEAM_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_3,
       },
       {
         key: 'email',
-        name: 'Email',
+        name: 'Email', // traduzido
         attributeI18nKey: 'EMAIL',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'inbox_id',
-        name: 'Inbox',
+        name: 'Caixa de Entrada', // traduzido
         attributeI18nKey: 'INBOX',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'conversation_language',
-        name: 'Conversation Language',
+        name: 'Idioma da Conversa', // traduzido
         attributeI18nKey: 'CONVERSATION_LANGUAGE',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'priority',
-        name: 'Priority',
+        name: 'Prioridade', // traduzido
         attributeI18nKey: 'PRIORITY',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
@@ -336,57 +330,52 @@ export const AUTOMATIONS = {
     actions: [
       {
         key: 'assign_agent',
-        name: 'Assign to agent',
+        name: 'Atribuir a agente', // traduzido
         attributeI18nKey: 'ASSIGN_AGENT',
       },
       {
         key: 'assign_team',
-        name: 'Assign a team',
+        name: 'Atribuir a equipe', // traduzido
         attributeI18nKey: 'ASSIGN_TEAM',
       },
       {
-        key: 'assign_agent',
-        name: 'Assign an agent',
-        attributeI18nKey: 'ASSIGN_AGENT',
-      },
-      {
         key: 'send_email_to_team',
-        name: 'Send an email to team',
+        name: 'Enviar um e-mail para a equipe', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TO_TEAM',
       },
       {
         key: 'send_message',
-        name: 'Send a message',
+        name: 'Enviar uma mensagem', // traduzido
         attributeI18nKey: 'SEND_MESSAGE',
       },
       {
         key: 'send_email_transcript',
-        name: 'Send an email transcript',
+        name: 'Enviar uma transcrição de e-mail', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TRANSCRIPT',
       },
       {
         key: 'mute_conversation',
-        name: 'Mute conversation',
+        name: 'Silenciar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'snooze_conversation',
-        name: 'Snooze conversation',
+        name: 'Adiar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'resolve_conversation',
-        name: 'Resolve conversation',
+        name: 'Resolver conversa', // traduzido
         attributeI18nKey: 'RESOLVE_CONVERSATION',
       },
       {
         key: 'send_webhook_event',
-        name: 'Send Webhook Event',
+        name: 'Enviar evento de webhook', // traduzido
         attributeI18nKey: 'SEND_WEBHOOK_EVENT',
       },
       {
         key: 'send_attachment',
-        name: 'Send Attachment',
+        name: 'Enviar anexo', // traduzido
         attributeI18nKey: 'SEND_ATTACHMENT',
       },
     ],
@@ -395,77 +384,77 @@ export const AUTOMATIONS = {
     conditions: [
       {
         key: 'browser_language',
-        name: 'Browser Language',
+        name: 'Idioma do Navegador', // traduzido
         attributeI18nKey: 'BROWSER_LANGUAGE',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'email',
-        name: 'Email',
+        name: 'Email', // traduzido
         attributeI18nKey: 'EMAIL',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'mail_subject',
-        name: 'Email Subject',
+        name: 'Assunto do E-mail', // traduzido
         attributeI18nKey: 'MAIL_SUBJECT',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'country_code',
-        name: 'Country',
+        name: 'País', // traduzido
         attributeI18nKey: 'COUNTRY_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'referer',
-        name: 'Referrer Link',
+        name: 'Link de Referência', // traduzido
         attributeI18nKey: 'REFERER_LINK',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_2,
       },
       {
         key: 'assignee_id',
-        name: 'Assignee',
+        name: 'Atribuído', // traduzido
         attributeI18nKey: 'ASSIGNEE_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_3,
       },
       {
         key: 'phone_number',
-        name: 'Phone Number',
+        name: 'Número de Telefone', // traduzido
         attributeI18nKey: 'PHONE_NUMBER',
         inputType: 'plain_text',
         filterOperators: OPERATOR_TYPES_6,
       },
       {
         key: 'team_id',
-        name: 'Team',
+        name: 'Equipe', // traduzido
         attributeI18nKey: 'TEAM_NAME',
         inputType: 'search_select',
         filterOperators: OPERATOR_TYPES_3,
       },
       {
         key: 'inbox_id',
-        name: 'Inbox',
+        name: 'Caixa de Entrada', // traduzido
         attributeI18nKey: 'INBOX',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'conversation_language',
-        name: 'Conversation Language',
+        name: 'Idioma da Conversa', // traduzido
         attributeI18nKey: 'CONVERSATION_LANGUAGE',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
       },
       {
         key: 'priority',
-        name: 'Priority',
+        name: 'Prioridade', // traduzido
         attributeI18nKey: 'PRIORITY',
         inputType: 'multi_select',
         filterOperators: OPERATOR_TYPES_1,
@@ -474,52 +463,47 @@ export const AUTOMATIONS = {
     actions: [
       {
         key: 'assign_agent',
-        name: 'Assign to agent',
+        name: 'Atribuir a agente', // traduzido
         attributeI18nKey: 'ASSIGN_AGENT',
       },
       {
         key: 'assign_team',
-        name: 'Assign a team',
+        name: 'Atribuir a equipe', // traduzido
         attributeI18nKey: 'ASSIGN_TEAM',
       },
       {
-        key: 'assign_agent',
-        name: 'Assign an agent',
-        attributeI18nKey: 'ASSIGN_AGENT',
-      },
-      {
         key: 'send_email_to_team',
-        name: 'Send an email to team',
+        name: 'Enviar um e-mail para a equipe', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TO_TEAM',
       },
       {
         key: 'send_message',
-        name: 'Send a message',
+        name: 'Enviar uma mensagem', // traduzido
         attributeI18nKey: 'SEND_MESSAGE',
       },
       {
         key: 'send_email_transcript',
-        name: 'Send an email transcript',
+        name: 'Enviar uma transcrição de e-mail', // traduzido
         attributeI18nKey: 'SEND_EMAIL_TRANSCRIPT',
       },
       {
         key: 'mute_conversation',
-        name: 'Mute conversation',
+        name: 'Silenciar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'snooze_conversation',
-        name: 'Snooze conversation',
+        name: 'Adiar conversa', // traduzido
         attributeI18nKey: 'MUTE_CONVERSATION',
       },
       {
         key: 'send_webhook_event',
-        name: 'Send Webhook Event',
+        name: 'Enviar evento de webhook', // traduzido
         attributeI18nKey: 'SEND_WEBHOOK_EVENT',
       },
       {
         key: 'send_attachment',
-        name: 'Send Attachment',
+        name: 'Enviar anexo', // traduzido
         attributeI18nKey: 'SEND_ATTACHMENT',
       },
     ],
@@ -529,86 +513,86 @@ export const AUTOMATIONS = {
 export const AUTOMATION_RULE_EVENTS = [
   {
     key: 'conversation_created',
-    value: 'Conversation Created',
+    value: 'Conversa criada', // traduzido
   },
   {
     key: 'conversation_updated',
-    value: 'Conversation Updated',
+    value: 'Conversa atualizada', // traduzido
   },
   {
     key: 'message_created',
-    value: 'Message Created',
+    value: 'Mensagem criada', // traduzido
   },
   {
     key: 'conversation_opened',
-    value: 'Conversation Opened',
+    value: 'Conversa aberta', // traduzido
   },
 ];
 
 export const AUTOMATION_ACTION_TYPES = [
   {
     key: 'assign_agent',
-    label: 'Assign to agent',
+    label: 'Atribuir a agente', // traduzido
     inputType: 'search_select',
   },
   {
     key: 'assign_team',
-    label: 'Assign a team',
+    label: 'Atribuir a equipe', // traduzido
     inputType: 'search_select',
   },
   {
     key: 'add_label',
-    label: 'Add a label',
+    label: 'Adicionar uma etiqueta', // traduzido
     inputType: 'multi_select',
   },
   {
     key: 'remove_label',
-    label: 'Remove a label',
+    label: 'Remover uma etiqueta', // traduzido
     inputType: 'multi_select',
   },
   {
     key: 'send_email_to_team',
-    label: 'Send an email to team',
+    label: 'Enviar um e-mail para a equipe', // traduzido
     inputType: 'team_message',
   },
   {
     key: 'send_email_transcript',
-    label: 'Send an email transcript',
+    label: 'Enviar uma transcrição de e-mail', // traduzido
     inputType: 'email',
   },
   {
     key: 'mute_conversation',
-    label: 'Mute conversation',
+    label: 'Silenciar conversa', // traduzido
     inputType: null,
   },
   {
     key: 'snooze_conversation',
-    label: 'Snooze conversation',
+    label: 'Adiar conversa', // traduzido
     inputType: null,
   },
   {
     key: 'resolve_conversation',
-    label: 'Resolve conversation',
+    label: 'Resolver conversa', // traduzido
     inputType: null,
   },
   {
     key: 'send_webhook_event',
-    label: 'Send Webhook Event',
+    label: 'Enviar evento de webhook', // traduzido
     inputType: 'url',
   },
   {
     key: 'send_attachment',
-    label: 'Send Attachment',
+    label: 'Enviar anexo', // traduzido
     inputType: 'attachment',
   },
   {
     key: 'send_message',
-    label: 'Send a message',
+    label: 'Enviar uma mensagem', // traduzido
     inputType: 'textarea',
   },
   {
     key: 'change_priority',
-    label: 'Change Priority',
+    label: 'Alterar prioridade', // traduzido
     inputType: 'search_select',
   },
 ];

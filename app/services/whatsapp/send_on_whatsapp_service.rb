@@ -15,7 +15,7 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
   end
 
   def send_template_message
-    name, namespace, lang_code, processed_parameters, buttons = processable_channel_message_template
+    name, namespace, lang_code, processed_parameters, buttons, headers = processable_channel_message_template
     return if name.blank?
 
     message_id = channel.send_template(message.conversation.contact_inbox.source_id, {
@@ -23,7 +23,8 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
                                          namespace: namespace,
                                          lang_code: lang_code,
                                          parameters: processed_parameters,
-                                         buttons: buttons
+                                         buttons: buttons,
+                                         headers: headers
                                        })
     message.update!(source_id: message_id) if message_id.present?
   end
@@ -38,7 +39,8 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
         template_params['processed_params']&.map { |_, value| { type: 'text', text: value } },
         template_params['buttons']&.map&.with_index do |button, index|
           { type: 'button', sub_type: button['type'], index: index, parameters: button['parameters'] }
-        end
+        end,
+        template_params['header']
       ]
     end
 
@@ -57,7 +59,7 @@ class Whatsapp::SendOnWhatsappService < Base::SendOnChannelService
       # no need to look up further end the search
       return [template['name'], template['namespace'], template['language'], processed_parameters]
     end
-    [nil, nil, nil, nil]
+    [nil, nil, nil, nil, nil]
   end
   # rubocop:enable Metrics/CyclomaticComplexity
 

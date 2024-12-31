@@ -15,6 +15,7 @@
 #  enable_email_collect          :boolean          default(TRUE)
 #  greeting_enabled              :boolean          default(FALSE)
 #  greeting_message              :string
+#  init_by_agent                 :boolean          default(FALSE), not null
 #  lock_to_single_conversation   :boolean          default(FALSE), not null
 #  name                          :string           not null
 #  out_of_office_message         :string
@@ -157,6 +158,10 @@ class Inbox < ApplicationRecord
   end
 
   def member_ids_with_assignment_capacity
+    members.ids
+  end
+
+  def members_ids_with_assignment_capacity_team
     members.ids
   end
 

@@ -109,6 +109,7 @@ class User < ApplicationRecord
   has_many :assigned_tickets, class_name: 'Ticket', foreign_key: 'assigned_to', inverse_of: :assignee
 
   scope :order_by_full_name, -> { order('lower(name) ASC') }
+  scope :non_administrator, -> { where.not(type: 'SuperAdmin') }
 
   before_validation do
     self.email = email.try(:downcase)
@@ -123,7 +124,7 @@ class User < ApplicationRecord
   end
 
   def assigned_inboxes
-    administrator? ? Current.account.inboxes : inboxes.where(account_id: Current.account.id)
+    Current.account.inboxes
   end
 
   def serializable_hash(options = nil)
@@ -170,6 +171,10 @@ class User < ApplicationRecord
 
   def superadmin?
     type == 'SuperAdmin'
+  end
+
+  def ultra_admin?
+    (ENV.fetch('ULTRA_ADMINS', nil) || []).include?(email)
   end
 
   private

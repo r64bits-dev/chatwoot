@@ -137,6 +137,14 @@ class ConversationApi extends ApiClient {
       `${this.url}/${conversationId}/whatsapp_groups_participants`
     );
   }
+
+  checkNeedToAssignAgent({ userId }) {
+    return axios.get(`${this.url}/need_to_assign_agent`, {
+      params: {
+        user_id: userId,
+      },
+    });
+  }
 }
 
 export default new ConversationApi();

@@ -53,6 +53,21 @@ class Ticket < ApplicationRecord
     where(assigned_to: agent_ids) if agent_ids.present?
   }
 
+  scope :search_by_params, lambda { |search_term|
+    return all if search_term.blank?
+
+    left_joins(:assignee).where('
+      tickets.description ILIKE :search OR
+      users.name ILIKE :search OR
+      CAST(tickets.id AS TEXT) ILIKE :search
+    ', search: "%#{search_term}%")
+  }
+  scope :search_by_status, lambda { |status|
+                             return all if status.blank?
+
+                             where(status: status)
+                           }
+
   scope :only_custom_attributes, ->(custom_attributes) { custom_attributes.map { |key| with_filled_custom_attribute(key) }.reduce(:or) }
   scope :with_filled_custom_attribute, lambda { |key|
     where("custom_attributes ->> ? IS NOT NULL AND custom_attributes ->> ? != ''", key.to_s, key.to_s)
@@ -68,7 +83,7 @@ class Ticket < ApplicationRecord
 
   def self.search(params)
     if params[:search].present?
-      where('LOWER(title) LIKE ? OR LOWER(description) LIKE ?', "%#{query.downcase}%", "%#{query.downcase}%")
+      search_by_params(params[:search])
     elsif params[:label].present?
       joins(:labels).where(labels: { title: params[:label] })
     else
@@ -82,6 +97,18 @@ class Ticket < ApplicationRecord
 
   def set_custom_attribute(key, value)
     self.custom_attributes = (custom_attributes || {}).merge(key.to_s => value)
+  end
+
+  def self.to_csv
+    attributes = %w[id title description status created_at]
+
+    CSV.generate(headers: true) do |csv|
+      csv << attributes
+
+      all.find_each do |ticket|
+        csv << attributes.map { |attr| ticket.send(attr) }
+      end
+    end
   end
 
   private

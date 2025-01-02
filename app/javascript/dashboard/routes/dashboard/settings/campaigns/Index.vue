@@ -8,7 +8,21 @@
     >
       {{ buttonText }}
     </woot-button>
+    <woot-button
+      color-scheme="secondary"
+      class-names="button--fixed-top-left"
+      icon="add-circle"
+      @click="openFileImports"
+    >
+      <span class="hidden md:inline">Integração com o Whatsapp</span>
+      <div class="inline md:hidden">
+        <fluent-icon icon="whatsapp" />
+      </div>
+    </woot-button>
     <campaign />
+    <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">
+      <add-campaign @on-close="hideAddPopup" />
+    </woot-modal>
     <woot-modal :show.sync="showAddPopup" :on-close="hideAddPopup">
       <add-campaign @on-close="hideAddPopup" />
     </woot-modal>
@@ -46,6 +60,15 @@ export default {
     },
     hideAddPopup() {
       this.showAddPopup = false;
+    },
+    openFileImports() {
+      const accountId = this.accountId || this.$route.params.accountId;
+      if (accountId) {
+        this.$router.push({
+          name: 'file_import',
+          params: { accountId },
+        });
+      }
     },
   },
 };

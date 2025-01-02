@@ -46,6 +46,18 @@
         </woot-list>
       </template>
     </woot-card>
+
+    <!-- Mensagens disparadas -->
+    <woot-card
+      class="mt-3"
+      header="Mensagens disparadas"
+      sub-header="Aqui estão as mensagens disparadas"
+      :header-status="{
+        status: 'error',
+        message: 'mensagens disparando',
+      }"
+    >
+    </woot-card>
   </div>
 </template>
 

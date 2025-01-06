@@ -73,7 +73,8 @@ class ActionCableListener < BaseListener
   # conversa que foi atualizada, recebimento de mensagem novas, ou edit de mensagem antiga
   def conversation_updated(event)
     conversation, account = extract_conversation_and_account(event)
-    tokens = user_tokens(account, conversation.team.members) + contact_inbox_tokens(conversation.contact_inbox)
+    members = conversation.team&.members || conversation.inbox&.members || []
+    tokens =  user_tokens(account, members) + contact_inbox_tokens(conversation.contact_inbox)
 
     broadcast(account, tokens, CONVERSATION_UPDATED, conversation.push_event_data)
   end
@@ -112,7 +113,8 @@ class ActionCableListener < BaseListener
 
   def assignee_changed(event)
     conversation, account = extract_conversation_and_account(event)
-    tokens = user_tokens(account, conversation.team.members)
+    members = conversation.team&.members || conversation.inbox&.members || []
+    tokens = user_tokens(account, members)
 
     broadcast(account, tokens, ASSIGNEE_CHANGED, conversation.push_event_data)
   end

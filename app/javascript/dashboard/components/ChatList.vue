@@ -98,7 +98,7 @@
     />
 
     <chat-type-tabs
-      v-if="!hasAppliedFiltersOrActiveFolders && currentUser.role !== 'agent'"
+      v-if="!hasAppliedFiltersOrActiveFolders && seeTabsPermission"
       :items="assigneeTabItems"
       :active-tab="activeAssigneeTab"
       class="tab--chat-type"
@@ -362,12 +362,22 @@ export default {
         name,
       };
     },
+    seeTabsPermission() {
+      if (this.currentUser.role !== 'agent') return true;
+
+      const currentAccount = this.currentUser.accounts.find((account) => account.id === this.currentUser.account_id);
+      const permission = currentAccount.permissions['see_unassigned_conversations'];
+      
+      return permission;
+    },
     assigneeTabItems() {
       const ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
         unassigned: 'unAssignedCount',
-        all: 'allCount',
+        
       };
+      if (this.currentUser.role !== 'agent') ASSIGNEE_TYPE_TAB_KEYS["all"] = 'allCount';
+
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;
         return {

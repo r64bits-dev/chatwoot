@@ -69,6 +69,16 @@
         @click="toggleMessageSignature"
       />
       <woot-button
+        v-if="showDisplayNameButton"
+        v-tooltip.top-end="displayNameToggleTooltip"
+        icon="draw-text"
+        color-scheme="secondary"
+        variant="smooth"
+        size="small"
+        :title="displayNameToggleTooltip"
+        @click="toggleMessageDisplayName"
+      />
+      <woot-button
         v-if="hasWhatsappTemplates"
         v-tooltip.top-end="'Whatsapp Templates'"
         icon="whatsapp"
@@ -320,14 +330,26 @@ export default {
     showMessageSignatureButton() {
       return !this.isOnPrivateNote;
     },
+    showDisplayNameButton() {
+      return !this.isOnPrivateNote;
+    },
     sendWithSignature() {
       // channelType is sourced from inboxMixin
       return this.fetchSignatureFlagFromUiSettings(this.channelType);
+    },
+    sendWithDisplayName() {
+      // channelType is sourced from inboxMixin
+      return this.fetchDisplayNameFlagFromUiSettings(this.channelType);
     },
     signatureToggleTooltip() {
       return this.sendWithSignature
         ? this.$t('CONVERSATION.FOOTER.DISABLE_SIGN_TOOLTIP')
         : this.$t('CONVERSATION.FOOTER.ENABLE_SIGN_TOOLTIP');
+    },
+    displayNameToggleTooltip() {
+      return this.sendWithDisplayName
+        ? this.$t('CONVERSATION.FOOTER.DISABLE_DISPLAY_NAME_TOOLTIP')
+        : this.$t('CONVERSATION.FOOTER.ENABLE_DISPLAY_NAME_TOOLTIP');
     },
     enableInsertArticleInReply() {
       const isFeatEnabled = this.isFeatureEnabledonAccount(
@@ -348,6 +370,9 @@ export default {
     },
     toggleMessageSignature() {
       this.setSignatureFlagForInbox(this.channelType, !this.sendWithSignature);
+    },
+    toggleMessageDisplayName() {
+      this.setDisplayNameFlagForInbox(this.channelType, !this.sendWithDisplayName);
     },
     replaceText(text) {
       this.$emit('replace-text', text);

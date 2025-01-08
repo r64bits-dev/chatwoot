@@ -84,6 +84,12 @@ export const getters = {
     return messageSignature || '';
   },
 
+  getMessageDisplayName($state) {
+    const { display_name: displayName, name } = $state.currentUser;
+
+    return displayName || name || '';
+  },
+
   getCurrentAccount($state, $getters) {
     const { accounts = [] } = $state.currentUser;
     const [currentAccount = {}] = accounts.filter(

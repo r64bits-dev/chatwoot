@@ -67,6 +67,9 @@
         :signature="signatureToApply"
         :allow-signature="true"
         :send-with-signature="sendWithSignature"
+        :display-name="displayNameToApply"
+        :allow-display-name="true"
+        :send-with-display-name="sendWithDisplayName"
         @typing-off="onTypingOff"
         @typing-on="onTypingOn"
         @focus="onFocus"
@@ -85,6 +88,8 @@
         :variables="messageVariables"
         :signature="signatureToApply"
         :allow-signature="true"
+        :display-name="displayNameToApply"
+        :allow-display-name="true"
         :channel-type="channelType"
         @typing-off="onTypingOff"
         @typing-on="onTypingOn"
@@ -192,6 +197,9 @@ import {
   appendSignature,
   removeSignature,
   replaceSignature,
+  appendDisplayName,
+  removeDisplayName,
+  replaceDisplayName,
   extractTextFromMarkdown,
 } from 'dashboard/helper/editorHelper';
 
@@ -265,6 +273,7 @@ export default {
     ...mapGetters({
       currentChat: 'getSelectedChat',
       messageSignature: 'getMessageSignature',
+      messageDisplayName: 'getMessageDisplayName',
       currentUser: 'getCurrentUser',
       lastEmail: 'getLastEmailInSelectedChat',
       globalConfig: 'globalConfig/get',
@@ -485,6 +494,15 @@ export default {
     sendWithSignature() {
       return this.fetchSignatureFlagFromUiSettings(this.channelType);
     },
+    isDisplayNameEnabledForInbox() {
+      return !this.isPrivate && this.sendWithDisplayName;
+    },
+    isDisplayNameAvailable() {
+      return !!this.displayNameToApply;
+    },
+    sendWithDisplayName() {
+      return this.fetchDisplayNameFlagFromUiSettings(this.channelType);
+    },
     editorMessageKey() {
       const { editor_message_key: isEnabled } = this.uiSettings;
       return isEnabled;
@@ -527,6 +545,12 @@ export default {
         ? this.messageSignature
         : extractTextFromMarkdown(this.messageSignature);
     },
+    // ensure that the display name is plain text depending on `showRichContentEditor`
+    displayNameToApply() {
+      return this.showRichContentEditor
+        ? this.messageDisplayName
+        : extractTextFromMarkdown(this.messageDisplayName);
+    },
     connectedPortalSlug() {
       const { help_center: portal = {} } = this.inbox;
       const { slug = '' } = portal;
@@ -563,7 +587,13 @@ export default {
         updatedMessage,
         this.signatureToApply
       );
-      const startsWithSlash = bodyWithoutSignature.startsWith('/');
+
+      const cleanBody = removeDisplayName(
+        bodyWithoutSignature,
+        this.displayNameToApply
+      );
+
+      const startsWithSlash = cleanBody.startsWith('/');
 
       // Determine if the user is potentially typing a slash command.
       // This is true if the message starts with a slash and the rich content editor is not active.
@@ -573,7 +603,7 @@ export default {
       // If a slash command is active, extract the command text after the slash.
       // If not, reset the mentionSearchKey.
       this.mentionSearchKey = this.hasSlashCommand
-        ? bodyWithoutSignature.substring(1)
+        ? cleanBody.substring(1)
         : '';
 
       // Autosave the current message draft.
@@ -663,6 +693,23 @@ export default {
           this.messageSignature
         );
       }
+
+      const plainTextDisplayName = extractTextFromMarkdown(this.messageDisplayName);
+
+      if (!this.showRichContentEditor && this.messageDisplayName) {
+        // remove the old display name -> extract text from markdown -> attach new display name
+        let message = removeDisplayName(this.message, this.messageDisplayName);
+        message = extractTextFromMarkdown(message);
+        message = appendDisplayName(message, plainTextDisplayName);
+
+        this.message = message;
+      } else {
+        this.message = replaceDisplayName(
+          this.message,
+          plainTextDisplayName,
+          this.messageDisplayName
+        );
+      }
     },
     saveDraft(conversationId, replyType) {
       if (this.message || this.message === '') {
@@ -685,8 +732,15 @@ export default {
         const messageFromStore =
           this.$store.getters['draftMessages/get'](key) || '';
 
+        let message = messageFromStore;
+
         // ensure that the message has signature set based on the ui setting
-        this.message = this.toggleSignatureForDraft(messageFromStore);
+        message = this.toggleSignatureForDraft(message);
+
+        // ensure that the message has display name set based on the ui setting
+        message = this.toggleDisplayNameForDraft(message);
+
+        this.message = message;
       }
     },
     toggleSignatureForDraft(message) {
@@ -697,6 +751,15 @@ export default {
       return this.sendWithSignature
         ? appendSignature(message, this.signatureToApply)
         : removeSignature(message, this.signatureToApply);
+    },
+    toggleDisplayNameForDraft(message) {
+      if (this.isPrivate) {
+        return message;
+      }
+
+      return this.sendWithDisplayName
+        ? appendDisplayName(message, this.displayNameToApply)
+        : removeDisplayName(message, this.displayNameToApply);
     },
     removeFromDraft() {
       if (this.conversationIdByRoute) {
@@ -880,6 +943,13 @@ export default {
         message = appendSignature(message, this.signatureToApply);
       }
 
+      if (this.sendWithDisplayName && !this.private) {
+        // if signature is enabled, append it to the message
+        // appendDisplayName ensures that the signature is not duplicated
+        // so we don't need to check if the signature is already present
+        message = appendDisplayName(message, this.displayNameToApply);
+      }
+
       const updatedMessage = replaceVariablesInMessage({
         message,
         variables: this.messageVariables,
@@ -930,6 +1000,10 @@ export default {
       if (this.sendWithSignature && !this.isPrivate) {
         // if signature is enabled, append it to the message
         this.message = appendSignature(this.message, this.signatureToApply);
+      }
+      if (this.sendWithDisplayName && !this.isPrivate) {
+        // if display name is enabled, append it to the message
+        this.message = appendDisplayName(this.message, this.displayNameToApply);
       }
       this.attachedFiles = [];
       this.isRecordingAudio = false;

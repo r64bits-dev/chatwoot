@@ -82,5 +82,17 @@ export default {
       channelType = slugifyChannel(channelType);
       return this.uiSettings[`${channelType}_signature_enabled`];
     },
+    setDisplayNameFlagForInbox(channelType, value) {
+      channelType = slugifyChannel(channelType);
+      this.updateUISettings({
+        [`${channelType}_display_name_enabled`]: value,
+      });
+    },
+    fetchDisplayNameFlagFromUiSettings(channelType) {
+      if (!channelType) return false;
+
+      channelType = slugifyChannel(channelType);
+      return this.uiSettings[`${channelType}_display_name_enabled`];
+    },
   },
 };

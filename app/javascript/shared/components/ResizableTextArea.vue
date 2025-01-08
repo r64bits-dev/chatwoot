@@ -15,6 +15,8 @@
 import {
   appendSignature,
   removeSignature,
+  appendDisplayName,
+  removeDisplayName,
   extractTextFromMarkdown,
 } from 'dashboard/helper/editorHelper';
 import { createTypingIndicator } from '@chatwoot/utils';
@@ -52,6 +54,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    displayName: {
+      type: String,
+      default: '',
+    },
+    // add this as a prop, so that we won't have to include uiSettingsMixin
+    sendWithDisplayName: {
+      type: Boolean,
+      default: false,
+    },
+    // allowDisplayName is a kill switch, ensuring no display name methods are triggered except when this flag is true
+    allowDisplayName: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -72,6 +88,11 @@ export default {
       // any markdown formatted text in the signature
       return extractTextFromMarkdown(this.signature);
     },
+    cleanedDisplayName() {
+      // clean the display name, this will ensure that we don't have
+      // any markdown formatted text in the display name
+      return extractTextFromMarkdown(this.displayName);
+    },
   },
   watch: {
     value() {
@@ -90,6 +111,11 @@ export default {
     sendWithSignature(newValue) {
       if (this.allowSignature) {
         this.toggleSignatureInEditor(newValue);
+      }
+    },
+    sendWithDisplayName(newValue) {
+      if (this.allowDisplayName) {
+        this.toggleDisplayNameInEditor(newValue);
       }
     },
   },
@@ -121,6 +147,21 @@ export default {
         : removeSignature(this.value, this.cleanedSignature);
 
       this.$emit('input', valueWithSignature);
+
+      this.$nextTick(() => {
+        this.resizeTextarea();
+        this.setCursor();
+      });
+    },
+    // The toggleDisplayNameInEditor gets the new value from the
+    // watcher, this means that if the value is true, the display name
+    // is supposed to be added, else we remove it.
+    toggleDisplayNameInEditor(displayNameEnabled) {
+      const valueWithDisplayName = displayNameEnabled
+        ? appendDisplayName(this.value, this.cleanedDisplayName)
+        : removeDisplayName(this.value, this.cleanedDisplayName);
+
+      this.$emit('input', valueWithDisplayName);
 
       this.$nextTick(() => {
         this.resizeTextarea();

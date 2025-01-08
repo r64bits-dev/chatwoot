@@ -66,6 +66,8 @@ import VariableList from '../conversation/VariableList.vue';
 import {
   appendSignature,
   removeSignature,
+  appendDisplayName,
+  removeDisplayName,
   insertAtCursor,
   scrollCursorIntoView,
   findNodeToInsertImage,
@@ -138,6 +140,10 @@ export default {
     // allowSignature is a kill switch, ensuring no signature methods
     // are triggered except when this flag is true
     allowSignature: { type: Boolean, default: false },
+    displayName: { type: String, default: '' },
+    // allowDisplayName is a kill switch, ensuring no display name methods
+    // are triggered except when this flag is true
+    allowDisplayName: { type: Boolean, default: false },
     channelType: { type: String, default: '' },
     showImageResizeToolbar: { type: Boolean, default: false }, // A kill switch to show or hide the image toolbar
   },
@@ -285,6 +291,15 @@ export default {
 
       return false;
     },
+    sendWithDisplayName() {
+      // this is considered the source of truth, we watch this property
+      // on change, we toggle the signature in the editor
+      if (this.allowDisplayName && !this.isPrivate && this.channelType) {
+        return this.fetchDisplayNameFlagFromUiSettings(this.channelType);
+      }
+
+      return false;
+    },
   },
   watch: {
     showUserMentions(updatedValue) {
@@ -334,6 +349,12 @@ export default {
         this.toggleSignatureInEditor(newValue);
       }
     },
+    sendWithDisplayName(newValue) {
+      // see if the allowDisplayName flag is true
+      if (this.allowDisplayName) {
+        this.toggleDisplayNameInEditor(newValue);
+      }
+    },
   },
   created() {
     this.state = createState(
@@ -373,11 +394,18 @@ export default {
       this.focusEditor(content);
     },
     focusEditor(content) {
-      if (this.isBodyEmpty(content) && this.sendWithSignature) {
+      if (this.isBodyEmpty(content) && (this.sendWithSignature || this.sendWithDisplayName)) {
         // reload state can be called when switching between conversations, or when drafts is loaded
-        // these drafts can also have a signature, so we need to check if the body is empty
+        // these drafts can also have a signature or display name, so we need to check if the body is empty
         // and handle things accordingly
-        this.handleEmptyBodyWithSignature();
+
+        if (this.sendWithSignature) {
+          this.handleEmptyBodyWithSignature();
+        }
+
+        if (this.sendWithDisplayName) {
+          this.handleEmptyBodyWithDisplayName();
+        }
       } else {
         // this is in the else block, handleEmptyBodyWithSignature also has a call to the focus method
         // the position is set to start, because the signature is added at the end of the body
@@ -388,6 +416,7 @@ export default {
       // The toggleSignatureInEditor gets the new value from the
       // watcher, this means that if the value is true, the signature
       // is supposed to be added, else we remove it.
+
       if (signatureEnabled) {
         this.addSignature();
       } else {
@@ -414,6 +443,36 @@ export default {
       // reload the state, ensuring that the editorView is updated
       this.reloadState(content);
     },
+    toggleDisplayNameInEditor(displayNameEnabled) {
+      // The toggleDisplayNameInEditor gets the new value from the
+      // watcher, this means that if the value is true, the display name
+      // is supposed to be added, else we remove it.
+      if (displayNameEnabled) {
+        this.addDisplayName();
+      } else {
+        this.removeDisplayName();
+      }
+    },
+    addDisplayName() {
+      let content = this.value;
+      // see if the content is empty, if it is before appending the display name
+      // we need to add a paragraph node and move the cursor at the start of the editor
+      const contentWasEmpty = this.isBodyEmpty(content);
+      content = appendDisplayName(content, this.displayName);
+      // need to reload first, ensuring that the editorView is updated
+      this.reloadState(content);
+
+      if (contentWasEmpty) {
+        this.handleEmptyBodyWithDisplayName();
+      }
+    },
+    removeDisplayName() {
+      if (!this.displayName) return;
+      let content = this.value;
+      content = removeDisplayName(content, this.displayName);
+      // reload the state, ensuring that the editorView is updated
+      this.reloadState(content);
+    },
     isBodyEmpty(content) {
       // if content is undefined, we assume that the body is empty
       if (!content) return true;
@@ -424,8 +483,14 @@ export default {
         ? removeSignature(content, this.signature)
         : content;
 
+      // if the display name is present, we need to remove it before checking
+      // note that we don't update the editorView, so this is safe
+      const cleanBody = this.displayName
+        ? removeDisplayName(bodyWithoutSignature, this.displayName)
+        : bodyWithoutSignature;
+
       // trimming should remove all the whitespaces, so we can check the length
-      return bodyWithoutSignature.trim().length === 0;
+      return cleanBody.trim().length === 0;
     },
     handleEmptyBodyWithSignature() {
       const { schema, tr } = this.state;
@@ -438,6 +503,20 @@ export default {
 
       // Set the focus at the start of the input field
       this.focusEditorInputField('start');
+    },
+    handleEmptyBodyWithDisplayName() {
+      const { schema, tr } = this.state;
+
+      // create a paragraph node and
+      // start a transaction to append it at the end
+      const paragraph = schema.nodes.paragraph.create();
+      const endPosition = tr.doc.content.size;
+
+      const paragraphTransaction = tr.insert(endPosition, paragraph);
+      this.editorView.dispatch(paragraphTransaction);
+
+      // Set the focus at the start of the input field
+      this.focusEditorInputField('end');
     },
     createEditorView() {
       this.editorView = new EditorView(this.$refs.editor, {

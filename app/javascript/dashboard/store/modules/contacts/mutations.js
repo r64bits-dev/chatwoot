@@ -54,7 +54,7 @@ export const mutations = {
 
   [types.UPDATE_CONTACTS_PRESENCE]: ($state, data) => {
     Object.values($state.records).forEach(element => {
-      const availabilityStatus = data[element.id];
+      const availabilityStatus = data && data[element.id];
       if (availabilityStatus) {
         Vue.set(
           $state.records[element.id],

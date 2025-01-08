@@ -12,7 +12,8 @@ class Api::V1::Widget::BaseController < ApplicationController
       verified_contact_inbox_ids = @contact.contact_inboxes.where(inbox_id: auth_token_params[:inbox_id], hmac_verified: true).map(&:id)
       @conversations = @contact.conversations.where(contact_inbox_id: verified_contact_inbox_ids)
     else
-      @conversations = @contact_inbox.conversations.where(inbox_id: auth_token_params[:inbox_id])
+      # TODO: Remove this after fixing the issue with conversation duplication
+      @conversations = @contact_inbox.conversations.where(inbox_id: auth_token_params[:inbox_id]).order(:created_at)
     end
   end
 
@@ -21,7 +22,12 @@ class Api::V1::Widget::BaseController < ApplicationController
   end
 
   def create_conversation
-    ::Conversation.create!(conversation_params)
+    @conversation ||= ::Conversation.transaction do
+      existing_conversation = conversations.last
+      next existing_conversation if existing_conversation.present?
+
+      ::Conversation.create!(conversation_params)
+    end
   end
 
   def inbox

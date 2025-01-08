@@ -30,6 +30,7 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, MESSAGE_CREATED, message.push_event_data)
   end
 
+  # mensagem que foi editada
   def message_updated(event)
     message, account = extract_message_and_account(event)
     conversation = message.conversation
@@ -46,6 +47,7 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, FIRST_REPLY_CREATED, message.push_event_data)
   end
 
+  # conversa que foi criada
   def conversation_created(event)
     conversation, account = extract_conversation_and_account(event)
     tokens = user_tokens(account, conversation.inbox.members) + contact_inbox_tokens(conversation.contact_inbox)
@@ -53,7 +55,7 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, CONVERSATION_CREATED, conversation.push_event_data)
   end
 
-  # mensagem que foi criada
+  # mensagem que foi lida
   def conversation_read(event)
     conversation, account = extract_conversation_and_account(event)
     tokens = user_tokens(account, conversation.inbox.members)
@@ -68,10 +70,11 @@ class ActionCableListener < BaseListener
     broadcast(account, tokens, CONVERSATION_STATUS_CHANGED, conversation.push_event_data)
   end
 
-  # mensagem que foi editada
+  # conversa que foi atualizada, recebimento de mensagem novas, ou edit de mensagem antiga
   def conversation_updated(event)
     conversation, account = extract_conversation_and_account(event)
-    tokens = user_tokens(account, conversation.inbox.members) + contact_inbox_tokens(conversation.contact_inbox)
+    members = conversation.team&.members || conversation.inbox&.members || []
+    tokens =  user_tokens(account, members) + contact_inbox_tokens(conversation.contact_inbox)
 
     broadcast(account, tokens, CONVERSATION_UPDATED, conversation.push_event_data)
   end
@@ -110,7 +113,8 @@ class ActionCableListener < BaseListener
 
   def assignee_changed(event)
     conversation, account = extract_conversation_and_account(event)
-    tokens = user_tokens(account, conversation.inbox.members)
+    members = conversation.team&.members || conversation.inbox&.members || []
+    tokens = user_tokens(account, members)
 
     broadcast(account, tokens, ASSIGNEE_CHANGED, conversation.push_event_data)
   end

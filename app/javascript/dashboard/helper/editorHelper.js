@@ -136,6 +136,125 @@ export function replaceSignature(body, oldSignature, newSignature) {
 }
 
 /**
+ * The delimiter used to separate the display name from the rest of the body.
+ * @type {string}
+ */
+export const DISPLAY_NAME_DELIMITER = ':';
+
+/**
+ * Parse and Serialize the markdown text to remove any extra spaces or new lines
+ */
+export function cleanDisplayName(displayName) {
+  try {
+    // remove any horizontal rule tokens
+    displayName = displayName
+      .replace(/^( *\* *){3,} *$/gm, '')
+      .replace(/^( *- *){3,} *$/gm, '')
+      .replace(/^( *_ *){3,} *$/gm, '');
+
+    const nodes = new MessageMarkdownTransformer(messageSchema).parse(
+      displayName
+    );
+    return MessageMarkdownSerializer.serialize(nodes);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn(e);
+    Sentry.captureException(e);
+    // The parser can break on some cases
+    // for example, Token type `hr` not supported by Markdown parser
+    return displayName;
+  }
+}
+
+/**
+ * Adds the display name delimiter to the end of the display name.
+ *
+ * @param {string} displayName - The display name to add the delimiter to.
+ * @returns {string} - The display name with the delimiter added.
+ */
+function appendDisplayNameDelimiter(displayName) {
+  return `${cleanDisplayName(displayName)}${DISPLAY_NAME_DELIMITER}`;
+}
+
+/**
+ * Check if there's an unedited display name at the beginning of the body
+ * If there is, return the index of the display name, If there isn't, return -1
+ *
+ * @param {string} body - The body to search for the display name.
+ * @param {string} display name - The display name to search for.
+ * @returns {number} - The index of the last occurrence of the display name in the body, or -1 if not found.
+ */
+export function findDisplayNameInBody(body, displayName) {
+  const trimmedBody = body.trimStart();
+  const cleanedDisplayName = cleanDisplayName(displayName);
+
+  // check if body starts with displayName
+  if (trimmedBody.startsWith(`**${cleanedDisplayName}`)) { // display name plus the bold markdown
+    return body.indexOf(DISPLAY_NAME_DELIMITER);
+  }
+
+  return -1;
+}
+
+/**
+ * Appends the display name to the body, separated by the display name delimiter.
+ *
+ * @param {string} body - The body to append the display name to.
+ * @param {string} displayName - The display name to append.
+ * @returns {string} - The body with the display name appended.
+ */
+export function appendDisplayName(body, displayName) {
+  const cleanedDisplayName = cleanDisplayName(displayName);
+  // if display name is already present, return body
+  if (findDisplayNameInBody(body, cleanedDisplayName) > -1) {
+    return body;
+  }
+
+  return `**${appendDisplayNameDelimiter(cleanedDisplayName)}**\n\n${body.trimStart()}`;
+}
+
+/**
+ * Removes the display name from the body, along with the display name delimiter.
+ *
+ * @param {string} body - The body to remove the display name from.
+ * @param {string} displayName - The display name to remove.
+ * @returns {string} - The body with the display name removed.
+ */
+export function removeDisplayName(body, displayName) {
+  // this will find the index of the display name if it exists
+  // Regardless of extra spaces or new lines after the display name, the index will be the same if present
+  const cleanedDisplayName = cleanDisplayName(displayName);
+  const displayNameIndex = findDisplayNameInBody(body, cleanedDisplayName);
+
+  let newBody = body;
+
+  // if display name is present, remove it and trim it
+  // trimming will ensure any spaces or new lines before the display name are removed
+  // This means we will have the delimiter at the start
+  if (displayNameIndex > -1) {
+    newBody = newBody.substring(displayNameIndex + 1 + 2).trimStart(); // +1 for the delimiter, +2 for the bold markdown
+  }
+
+  // return the value
+  return newBody;
+}
+
+/**
+ * Replaces the old display name with the new display name.
+ * If the old display name is not present, it will append the new display name.
+ *
+ * @param {string} body - The body to replace the display name in.
+ * @param {string} oldDisplayName - The display name to replace.
+ * @param {string} newDisplayName - The display name to replace the old display name with.
+ * @returns {string} - The body with the old display name replaced with the new display name.
+ *
+ */
+export function replaceDisplayName(body, oldDisplayName, newDisplayName) {
+  const withoutDisplayName = removeDisplayName(body, oldDisplayName);
+  return appendDisplayName(withoutDisplayName, newDisplayName);
+}
+
+/**
  * Extract text from markdown, and remove all images, code blocks, links, headers, bold, italic, lists etc.
  * Links will be converted to text, and not removed.
  *

@@ -88,6 +88,28 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     end
   end
 
+  def contact_and_message
+    ActiveRecord::Base.transaction do
+      @contact = current_account.contacts.find_or_create_by!({
+                                                               name: permitted_params_message[:contact][:name],
+                                                               email: permitted_params_message[:contact][:email]
+
+                                                             })
+      @contact.phone_number = permitted_params_message[:contact][:phone]
+      @contact.save!
+      @contact_inbox = build_contact_inbox
+
+      # create conversation
+      @conversation = ConversationBuilder.new(params: permitted_params_message, contact_inbox: @contact_inbox).perform
+
+      # create message
+      @message = Messages::MessageBuilder.new(current_user, @conversation, {
+                                                content: permitted_params_message[:message][:content],
+                                                message_type: :incoming
+                                              }).perform
+    end
+  end
+
   def update
     @contact.assign_attributes(contact_update_params)
     @contact.save!
@@ -150,6 +172,10 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def permitted_params
     params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, additional_attributes: {}, custom_attributes: {})
+  end
+
+  def permitted_params_message
+    params.permit(:inbox_id, :contact_id, contact: {}, message: {})
   end
 
   def contact_custom_attributes

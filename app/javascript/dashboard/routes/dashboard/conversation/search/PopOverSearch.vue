@@ -1,15 +1,15 @@
 <template>
   <div class="relative">
     <div
-      class="flex px-4 pb-1 flex-row gap-1 pt-2.5 border-b border-transparent"
+      class="flex px-4 pb-1 flex-row gap-1 pt-2.5 border-b border-transparent items-center"
     >
       <woot-sidemenu-icon
-        size="tiny"
+        size="large"
         class="relative top-0 ltr:-ml-1.5 rtl:-mr-1.5"
       />
       <router-link
         :to="searchUrl"
-        class="search-link flex-1 items-center gap-1 text-left h-6 rtl:mr-3 rtl:text-right rounded-md px-2 py-0 bg-slate-25 dark:bg-slate-800 inline-flex"
+        class="search-link flex-1 items-center gap-1 text-left rtl:mr-3 rtl:text-right rounded-md px-2 py-0 bg-slate-25 dark:bg-slate-800 inline-flex h-12 mr-5"
       >
         <div class="flex">
           <fluent-icon

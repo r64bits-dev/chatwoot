@@ -23,7 +23,6 @@
 
 <script>
 import { mapGetters } from 'vuex';
-
 import SearchResultSection from './SearchResultSection.vue';
 import SearchResultContactItem from './SearchResultContactItem.vue';
 

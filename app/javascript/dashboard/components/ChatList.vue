@@ -78,6 +78,14 @@
           v-if="!hasAppliedFiltersOrActiveFolders"
           @changeFilter="onBasicFilterChange"
         />
+        <woot-button
+          v-tooltip.right="'Criar uma Conversa'"
+          variant="smooth"
+          color-scheme="secondary"
+          icon="comment-add"
+          size="tiny"
+          @click="showCreateNewConversationModal = true"
+        />
       </div>
     </div>
 
@@ -170,6 +178,11 @@
         @updateFolder="onUpdateSavedFilter"
       />
     </woot-modal>
+
+    <modal-create-new-conversation
+      :show="showCreateNewConversationModal"
+      @cancel="showCreateNewConversationModal = false"
+    />
   </div>
 </template>
 
@@ -208,6 +221,7 @@ import {
 } from '../store/modules/conversations/helpers/actionHelpers';
 import { CONVERSATION_EVENTS } from '../helper/AnalyticsHelper/events';
 import IntersectionObserver from './IntersectionObserver.vue';
+import ModalCreateNewConversation from '../modules/search/components/ModalCreateNewConversation.vue';
 
 export default {
   components: {
@@ -221,6 +235,7 @@ export default {
     ConversationBasicFilter,
     IntersectionObserver,
     VirtualList,
+    ModalCreateNewConversation,
   },
   mixins: [
     timeMixin,
@@ -278,6 +293,7 @@ export default {
   },
   data() {
     return {
+      showCreateNewConversationModal: false,
       activeAssigneeTab: wootConstants.ASSIGNEE_TYPE.ME,
       activeStatus: wootConstants.STATUS_TYPE.OPEN,
       activeSortBy: wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC,

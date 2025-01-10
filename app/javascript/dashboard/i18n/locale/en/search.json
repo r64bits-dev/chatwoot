@@ -20,6 +20,39 @@
     "READ_MORE": "Read more",
     "WROTE": "wrote:",
     "FROM": "from",
-    "EMAIL": "email"
+    "EMAIL": "email",
+    "CREATE_CONVERSATION": {
+      "TITLE": "Create conversation",
+      "DESC": "Create a new conversation",
+      "CONTACT_TITLE": "Contact",
+      "MESSAGE_TITLE": "Message",
+      "FORM": {
+        "NAME": {
+          "LABEL": "Full Name",
+          "PLACEHOLDER": "Enter the contact name",
+          "ERROR": "Please enter a valid contact name"
+        },
+        "EMAIL": {
+          "LABEL": "Email",
+          "PLACEHOLDER": "Enter the contact email",
+          "ERROR": "Please enter a valid email address"
+        },
+        "INBOX": {
+          "LABEL": "Inbox",
+          "PLACEHOLDER": "Choose the inbox",
+          "ERROR": "Choose the inbox"
+        },
+        "MESSAGE": {
+          "PLACEHOLDER": "Enter the message",
+          "LABEL": "Fill the message body"
+        },
+        "SUBMIT": "Create conversation",
+        "CANCEL": "Cancel"
+      },
+      "API": {
+        "SUCCESS_MESSAGE": "Conversation created successfully",
+        "ERROR_MESSAGE": "Could not create conversation, please try again"
+      }
+    }
   }
 }

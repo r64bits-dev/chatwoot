@@ -4,13 +4,19 @@
       <h3 class="text-sm text-slate-800 dark:text-slate-100">{{ title }}</h3>
     </div>
     <woot-loading-state v-if="isFetching" :message="'Searching'" />
-    <slot v-else />
+
+    <!-- Exibe o conteúdo principal (default slot) -->
+    <slot />
+
     <div v-if="empty && !isFetching" class="empty">
       <fluent-icon icon="info" size="16px" class="icon" />
       <p class="empty-state__text">
         {{ $t('SEARCH.EMPTY_STATE', { item: titleCase, query }) }}
       </p>
     </div>
+
+    <!-- Exibe sempre o slot actions se estiver presente -->
+    <slot name="actions" />
   </section>
 </template>
 

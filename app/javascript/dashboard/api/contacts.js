@@ -96,6 +96,14 @@ class ContactAPI extends ApiClient {
       `${this.url}/${contactId}/conversations/${conversationId}/messages?page=${page}`
     );
   }
+
+  createContactAndMessage({ contact, message, inboxId }) {
+    return axios.post(`${this.url}/messages`, {
+      contact,
+      message,
+      inbox_id: inboxId,
+    });
+  }
 }
 
 export default new ContactAPI();

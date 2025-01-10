@@ -3,6 +3,7 @@
     <span v-if="label">{{ label }}</span>
     <input
       class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-600"
+      :name="name"
       :class="{ 'input-margin': error }"
       :value="value"
       :type="type"
@@ -22,6 +23,10 @@
 <script>
 export default {
   props: {
+    name: {
+      type: String,
+      default: '',
+    },
     label: {
       type: String,
       default: '',

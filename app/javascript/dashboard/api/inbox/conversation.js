@@ -80,6 +80,14 @@ class ConversationApi extends ApiClient {
     return axios.post(`${this.url}/${id}/unread`);
   }
 
+  pinConversation({ id }) {
+    return axios.post(`${this.url}/${id}/pin`);
+  }
+
+  unpinConversation({ id }) {
+    return axios.post(`${this.url}/${id}/unpin`);
+  }
+
   toggleTyping({ conversationId, status, isPrivate }) {
     return axios.post(`${this.url}/${conversationId}/toggle_typing_status`, {
       typing_status: status,

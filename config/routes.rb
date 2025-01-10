@@ -104,6 +104,8 @@ Rails.application.routes.draw do
               post :toggle_typing_status
               post :update_last_seen
               post :unread
+              post :pin
+              post :unpin
               post :custom_attributes
               get :attachments
               get :whatsapp_groups_participants

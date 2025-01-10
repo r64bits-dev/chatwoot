@@ -48,6 +48,15 @@
             {{ assignee.name }}
           </span>
           <priority-mark :priority="chat.priority" />
+          <span
+            v-if="chat.pinned_by.includes(currentUser.id)"
+            class="shrink-0 rounded-sm inline-flex w-3.5 h-3.5"
+          >
+            <fluent-icon
+              icon="pin"
+              size="14"
+            />
+          </span>
         </div>
       </div>
       <div v-if="chat.team_name" class="flex flex-col gap-1">
@@ -103,12 +112,15 @@
         :inbox-id="inbox.id"
         :priority="chat.priority"
         :has-unread-messages="hasUnread"
+        :is-pinned="chat.pinned_by.includes(currentUser.id)"
         @update-conversation="onUpdateConversation"
         @assign-agent="onAssignAgent"
         @assign-label="onAssignLabel"
         @assign-team="onAssignTeam"
         @mark-as-unread="markAsUnread"
         @assign-priority="assignPriority"
+        @pin-conversation="pinConversation"
+        @unpin-conversation="unpinConversation"
       />
     </woot-context-menu>
   </div>
@@ -342,6 +354,14 @@ export default {
     },
     async assignPriority(priority) {
       this.$emit('assign-priority', priority, this.chat.id);
+      this.closeContextMenu();
+    },
+    async pinConversation() {
+      this.$emit('pin-conversation', this.chat.id);
+      this.closeContextMenu();
+    },
+    async unpinConversation() {
+      this.$emit('unpin-conversation', this.chat.id);
       this.closeContextMenu();
     },
   },

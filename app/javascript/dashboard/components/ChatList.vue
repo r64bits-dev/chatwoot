@@ -242,6 +242,8 @@ export default {
       toggleContextMenu: this.onContextMenuToggle,
       markAsUnread: this.markAsUnread,
       assignPriority: this.assignPriority,
+      pinConversation: this.pinConversation,
+      unpinConversation: this.unpinConversation,
     };
   },
   props: {
@@ -495,6 +497,20 @@ export default {
       } else {
         conversationList = [...this.chatLists];
       }
+
+      const { id: currentUserId } = this.currentUser;
+
+      conversationList = conversationList.sort((a, b) => {
+        const isPinnedA = a.pinned_by.includes(currentUserId);
+        const isPinnedB = b.pinned_by.includes(currentUserId);
+
+        if (isPinnedA === isPinnedB) {
+          return 0;
+        }
+
+        return isPinnedA ? -1 : 1;
+      });
+
       return conversationList;
     },
     activeFolder() {
@@ -921,6 +937,24 @@ export default {
             teamId,
           })
         );
+      } catch (error) {
+        // Ignore error
+      }
+    },
+    async pinConversation(conversationId) {
+      try {
+        await this.$store.dispatch('pinConversation', {
+          id: conversationId,
+        });
+      } catch (error) {
+        // Ignore error
+      }
+    },
+    async unpinConversation(conversationId) {
+      try {
+        await this.$store.dispatch('unpinConversation', {
+          id: conversationId,
+        });
       } catch (error) {
         // Ignore error
       }

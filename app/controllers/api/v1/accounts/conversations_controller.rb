@@ -116,23 +116,11 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   def pin
-    user_id = current_user.id
-    pinned_by = @conversation.pinned_by
-    unless pinned_by.include?(user_id)
-      pinned_by << user_id
-      @conversation.update(pinned_by: pinned_by)
-    end
-    render json: @conversation
+    update_pinned_status(:pin)
   end
-  
+
   def unpin
-    user_id = current_user.id
-    pinned_by = @conversation.pinned_by
-    if pinned_by.include?(user_id)
-      pinned_by.delete(user_id)
-      @conversation.update(pinned_by: pinned_by)
-    end
-    render json: @conversation
+    update_pinned_status(:unpin)
   end
 
   def custom_attributes
@@ -148,6 +136,25 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   private
+
+  def update_pinned_status(action)
+    user_id = current_user.id
+    pinned_by = @conversation.pinned_by
+
+    if action == :pin
+      unless pinned_by.include?(user_id)
+        pinned_by << user_id
+        @conversation.update(pinned_by: pinned_by)
+      end
+    elsif action == :unpin
+      if pinned_by.include?(user_id)
+        pinned_by.delete(user_id)
+        @conversation.update(pinned_by: pinned_by)
+      end
+    end
+
+    render json: @conversation
+  end
 
   def update_last_seen_on_conversation(last_seen_at, update_assignee)
     # rubocop:disable Rails/SkipsModelValidations

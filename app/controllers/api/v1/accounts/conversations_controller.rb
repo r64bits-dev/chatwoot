@@ -8,6 +8,10 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   after_action :check_assign_conversation, only: [:toggle_status]
 
   def index
+    if current_user.agent?
+      params[:team_id] = current_user.teams.pluck(:id)
+    end
+    
     result = conversation_finder.perform
     @conversations = result[:conversations]
     @conversations_count = result[:count]
@@ -115,6 +119,14 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     update_last_seen_on_conversation(last_seen_at, true)
   end
 
+  def pin
+    update_pinned_status(:pin)
+  end
+
+  def unpin
+    update_pinned_status(:unpin)
+  end
+
   def custom_attributes
     @conversation.custom_attributes = params.permit(custom_attributes: {})[:custom_attributes]
     @conversation.save!
@@ -128,6 +140,25 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   end
 
   private
+
+  def update_pinned_status(action)
+    user_id = current_user.id
+    pinned_by = @conversation.pinned_by
+
+    if action == :pin
+      unless pinned_by.include?(user_id)
+        pinned_by << user_id
+        @conversation.update(pinned_by: pinned_by)
+      end
+    elsif action == :unpin
+      if pinned_by.include?(user_id)
+        pinned_by.delete(user_id)
+        @conversation.update(pinned_by: pinned_by)
+      end
+    end
+
+    render json: @conversation
+  end
 
   def update_last_seen_on_conversation(last_seen_at, update_assignee)
     # rubocop:disable Rails/SkipsModelValidations

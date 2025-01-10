@@ -11,6 +11,7 @@ import {
 } from './helpers/actionHelpers';
 import messageReadActions from './actions/messageReadActions';
 import messageTranslateActions from './actions/messageTranslateActions';
+import pinConversationActions from './actions/pinConversationActions';
 
 export const hasMessageFailedWithExternalError = pendingMessage => {
   // This helper is used to check if the message has failed with an external error.
@@ -485,6 +486,7 @@ const actions = {
 
   ...messageReadActions,
   ...messageTranslateActions,
+  ...pinConversationActions,
 };
 
 export default actions;

@@ -48,3 +48,4 @@ json.last_activity_at conversation.last_activity_at.to_i
 json.priority conversation.priority
 json.waiting_since conversation.waiting_since.to_i.to_i
 json.team_name conversation.team.try(:name)
+json.pinned_by conversation.pinned_by

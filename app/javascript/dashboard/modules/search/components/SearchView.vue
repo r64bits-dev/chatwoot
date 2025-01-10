@@ -29,6 +29,7 @@
             :contacts="contacts"
             :query="query"
             :show-title="isSelectedTabAll"
+            @create-new-contact="showCreateNewConversationModal = true"
           />
 
           <search-result-messages-list
@@ -63,6 +64,10 @@
         </div>
       </div>
     </section>
+    <modal-create-new-conversation
+      :show="showCreateNewConversationModal"
+      @cancel="showCreateNewConversationModal = false"
+    />
   </div>
 </template>
 
@@ -72,6 +77,7 @@ import SearchTabs from './SearchTabs.vue';
 import SearchResultConversationsList from './SearchResultConversationsList.vue';
 import SearchResultMessagesList from './SearchResultMessagesList.vue';
 import SearchResultContactsList from './SearchResultContactsList.vue';
+import ModalCreateNewConversation from './ModalCreateNewConversation.vue';
 
 import { mixin as clickaway } from 'vue-clickaway';
 import { mapGetters } from 'vuex';
@@ -83,12 +89,14 @@ export default {
     SearchResultContactsList,
     SearchResultConversationsList,
     SearchResultMessagesList,
+    ModalCreateNewConversation,
   },
   mixins: [clickaway],
   data() {
     return {
       selectedTab: 'all',
       query: '',
+      showCreateNewConversationModal: false,
     };
   },
 

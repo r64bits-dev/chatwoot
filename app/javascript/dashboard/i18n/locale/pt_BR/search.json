@@ -22,7 +22,7 @@
     "FROM": "De",
     "EMAIL": "e-mail",
     "CREATE_CONVERSATION": {
-      "TITLE": "Criar conversa",
+      "TITLE": "Conversa",
       "DESC": "Criar uma conversa com um novo contato",
       "CONTACT_TITLE": "Contato",
       "MESSAGE_TITLE": "Mensagem",

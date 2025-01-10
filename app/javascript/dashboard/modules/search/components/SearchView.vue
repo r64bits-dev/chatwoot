@@ -1,14 +1,23 @@
 <template>
   <div class="search-page">
-    <div class="page-header">
+    <div class="page-header flex justify-between align-center">
       <woot-button
         icon="chevron-left"
         variant="smooth"
-        size="small "
+        size="small"
         class="back-button"
         @click="onBack"
       >
         {{ $t('GENERAL_SETTINGS.BACK') }}
+      </woot-button>
+
+      <woot-button
+        v-tooltip.right="'Criar uma Conversa'"
+        icon="add"
+        size="small"
+        @click="showCreateNewConversationModal = true"
+      >
+        {{ $t('SEARCH.CREATE_CONVERSATION.TITLE') }}
       </woot-button>
     </div>
     <section class="search-root">

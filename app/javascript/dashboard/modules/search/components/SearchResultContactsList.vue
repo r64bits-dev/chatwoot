@@ -6,18 +6,6 @@
     :show-title="showTitle"
     :is-fetching="isFetching"
   >
-    <template #actions>
-      <div class="w-full flex align-center justify-center mt-4">
-        <woot-button
-          v-if="!contacts.length && !isFetching"
-          icon="add"
-          @click="createNewContact"
-        >
-          {{ $t('SEARCH.CREATE_CONVERSATION.TITLE') }}
-        </woot-button>
-      </div>
-    </template>
-
     <ul v-if="contacts.length" class="search-list">
       <li v-for="contact in contacts" :key="contact.id">
         <search-result-contact-item
@@ -65,11 +53,6 @@ export default {
     ...mapGetters({
       accountId: 'getCurrentAccountId',
     }),
-  },
-  methods: {
-    createNewContact() {
-      this.$emit('create-new-contact');
-    },
   },
 };
 </script>

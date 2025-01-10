@@ -148,6 +148,8 @@ pt_BR:
       messages:
         record_invalid: "A validação falhou: %{errors}"
         taken: "já está em uso"
+        blank: "não pode ficar em branco"
+        required: "é obrigatório"
       models:
         ticket:
           errors:
@@ -170,6 +172,12 @@ pt_BR:
             user:
               blank: é obrigatório
               required: é obrigatório
+        contact_inbox:
+          attributes:
+            contact_id:
+              blank: "não pode ficar em branco"
+            contact:
+              required: "é obrigatório"
         label:
           attributes:
             title:

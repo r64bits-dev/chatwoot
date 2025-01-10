@@ -18,6 +18,8 @@
     @context-menu-toggle="toggleContextMenu"
     @mark-as-unread="markAsUnread"
     @assign-priority="assignPriority"
+    @pin-conversation="pinConversation"
+    @unpin-conversation="unpinConversation"
   />
 </template>
 
@@ -37,6 +39,8 @@ export default {
     'toggleContextMenu',
     'markAsUnread',
     'assignPriority',
+    'pinConversation',
+    'unpinConversation',
   ],
   props: {
     source: {

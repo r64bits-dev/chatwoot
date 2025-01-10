@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: account_plans <- this is table is to link account and product and register the usage
+# Table name: account_plans
 #
 #  id                    :bigint           not null, primary key
 #  current_agents        :integer          default(0), not null

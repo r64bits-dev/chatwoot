@@ -96,6 +96,8 @@
       }
     },
     "CARD_CONTEXT_MENU": {
+      "PIN_CONVERSATION": "Fijar conversación",
+      "UNPIN_CONVERSATION": "Desanclar conversación",
       "PENDING": "Marcar como pendiente",
       "RESOLVED": "Marcar como resuelto",
       "MARK_AS_UNREAD": "Marcar como no leído",

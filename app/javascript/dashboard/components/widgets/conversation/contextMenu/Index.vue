@@ -6,6 +6,18 @@
       variant="icon"
       @click="$emit('mark-as-unread')"
     />
+    <menu-item
+      v-if="isPinned"
+      :option="unpinOption"
+      variant="icon"
+      @click="$emit('unpin-conversation')"
+    />
+    <menu-item
+      v-else
+      :option="pinOption"
+      variant="icon"
+      @click="$emit('pin-conversation')"
+    />
     <template v-for="option in statusMenuConfig">
       <menu-item
         v-if="show(option.key)"
@@ -102,10 +114,22 @@ export default {
       type: String,
       default: null,
     },
+    isPinned: {
+      type: Boolean,
+      default: false,
+    }
   },
   data() {
     return {
       STATUS_TYPE: wootConstants.STATUS_TYPE,
+      unpinOption: {
+        label: this.$t('CONVERSATION.CARD_CONTEXT_MENU.UNPIN_CONVERSATION'),
+        icon: 'pin-off',
+      },
+      pinOption: {
+        label: this.$t('CONVERSATION.CARD_CONTEXT_MENU.PIN_CONVERSATION'),
+        icon: 'pin',
+      },
       unreadOption: {
         label: this.$t('CONVERSATION.CARD_CONTEXT_MENU.MARK_AS_UNREAD'),
         icon: 'mail',

@@ -115,6 +115,26 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     update_last_seen_on_conversation(last_seen_at, true)
   end
 
+  def pin
+    user_id = current_user.id
+    pinned_by = @conversation.pinned_by
+    unless pinned_by.include?(user_id)
+      pinned_by << user_id
+      @conversation.update(pinned_by: pinned_by)
+    end
+    render json: @conversation
+  end
+  
+  def unpin
+    user_id = current_user.id
+    pinned_by = @conversation.pinned_by
+    if pinned_by.include?(user_id)
+      pinned_by.delete(user_id)
+      @conversation.update(pinned_by: pinned_by)
+    end
+    render json: @conversation
+  end
+
   def custom_attributes
     @conversation.custom_attributes = params.permit(custom_attributes: {})[:custom_attributes]
     @conversation.save!

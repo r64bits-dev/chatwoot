@@ -114,6 +114,8 @@
       }
     },
     "CARD_CONTEXT_MENU": {
+      "PIN_CONVERSATION": "Pin conversation",
+      "UNPIN_CONVERSATION": "Unpin conversation",
       "PENDING": "Mark as pending",
       "RESOLVED": "Mark as resolved",
       "MARK_AS_UNREAD": "Mark as unread",

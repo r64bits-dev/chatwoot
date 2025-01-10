@@ -31,6 +31,10 @@ class ContactPolicy < ApplicationPolicy
     true
   end
 
+  def contact_and_message?
+    true
+  end
+
   def destroy_custom_attributes?
     true
   end

@@ -8,7 +8,7 @@
       />
 
       <!-- form -->
-      <form class="flex flex-col w-full" @submit.prevent="createConversation">
+      <form class="flex flex-col w-full" @submit.prevent="onSubmit">
         <div class="flex flex-col justify-center items-center gap-2 w-full">
           <!-- user data -->
           <div class="user-data w-full">
@@ -17,16 +17,18 @@
             </h4>
             <div class="w-full flex gap-2">
               <woot-input
-                v-model.trim="conversationName"
+                v-model.trim="contactName"
+                name="name"
                 class="w-1/2"
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.LABEL')"
                 :placeholder="
                   $t('SEARCH.CREATE_CONVERSATION.FORM.NAME.PLACEHOLDER')
                 "
-                @blur="$v.conversationName.$touch"
+                @blur="$v.contactName.$touch"
               />
               <woot-input
                 v-model.trim="conversationEmail"
+                name="email"
                 class="w-1/2"
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.EMAIL.LABEL')"
                 :placeholder="
@@ -117,7 +119,7 @@
           <!-- input message -->
           <div class="w-full">
             <h4 class="text-lg font-semibold mb-2">
-              {{ $t('SEARCH.CREATE_CONVERSATION.FORM.MESSAGE.MESSAGE_TITLE') }}
+              {{ $t('SEARCH.CREATE_CONVERSATION.MESSAGE_TITLE') }}
             </h4>
             <text-area
               v-model.trim="conversationMessage.content"
@@ -136,7 +138,7 @@
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('SEARCH.CREATE_CONVERSATION.FORM.CANCEL') }}
         </button>
-        <woot-button type="submit" :is-loading="isCreating">
+        <woot-button type="submit" :is-loading="isCreating" @click="onSubmit">
           {{ $t('SEARCH.CREATE_CONVERSATION.FORM.SUBMIT') }}
         </woot-button>
       </div>
@@ -149,12 +151,17 @@ import { mapGetters } from 'vuex';
 import Multiselect from 'vue-multiselect';
 import InboxDropdownItem from 'dashboard/components/widgets/InboxDropdownItem.vue';
 import TextArea from 'dashboard/components/widgets/forms/TextArea.vue';
+import ContactsAPI from 'dashboard/api/contacts';
+
+import alertMixin from 'shared/mixins/alertMixin';
+
 import { required } from 'vuelidate/lib/validators';
 import { isPhoneNumberValid } from 'shared/helpers/Validators';
 
 export default {
   name: 'ModalCreateNewConversation',
   components: { Multiselect, InboxDropdownItem, TextArea },
+  mixins: [alertMixin],
   props: {
     show: {
       type: Boolean,
@@ -163,7 +170,7 @@ export default {
   },
   data() {
     return {
-      conversationName: '',
+      contactName: '',
       conversationEmail: '',
       conversationMessage: {
         type: 'input',
@@ -177,7 +184,7 @@ export default {
     };
   },
   validations: {
-    conversationName: { required },
+    contactName: { required },
     conversationEmail: { required },
     conversationMessage: { required },
     phoneNumber: { required },
@@ -209,24 +216,39 @@ export default {
     },
   },
   methods: {
-    async createConversation() {
+    async onSubmit() {
       this.$v.$touch();
       if (this.$v.$invalid || this.isPhoneNumberNotValid) {
         return;
       }
       this.isCreating = true;
       try {
-        await this.$emit('create-conversation', {
-          name: this.conversationName,
-          email: this.conversationEmail,
-          phone_number: this.phoneNumber,
+        const response = await ContactsAPI.createContactAndMessage({
+          contact: {
+            name: this.contactName,
+            phone: this.phoneNumber,
+            email: this.conversationEmail,
+          },
+          message: this.conversationMessage,
           inboxId: this.selectedInbox.id,
         });
-        this.isCreating = false;
-        this.onCancel();
+        if (response.status === 200) {
+          this.showAlert(
+            this.$t('SEARCH.CREATE_CONVERSATION.API.SUCCESS_MESSAGE')
+          );
+          this.onCancel();
+        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
+        if (error.response.status === 422) {
+          this.showAlert(this.$t('CONTACT_FORM.FORM.EMAIL_ADDRESS.DUPLICATE'));
+        } else {
+          this.showAlert(
+            this.$t('SEARCH.CREATE_CONVERSATION.API.ERROR_MESSAGE')
+          );
+        }
+      } finally {
         this.isCreating = false;
       }
     },

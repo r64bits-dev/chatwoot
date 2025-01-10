@@ -125,6 +125,7 @@ Rails.application.routes.draw do
               post :filter
               post :import
               get :export
+              post :messages, to: 'contacts#contact_and_message'
             end
             member do
               get :contactable_inboxes

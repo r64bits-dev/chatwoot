@@ -12,6 +12,12 @@ class Api::V1::Accounts::Contacts::ConversationsController < Api::V1::Accounts::
 
   def messages; end
 
+  def create
+    # create contact if it doesn't exist
+    # create conversation if it doesn't exist
+    # create message
+  end
+
   private
 
   def find_conversation

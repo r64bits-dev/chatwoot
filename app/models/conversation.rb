@@ -12,6 +12,7 @@
 #  first_reply_created_at :datetime
 #  identifier             :string
 #  last_activity_at       :datetime         not null
+#  pinned_by              :integer          default([]), not null, is an Array
 #  priority               :integer
 #  snoozed_until          :datetime
 #  status                 :integer          default("open"), not null

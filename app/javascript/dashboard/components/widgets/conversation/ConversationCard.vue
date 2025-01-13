@@ -49,13 +49,12 @@
           </span>
           <priority-mark :priority="chat.priority" />
           <span
-            v-if="chat.pinned_by.includes(currentUser.id)"
+            v-if="
+              chat && chat.pinned_by && chat.pinned_by.includes(currentUser.id)
+            "
             class="shrink-0 rounded-sm inline-flex w-3.5 h-3.5"
           >
-            <fluent-icon
-              icon="pin"
-              size="14"
-            />
+            <fluent-icon icon="pin" size="14" />
           </span>
         </div>
       </div>

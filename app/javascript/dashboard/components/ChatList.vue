@@ -517,8 +517,8 @@ export default {
       const { id: currentUserId } = this.currentUser;
 
       conversationList = conversationList.sort((a, b) => {
-        const isPinnedA = a.pinned_by.includes(currentUserId);
-        const isPinnedB = b.pinned_by.includes(currentUserId);
+        const isPinnedA = a.pinned_by?.includes(currentUserId);
+        const isPinnedB = b.pinned_by?.includes(currentUserId);
 
         if (isPinnedA === isPinnedB) {
           return 0;

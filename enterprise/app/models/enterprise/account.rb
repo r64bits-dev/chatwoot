@@ -98,7 +98,7 @@ module Enterprise::Account
   end
 
   def product
-    @product ||= account_plan.product
+    @product ||= account_plan&.product
   end
 
   def product_details

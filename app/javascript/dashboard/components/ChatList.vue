@@ -383,18 +383,21 @@ export default {
     seeTabsPermission() {
       if (this.currentUser.role !== 'agent') return true;
 
-      const currentAccount = this.currentUser.accounts.find((account) => account.id === this.currentUser.account_id);
-      const permission = currentAccount.permissions['see_unassigned_conversations'];
-      
+      const currentAccount = this.currentUser.accounts.find(
+        account => account.id === this.currentUser.account_id
+      );
+      const permission =
+        currentAccount.permissions?.see_unassigned_conversations;
+
       return permission;
     },
     assigneeTabItems() {
       const ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
         unassigned: 'unAssignedCount',
-        
       };
-      if (this.currentUser.role !== 'agent') ASSIGNEE_TYPE_TAB_KEYS["all"] = 'allCount';
+      if (this.currentUser.role !== 'agent')
+        ASSIGNEE_TYPE_TAB_KEYS.all = 'allCount';
 
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;

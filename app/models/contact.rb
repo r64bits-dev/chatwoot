@@ -163,6 +163,10 @@ class Contact < ApplicationRecord
     identifier.present? && (identifier.ends_with?('@s.whatsapp.net') || identifier.ends_with?('@g.us'))
   end
 
+  def team
+    Team.joins(:team_members).where(team_members: { user_id: conversations.select(:assignee_id) }).first
+  end
+
   private
 
   def ip_lookup

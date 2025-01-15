@@ -8,28 +8,39 @@ import AccountActionsAPI from '../../../api/accountActions';
 import AnalyticsHelper from '../../../helper/AnalyticsHelper';
 import { CONTACTS_EVENTS } from '../../../helper/AnalyticsHelper/events';
 
-const buildContactFormData = contactParams => {
+export const buildContactFormData = contactParams => {
   const formData = new FormData();
   const { additional_attributes = {}, ...contactProperties } = contactParams;
+
+  // Adiciona propriedades do contato ao FormData
   Object.keys(contactProperties).forEach(key => {
     if (contactProperties[key]) {
       formData.append(key, contactProperties[key]);
     }
   });
+
+  // Extrai social_profiles e outras propriedades adicionais
   const { social_profiles, ...additionalAttributesProperties } =
     additional_attributes;
+
+  // Adiciona atributos adicionais ao FormData
   Object.keys(additionalAttributesProperties).forEach(key => {
     formData.append(
       `additional_attributes[${key}]`,
       additionalAttributesProperties[key]
     );
   });
-  Object.keys(social_profiles).forEach(key => {
-    formData.append(
-      `additional_attributes[social_profiles][${key}]`,
-      social_profiles[key]
-    );
-  });
+
+  // Adiciona perfis sociais ao FormData, se existirem
+  if (social_profiles && typeof social_profiles === 'object') {
+    Object.keys(social_profiles).forEach(key => {
+      formData.append(
+        `additional_attributes[social_profiles][${key}]`,
+        social_profiles[key]
+      );
+    });
+  }
+
   return formData;
 };
 

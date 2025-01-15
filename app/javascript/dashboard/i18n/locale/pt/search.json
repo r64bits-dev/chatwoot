@@ -20,6 +20,39 @@
     "READ_MORE": "Ler mais",
     "WROTE": "escreveu:",
     "FROM": "de",
-    "EMAIL": "e-mail"
+    "EMAIL": "e-mail",
+    "CREATE_CONVERSATION": {
+      "TITLE": "Criar conversa",
+      "DESC": "Criar uma conversa com um novo contato",
+      "CONTACT_TITLE": "Contato",
+      "MESSAGE_TITLE": "Mensagem",
+      "FORM": {
+        "NAME": {
+          "LABEL": "Nome Completo",
+          "PLACEHOLDER": "Digite o nome do contato",
+          "ERROR": "Por favor, insira um contato válido"
+        },
+        "EMAIL": {
+          "LABEL": "Email",
+          "PLACEHOLDER": "Digite o e-mail do contato",
+          "ERROR": "Por favor, insira um e-mail válido"
+        },
+        "INBOX": {
+          "LABEL": "Caixa de Entrada",
+          "PLACEHOLDER": "Escolha a caixa de entrada",
+          "ERROR": "Escolha a caixa de entrada"
+        },
+        "MESSAGE": {
+          "PLACEHOLDER": "Digite a mensagem",
+          "LABEL": "Preencha o corpo da mensagem"
+        },
+        "SUBMIT": "Criar conversa",
+        "CANCEL": "Cancelar"
+      },
+      "API": {
+        "SUCCESS_MESSAGE": "Conversa criada com sucesso",
+        "ERROR_MESSAGE": "Não foi possível criar conversa, por favor, tente novamente"
+      }
+    }
   }
 }

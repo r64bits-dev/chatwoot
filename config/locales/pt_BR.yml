@@ -138,11 +138,18 @@ pt_BR:
         name: 'não deve iniciar ou terminar com símbolos e não deve ter os caracteres: < > / \ @.'
     custom_filters:
       number_of_records: Limite atingido. O número máximo de filtros personalizados permitidos para um usuário por conta é de 50.
-
+    attributes:
+      email:
+        taken: "Email já está em uso"
+    messages:
+      taken: "já está em uso"
   activerecord:
     errors:
       messages:
         record_invalid: "A validação falhou: %{errors}"
+        taken: "já está em uso"
+        blank: "não pode ficar em branco"
+        required: "é obrigatório"
       models:
         ticket:
           errors:
@@ -165,6 +172,12 @@ pt_BR:
             user:
               blank: é obrigatório
               required: é obrigatório
+        contact_inbox:
+          attributes:
+            contact_id:
+              blank: "não pode ficar em branco"
+            contact:
+              required: "é obrigatório"
         label:
           attributes:
             title:
@@ -174,6 +187,9 @@ pt_BR:
             phone_number:
               invalid: não é um número de telefone válido
               taken: já existe
+            email:
+              taken: "Email já está em uso"
+          taken: "Contato já está em uso"
   reports:
     period: Reportando o período %{since} a %{until}
     utc_warning: O relatório gerado está em fuso horário UTC

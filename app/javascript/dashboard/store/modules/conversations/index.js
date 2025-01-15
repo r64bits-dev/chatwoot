@@ -25,6 +25,8 @@ export const mutations = {
   [types.SET_ALL_CONVERSATION](_state, conversationList) {
     const newAllConversations = [..._state.allConversations];
     conversationList.forEach(conversation => {
+      if (!conversation) return;
+
       const indexInCurrentList = newAllConversations.findIndex(
         c => c.id === conversation.id
       );

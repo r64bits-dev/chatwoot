@@ -78,6 +78,14 @@
           v-if="!hasAppliedFiltersOrActiveFolders"
           @changeFilter="onBasicFilterChange"
         />
+        <woot-button
+          v-tooltip.right="'Criar uma Conversa'"
+          variant="smooth"
+          color-scheme="secondary"
+          icon="comment-add"
+          size="tiny"
+          @click="showCreateNewConversationModal = true"
+        />
       </div>
     </div>
 
@@ -170,6 +178,11 @@
         @updateFolder="onUpdateSavedFilter"
       />
     </woot-modal>
+
+    <modal-create-new-conversation
+      :show="showCreateNewConversationModal"
+      @cancel="showCreateNewConversationModal = false"
+    />
   </div>
 </template>
 
@@ -208,6 +221,7 @@ import {
 } from '../store/modules/conversations/helpers/actionHelpers';
 import { CONVERSATION_EVENTS } from '../helper/AnalyticsHelper/events';
 import IntersectionObserver from './IntersectionObserver.vue';
+import ModalCreateNewConversation from '../modules/search/components/ModalCreateNewConversation.vue';
 
 export default {
   components: {
@@ -221,6 +235,7 @@ export default {
     ConversationBasicFilter,
     IntersectionObserver,
     VirtualList,
+    ModalCreateNewConversation,
   },
   mixins: [
     timeMixin,
@@ -278,6 +293,7 @@ export default {
   },
   data() {
     return {
+      showCreateNewConversationModal: false,
       activeAssigneeTab: wootConstants.ASSIGNEE_TYPE.ME,
       activeStatus: wootConstants.STATUS_TYPE.OPEN,
       activeSortBy: wootConstants.SORT_BY_TYPE.LAST_ACTIVITY_AT_DESC,
@@ -367,18 +383,21 @@ export default {
     seeTabsPermission() {
       if (this.currentUser.role !== 'agent') return true;
 
-      const currentAccount = this.currentUser.accounts.find((account) => account.id === this.currentUser.account_id);
-      const permission = currentAccount.permissions['see_unassigned_conversations'];
-      
+      const currentAccount = this.currentUser.accounts.find(
+        account => account.id === this.currentUser.account_id
+      );
+      const permission =
+        currentAccount.permissions?.see_unassigned_conversations;
+
       return permission;
     },
     assigneeTabItems() {
       const ASSIGNEE_TYPE_TAB_KEYS = {
         me: 'mineCount',
         unassigned: 'unAssignedCount',
-        
       };
-      if (this.currentUser.role !== 'agent') ASSIGNEE_TYPE_TAB_KEYS["all"] = 'allCount';
+      if (this.currentUser.role !== 'agent')
+        ASSIGNEE_TYPE_TAB_KEYS.all = 'allCount';
 
       return Object.keys(ASSIGNEE_TYPE_TAB_KEYS).map(key => {
         const count = this.conversationStats[ASSIGNEE_TYPE_TAB_KEYS[key]] || 0;
@@ -501,8 +520,8 @@ export default {
       const { id: currentUserId } = this.currentUser;
 
       conversationList = conversationList.sort((a, b) => {
-        const isPinnedA = a.pinned_by.includes(currentUserId);
-        const isPinnedB = b.pinned_by.includes(currentUserId);
+        const isPinnedA = a.pinned_by?.includes(currentUserId);
+        const isPinnedB = b.pinned_by?.includes(currentUserId);
 
         if (isPinnedA === isPinnedB) {
           return 0;

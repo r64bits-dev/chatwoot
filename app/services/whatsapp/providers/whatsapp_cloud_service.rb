@@ -10,10 +10,12 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def send_template(phone_number, template_info)
+    template = get_template(template_info[:name])
+
     request_payload = {
       messaging_product: 'whatsapp',
       to: format_phone_number(phone_number),
-      template: template_body_parameters(template_info),
+      template: template_body_parameters(template, template_info),
       type: 'template'
     }.to_json
 
@@ -22,10 +24,15 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       headers: api_headers,
       body: request_payload
     )
+
     Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
     raise CustomExceptions::Account::ErrorReply unless response.success?
 
     process_response(response)
+  end
+
+  def get_template(template_name)
+    whatsapp_channel.message_templates.find { |template| template['name'] == template_name }
   end
 
   def sync_templates
@@ -146,7 +153,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     end
   end
 
-  def template_body_parameters(template_info)
+  def template_body_parameters(template, template_info)
     Rails.logger.info "template_info: #{template_info}"
     {
       name: template_info[:name],
@@ -154,24 +161,30 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         policy: 'deterministic',
         code: template_info[:locale] || 'pt_BR'
       },
-      components: build_components(template_info).concat(build_header_components(template_info[:headers]))
+      components: build_components(template, template_info).concat(build_header_components(template_info[:headers]))
     }
   end
 
-  def build_components(template_info)
+  def build_components(template, template_info)
     return [] if template_info[:parameters].blank?
 
-    components = build_body_component(template_info[:parameters])
+    components = build_body_component(template, template_info[:parameters])
     components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
     Rails.logger.info "build_components: #{components}"
     components
   end
 
-  def build_body_component(parameters)
+  def build_body_component(template, parameters)
     [{
       type: 'body',
       parameters: parameters.map do |param|
-        { type: 'text', text: param[:text].presence || '' }
+        {
+          type: 'text',
+          text: param[:text].presence || ''
+        }.tap do |hash|
+          param_name = get_template_params_name_body(template)
+          hash[:parameter_name] = param_name if param_name.present?
+        end
       end
     }]
   end
@@ -210,5 +223,16 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     {
       message_id: reply_to
     }
+  end
+
+  def get_template_body(template)
+    template['components'].find { |component| component['type'] == 'BODY' }
+  end
+
+  def get_template_params_name_body(template)
+    body = get_template_body(template)
+    return nil if body.blank?
+
+    body.dig('example', 'body_text_named_params', 0, 'param_name')
   end
 end

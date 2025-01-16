@@ -82,7 +82,7 @@ class ConversationFinder
   end
 
   def set_team
-    @team = current_account.teams.find(params[:team_id]) if params[:team_id]
+    @team = current_account.teams.where(id: params[:team_id]).first if params[:team_id]
   end
 
   def find_all_conversations

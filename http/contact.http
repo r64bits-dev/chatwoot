@@ -21,3 +21,29 @@ GET {{api}}/api/v1/accounts/1/contacts/2
 ?conversation_id=1
 Content-Type: application/json
 Authorization: {{token}}
+
+
+###
+
+# Path: http/contact.http
+# @name SearchContacts
+GET {{api}}/api/v1/accounts/1/contacts/search?page=1&sort=-last_activity_at&q=dani
+Content-Type: application/json
+Authorization: {{token}}
+
+###
+
+# Path: http/contact.http
+# @name CreateContact
+POST {{api}}/api/v1/accounts/1/contacts
+Content-Type: application/json
+Authorization: {{token}}
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "phone_number": "1234567890",
+  "custom_attributes": {
+    "gender": "male"
+  }
+}

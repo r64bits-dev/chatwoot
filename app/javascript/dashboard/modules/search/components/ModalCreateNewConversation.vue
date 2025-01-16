@@ -19,13 +19,29 @@
               <woot-input
                 v-model.trim="contactName"
                 name="name"
-                class="w-1/2"
+                class="w-full"
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.LABEL')"
                 :placeholder="
                   $t('SEARCH.CREATE_CONVERSATION.FORM.NAME.PLACEHOLDER')
                 "
-                @blur="$v.contactName.$touch"
-              />
+                @input="onSearchQueryChange"
+              >
+                <template v-if="searchResults.length" #after>
+                  <div class="search-dropdown">
+                    <ul>
+                      <li
+                        v-for="contact in searchResults"
+                        :key="contact.id"
+                        @click="selectContact(contact)"
+                      >
+                        <div>{{ contact.name }}</div>
+                        <small>{{ contact.email }}</small>
+                        <small>{{ contact.phone_number }}</small>
+                      </li>
+                    </ul>
+                  </div>
+                </template>
+              </woot-input>
               <woot-input
                 v-model.trim="conversationEmail"
                 name="email"
@@ -138,7 +154,12 @@
         <button class="button clear" @click.prevent="onCancel">
           {{ $t('SEARCH.CREATE_CONVERSATION.FORM.CANCEL') }}
         </button>
-        <woot-button type="submit" :is-loading="isCreating" @click="onSubmit">
+        <woot-button
+          :is-disabled="!isFormValid"
+          type="submit"
+          :is-loading="isCreating"
+          @click="onSubmit"
+        >
           {{ $t('SEARCH.CREATE_CONVERSATION.FORM.SUBMIT') }}
         </woot-button>
       </div>
@@ -157,6 +178,7 @@ import alertMixin from 'shared/mixins/alertMixin';
 
 import { required } from 'vuelidate/lib/validators';
 import { isPhoneNumberValid } from 'shared/helpers/Validators';
+import { sanitizePhoneNumber } from 'shared/helpers/sanitizeData';
 
 export default {
   name: 'ModalCreateNewConversation',
@@ -181,11 +203,13 @@ export default {
       isCreating: false,
       isPhoneInputFocused: false,
       activeDialCode: '',
+      searchResults: [],
+      searchTimeout: null,
     };
   },
   validations: {
     contactName: { required },
-    conversationEmail: { required },
+    conversationEmail: {},
     conversationMessage: { required },
     phoneNumber: { required },
     selectedInbox: { required },
@@ -196,6 +220,9 @@ export default {
       currentAccount: 'getCurrentAccount',
       inboxes: 'inboxes/getInboxes',
     }),
+    isFormValid() {
+      return !this.$v.$invalid;
+    },
     isPhoneNumberNotValid() {
       if (this.phoneNumber !== '') {
         return (
@@ -206,19 +233,17 @@ export default {
       return false;
     },
     phoneNumberError() {
-      if (this.activeDialCode === '') {
-        return this.$t('CONTACT_FORM.FORM.PHONE_NUMBER.DIAL_CODE_ERROR');
-      }
-      if (!isPhoneNumberValid(this.phoneNumber, this.activeDialCode)) {
+      if (this.phoneNumber === '')
         return this.$t('CONTACT_FORM.FORM.PHONE_NUMBER.ERROR');
-      }
+
       return '';
     },
   },
   methods: {
     async onSubmit() {
       this.$v.$touch();
-      if (this.$v.$invalid || this.isPhoneNumberNotValid) {
+      if (!this.isFormValid) {
+        this.showAlert('Por favor preencha todos os campos');
         return;
       }
       this.isCreating = true;
@@ -284,6 +309,67 @@ export default {
     onMessageInputChange(value) {
       this.conversationMessage.content = value;
     },
+    onSearchQueryChange(query) {
+      if (this.searchTimeout) {
+        clearTimeout(this.searchTimeout);
+      }
+      this.searchTimeout = setTimeout(() => {
+        this.fetchContacts(query);
+      }, 300);
+    },
+    async fetchContacts(query) {
+      if (!query) {
+        this.searchResults = [];
+        return;
+      }
+      try {
+        const response = await ContactsAPI.search(query);
+        this.searchResults = response.data.payload;
+      } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error('Erro ao buscar contatos:', error);
+        this.searchResults = [];
+      }
+    },
+    selectContact(contact) {
+      this.contactName = contact.name;
+      this.conversationEmail = contact.email;
+      this.phoneNumber = sanitizePhoneNumber(contact.phone_number);
+      this.searchResults = [];
+      this.$v.contactName.$touch();
+      this.$v.conversationEmail.$touch();
+      this.$v.phoneNumber.$touch();
+    },
   },
 };
 </script>
+
+<style scoped lang="scss">
+.search-dropdown {
+  position: absolute;
+  background: white;
+  border: 1px solid #ddd;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 100%;
+  z-index: 1000;
+}
+.search-dropdown ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.search-dropdown li {
+  padding: 10px;
+  cursor: pointer;
+  border-bottom: 1px solid #f0f0f0;
+}
+.search-dropdown li:hover {
+  background: #f9f9f9;
+}
+
+.button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+</style>

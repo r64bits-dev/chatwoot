@@ -1,23 +1,26 @@
 <template>
-  <label class="input-container">
-    <span v-if="label">{{ label }}</span>
-    <input
-      class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-600"
-      :name="name"
-      :class="{ 'input-margin': error }"
-      :value="value"
-      :type="type"
-      :placeholder="placeholder"
-      :readonly="readonly"
-      :style="styles"
-      @input="onChange"
-      @blur="onBlur"
-    />
-    <p v-if="helpText" class="help-text">{{ helpText }}</p>
-    <span v-if="error" class="message">
-      {{ error }}
-    </span>
-  </label>
+  <div>
+    <label class="input-container">
+      <span v-if="label">{{ label }}</span>
+      <input
+        class="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 border-slate-200 dark:border-slate-600"
+        :name="name"
+        :class="{ 'input-margin': error }"
+        :value="value"
+        :type="type"
+        :placeholder="placeholder"
+        :readonly="readonly"
+        :style="styles"
+        @input="onChange"
+        @blur="onBlur"
+      />
+      <p v-if="helpText" class="help-text">{{ helpText }}</p>
+      <span v-if="error" class="message">
+        {{ error }}
+      </span>
+    </label>
+    <slot name="after" />
+  </div>
 </template>
 
 <script>

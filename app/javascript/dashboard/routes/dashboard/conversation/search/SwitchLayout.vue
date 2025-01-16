@@ -2,7 +2,7 @@
   <woot-button
     v-tooltip.left="$t('CONVERSATION.SWITCH_VIEW_LAYOUT')"
     icon="arrow-right-import"
-    size="small"
+    size="medium"
     variant="smooth"
     color-scheme="secondary"
     class="layout-switch__container"

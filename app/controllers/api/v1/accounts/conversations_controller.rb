@@ -8,8 +8,6 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
   after_action :check_assign_conversation, only: [:toggle_status]
 
   def index
-    params[:team_id] = current_user.teams.pluck(:id) if current_user.agent?
-
     result = conversation_finder.perform
     @conversations = result[:conversations]
     @conversations_count = result[:count]

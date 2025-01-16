@@ -46,6 +46,13 @@ export default {
     size: {
       type: String,
       default: '',
+      validator(value) {
+        if (value)
+          return ['tiny', 'small', 'medium', 'large', 'expanded'].includes(
+            value
+          );
+        return true;
+      },
     },
     icon: {
       type: String,

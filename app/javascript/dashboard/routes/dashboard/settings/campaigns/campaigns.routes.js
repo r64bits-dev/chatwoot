@@ -2,6 +2,7 @@ import { frontendURL } from '../../../../helper/URLHelper';
 const SettingsContent = () => import('../Wrapper.vue');
 const Index = () => import('./Index.vue');
 const AppIntegration = () => import('./AppIntegration.vue');
+const FileImports = () => import('./FileImports.vue');
 
 export default {
   routes: [
@@ -54,6 +55,22 @@ export default {
           name: 'app_integration',
           roles: ['administrator'],
           component: AppIntegration,
+        },
+      ],
+    },
+    {
+      path: frontendURL('accounts/:accountId/campaigns'),
+      component: SettingsContent,
+      props: {
+        headerTitle: 'CAMPAIGN.FILE_IMPORT.HEADER',
+        icon: 'download',
+      },
+      children: [
+        {
+          path: 'file_import',
+          name: 'file_import',
+          roles: ['administrator'],
+          component: FileImports,
         },
       ],
     },

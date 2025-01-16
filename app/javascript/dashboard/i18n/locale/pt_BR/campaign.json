@@ -125,6 +125,10 @@
       "HEADER": "Campanhas recorrentes",
       "404": "Não há campanhas recorrentes criadas",
       "INBOXES_NOT_FOUND": "Por favor, crie uma caixa de entrada de website e comece a adicionar campanhas"
+    },
+    "FILE_IMPORT": {
+      "HEADER": "Importação de arquivo",
+      "404": "Não há integração de arquivo criada"
     }
   }
 }

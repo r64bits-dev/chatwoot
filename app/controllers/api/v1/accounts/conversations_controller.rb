@@ -137,6 +137,10 @@ class Api::V1::Accounts::ConversationsController < Api::V1::Accounts::BaseContro
     render json: Evolution::FindParticipantsService.new(@conversation.inbox.name, @conversation.contact.identifier).perform
   end
 
+  def block_contact
+    render json: Evolution::BlockContactService.new(@conversation.inbox.name, @conversation.contact.phone_number).perform
+  end
+
   private
 
   def update_pinned_status(action)

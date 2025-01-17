@@ -90,12 +90,13 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contact_and_message
     ActiveRecord::Base.transaction do
-      @contact = current_account.contacts.find_or_create_by!({
-                                                               name: permitted_params_message[:contact][:name],
-                                                               email: permitted_params_message[:contact][:email]
-
-                                                             })
-      @contact.phone_number = permitted_params_message[:contact][:phone]
+      @contact = current_account
+                 .contacts
+                 .find_or_create_by({
+                                      name: permitted_params_message[:contact][:name],
+                                      phone_number: only_numbers(permitted_params_message[:contact][:phone])
+                                    })
+      @contact.email = permitted_params_message[:contact][:email]
       @contact.save!
       @contact_inbox = build_contact_inbox
 
@@ -216,5 +217,9 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def render_error(error, error_status)
     render json: error, status: error_status
+  end
+
+  def only_numbers(string)
+    "+#{string.gsub(/[^\d]/, '')}"
   end
 end

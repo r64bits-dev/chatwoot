@@ -173,8 +173,8 @@ export default {
     fetchCustomViews() {
       if (this.isConversationOrContactActive) {
         this.$store.dispatch('customViews/get', this.activeCustomView);
-        this.$store.dispatch('teams/countConversationsUnassigned');
       }
+      this.$store.dispatch('teams/countConversationsUnassigned');
     },
     toggleKeyShortcutModal() {
       this.$emit('open-key-shortcut-modal');

@@ -219,6 +219,7 @@ export default {
       currentUser: 'getCurrentUser',
       currentAccount: 'getCurrentAccount',
       inboxes: 'inboxes/getInboxes',
+      activeInbox: 'getSelectedInbox',
     }),
     isFormValid() {
       return !this.$v.$invalid;
@@ -238,6 +239,11 @@ export default {
 
       return '';
     },
+  },
+  mounted() {
+    if (this.activeInbox) {
+      this.setSelectedInbox(this.activeInbox);
+    }
   },
   methods: {
     async onSubmit() {
@@ -339,6 +345,12 @@ export default {
       this.$v.contactName.$touch();
       this.$v.conversationEmail.$touch();
       this.$v.phoneNumber.$touch();
+    },
+    setSelectedInbox(inboxId) {
+      const inbox = this.inboxes.find(i => i.id === String(inboxId));
+      if (inbox) {
+        this.selectedInbox = inbox;
+      }
     },
   },
 };

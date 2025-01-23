@@ -90,24 +90,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contact_and_message
     ActiveRecord::Base.transaction do
-      @contact = current_account
-                 .contacts
-                 .find_or_create_by({
-                                      name: permitted_params_message[:contact][:name],
-                                      phone_number: only_numbers(permitted_params_message[:contact][:phone])
-                                    })
-      @contact.email = permitted_params_message[:contact][:email]
-      @contact.save!
-      @contact_inbox = build_contact_inbox
-
-      # create conversation
-      @conversation = ConversationBuilder.new(params: permitted_params_message, contact_inbox: @contact_inbox).perform
-
-      # create message
-      @message = Messages::MessageBuilder.new(current_user, @conversation, {
-                                                content: permitted_params_message[:message][:content],
-                                                message_type: :incoming
-                                              }).perform
+      find_or_create_contact
+      create_conversation_and_message
     end
   end
 
@@ -135,6 +119,30 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   private
+
+  def find_or_create_contact
+    @contact = current_account.contacts.find_or_create_by(
+      name: permitted_params_message[:contact][:name],
+      phone_number: only_numbers(permitted_params_message[:contact][:phone])
+    )
+    @contact.email = permitted_params_message[:contact][:email]
+    @contact.save!
+    @contact_inbox = build_contact_inbox
+  end
+
+  def create_conversation_and_message
+    @conversation = ConversationBuilder.new(
+      params: permitted_params_message,
+      contact_inbox: @contact_inbox
+    ).perform
+
+    @message = Messages::MessageBuilder.new(
+      current_user,
+      @conversation,
+      content: permitted_params_message[:message][:content],
+      message_type: :incoming
+    ).perform
+  end
 
   # TODO: Move this to a finder class
   def resolved_contacts

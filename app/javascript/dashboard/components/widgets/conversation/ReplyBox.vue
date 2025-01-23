@@ -694,7 +694,9 @@ export default {
         );
       }
 
-      const plainTextDisplayName = extractTextFromMarkdown(this.messageDisplayName);
+      const plainTextDisplayName = extractTextFromMarkdown(
+        this.messageDisplayName
+      );
 
       if (!this.showRichContentEditor && this.messageDisplayName) {
         // remove the old display name -> extract text from markdown -> attach new display name

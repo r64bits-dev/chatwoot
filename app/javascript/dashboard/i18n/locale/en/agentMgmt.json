@@ -129,7 +129,8 @@
         "CUSTOM_VIEWS": "View Custom Views",
         "PEOPLES": "View People",
         "SEND_MESSAGES": "Send Messages",
-        "SEE_UNASSIGNED_CONVERSATIONS": "See Unassigned Conversations"
+        "SEE_UNASSIGNED_CONVERSATIONS": "See Unassigned Conversations",
+        "VIEW_INBOX": "View Inbox"
       }
     },
     "SEARCH": {

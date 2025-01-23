@@ -31,4 +31,13 @@ RSpec.describe AccountUser do
       expect(user.assigned_conversations.count).to eq(0)
     end
   end
+
+  it 'allows viewing inbox if permission is true' do
+    expect(account_user.can_view_inbox?).to be(true)
+  end
+
+  it 'disallows viewing inbox if permission is false' do
+    account_user.permissions['view_inbox'] = false
+    expect(account_user.can_view_inbox?).to be(false)
+  end
 end

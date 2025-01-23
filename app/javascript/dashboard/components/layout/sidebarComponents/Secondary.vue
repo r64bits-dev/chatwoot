@@ -266,7 +266,10 @@ export default {
     },
     additionalSecondaryMenuItems() {
       let conversationMenuItems = [];
-      if (this.currentRole === 'administrator')
+      if (
+        this.currentRole === 'administrator' ||
+        this.currentPermissions.view_inbox
+      )
         conversationMenuItems.push(this.inboxSection);
 
       conversationMenuItems.push(this.labelSection);

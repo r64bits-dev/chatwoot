@@ -38,21 +38,18 @@
       </woot-division-line>
 
       <ul class="conversation-panel">
-        <li
+        <message
           v-for="message in orderedMessages(conversation.messages)"
           :key="message.id"
-        >
-          <message
-            :data="message"
-            :class="getClassName(message)"
-            disable-reply-button
-            :is-a-tweet="isATweet"
-            :is-a-whatsapp-channel="isAWhatsAppChannel"
-            :is-web-widget-inbox="isAWebWidgetInbox"
-            :inbox-supports-reply-to="inboxSupportsReplyTo"
-            :in-reply-to="getInReplyToMessage(message)"
-          />
-        </li>
+          :data="message"
+          :class="getClassName(message)"
+          disable-reply-button
+          :is-a-tweet="isATweet"
+          :is-a-whatsapp-channel="isAWhatsAppChannel"
+          :is-web-widget-inbox="isAWebWidgetInbox"
+          :inbox-supports-reply-to="inboxSupportsReplyTo"
+          :in-reply-to="getInReplyToMessage(message)"
+        />
       </ul>
     </div>
   </div>

@@ -89,10 +89,10 @@
             </label>
             <div
               class="multiselect-wrap--small"
-              :class="{ 'has-multi-select-error': $v.selectedInbox.$error }"
+              :class="{ 'has-multi-select-error': $v.inbox.$error }"
             >
               <multiselect
-                v-model="selectedInbox"
+                v-model="inbox"
                 track-by="id"
                 label="name"
                 :placeholder="$t('FORMS.MULTISELECT.SELECT')"
@@ -125,8 +125,8 @@
                 </template>
               </multiselect>
             </div>
-            <label :class="{ error: $v.selectedInbox.$error }">
-              <span v-if="$v.selectedInbox.$error" class="message">
+            <label :class="{ error: $v.inbox.$error }">
+              <span v-if="$v.inbox.$error" class="message">
                 {{ $t('SEARCH.CREATE_CONVERSATION.FORM.INBOX.ERROR') }}
               </span>
             </label>
@@ -189,6 +189,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    selectedInbox: {
+      type: [String, Number],
+      default: null,
+    },
   },
   data() {
     return {
@@ -198,8 +202,10 @@ export default {
         type: 'input',
         content: '',
       },
+      inbox: {
+        id: this.selectedInbox,
+      },
       phoneNumber: '',
-      selectedInbox: null,
       isCreating: false,
       isPhoneInputFocused: false,
       activeDialCode: '',
@@ -212,14 +218,13 @@ export default {
     conversationEmail: {},
     conversationMessage: { required },
     phoneNumber: { required },
-    selectedInbox: { required },
+    inbox: { required },
   },
   computed: {
     ...mapGetters({
       currentUser: 'getCurrentUser',
       currentAccount: 'getCurrentAccount',
       inboxes: 'inboxes/getInboxes',
-      activeInbox: 'getSelectedInbox',
     }),
     isFormValid() {
       return !this.$v.$invalid;
@@ -240,10 +245,16 @@ export default {
       return '';
     },
   },
-  mounted() {
-    if (this.activeInbox) {
-      this.setSelectedInbox(this.activeInbox);
-    }
+  watch: {
+    immediate: true,
+    selectedInbox(newValue) {
+      this.setSelectedInbox(newValue);
+    },
+    inboxes() {
+      if (this.selectedInbox) {
+        this.setSelectedInbox(this.selectedInbox);
+      }
+    },
   },
   methods: {
     async onSubmit() {
@@ -261,13 +272,17 @@ export default {
             email: this.conversationEmail,
           },
           message: this.conversationMessage,
-          inboxId: this.selectedInbox.id,
+          inboxId: this.inbox.id,
         });
         if (response.status === 200) {
           this.showAlert(
             this.$t('SEARCH.CREATE_CONVERSATION.API.SUCCESS_MESSAGE')
           );
           this.onCancel();
+          this.$router.push({
+            name: 'inbox_conversation',
+            params: { conversation_id: response.data.payload.conversation.id },
+          });
         }
       } catch (error) {
         // eslint-disable-next-line no-console
@@ -347,9 +362,16 @@ export default {
       this.$v.phoneNumber.$touch();
     },
     setSelectedInbox(inboxId) {
-      const inbox = this.inboxes.find(i => i.id === String(inboxId));
-      if (inbox) {
-        this.selectedInbox = inbox;
+      const selectedInbox = this.inboxes.find(
+        inbox => inbox.id === Number(inboxId)
+      );
+
+      if (selectedInbox) {
+        this.inbox = selectedInbox;
+      } else {
+        this.inboxId = null;
+        // eslint-disable-next-line no-console
+        console.warn(`Inbox com ID ${inboxId} não encontrado.`);
       }
     },
   },

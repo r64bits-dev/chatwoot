@@ -181,6 +181,7 @@
 
     <modal-create-new-conversation
       :show="showCreateNewConversationModal"
+      :selected-inbox="conversationInbox"
       @cancel="showCreateNewConversationModal = false"
     />
   </div>

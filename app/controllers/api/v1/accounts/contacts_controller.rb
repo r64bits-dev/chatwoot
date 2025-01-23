@@ -139,8 +139,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     @message = Messages::MessageBuilder.new(
       current_user,
       @conversation,
-      content: permitted_params_message[:message][:content],
-      message_type: :incoming
+      content: permitted_params_message[:message][:content]
     ).perform
   end
 

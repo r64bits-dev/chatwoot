@@ -62,6 +62,7 @@
         <secondary-child-nav-item
           v-for="child in menuItem.children"
           :key="child.id"
+          :is-visible="child.isVisible"
           :to="child.toState"
           :label="child.label"
           :label-color="child.color"

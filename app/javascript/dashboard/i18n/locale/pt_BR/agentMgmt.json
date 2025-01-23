@@ -128,7 +128,8 @@
         "CUSTOM_VIEWS": "Visualizar Visualizações Personalizadas",
         "PEOPLES": "Visualizar Pessoais",
         "SEND_MESSAGES": "Enviar Mensagens",
-        "SEE_UNASSIGNED_CONVERSATIONS": "Visualizar Conversas Não Atribuídas"
+        "SEE_UNASSIGNED_CONVERSATIONS": "Visualizar Conversas Não Atribuídas",
+        "VIEW_INBOX": "Visualizar Caixa de Entrada"
       }
     },
     "SEARCH": {

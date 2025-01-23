@@ -126,6 +126,7 @@ export default {
             type: inbox.channel_type,
             phoneNumber: inbox.phone_number,
             reauthorizationRequired: inbox.reauthorization_required,
+            isVisible: inbox.can_see_this_inbox,
           }))
           .sort((a, b) =>
             a.label.toLowerCase() > b.label.toLowerCase() ? 1 : -1

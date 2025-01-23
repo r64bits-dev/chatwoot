@@ -15,6 +15,7 @@ json.working_hours resource.weekly_schedule
 json.timezone resource.timezone
 json.callback_webhook_url resource.callback_webhook_url
 json.allow_messages_after_resolved resource.allow_messages_after_resolved
+json.can_see_this_inbox resource.can_see_this_inbox
 json.init_by_agent resource.init_by_agent
 json.lock_to_single_conversation resource.lock_to_single_conversation
 json.sender_name_type resource.sender_name_type

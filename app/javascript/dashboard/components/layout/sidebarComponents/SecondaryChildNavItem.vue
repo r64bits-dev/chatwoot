@@ -1,5 +1,6 @@
 <template>
   <router-link
+    v-if="isVisible"
     v-slot="{ href, isActive, navigate }"
     exact
     :to="to"
@@ -119,6 +120,10 @@ export default {
     isTextBold: {
       type: Boolean,
       default: false,
+    },
+    isVisible: {
+      type: Boolean,
+      default: true,
     },
   },
   computed: {

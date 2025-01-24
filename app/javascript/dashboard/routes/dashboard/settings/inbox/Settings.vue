@@ -680,6 +680,7 @@ export default {
         this.allowMessagesAfterResolved =
           this.inbox.allow_messages_after_resolved;
         this.initByAgent = this.inbox.init_by_agent;
+        this.canSeeThisInbox = this.inbox.can_see_this_inbox;
         this.continuityViaEmail = this.inbox.continuity_via_email;
         this.channelWebsiteUrl = this.inbox.website_url;
         this.channelWelcomeTitle = this.inbox.welcome_title;

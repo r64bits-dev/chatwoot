@@ -78,6 +78,10 @@ class AccountUser < ApplicationRecord
     permissions.except(*FEATURE_LIST.pluck('name'))
   end
 
+  def can_view_inbox?
+    permissions['view_inbox'] == true
+  end
+
   private
 
   def notify_creation

@@ -137,6 +137,10 @@ class Inbox < ApplicationRecord
     channel.name
   end
 
+  def can_see_this_inbox
+    Current.user.administrator? || Current.user.inboxes.exists?(id: id)
+  end
+
   def webhook_data
     {
       id: id,

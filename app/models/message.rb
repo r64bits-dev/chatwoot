@@ -195,6 +195,7 @@ class Message < ApplicationRecord
 
   def content
     # move this to a presenter
+    return self[:content] if self[:content].present? && input_csat?
     return self[:content] if !input_csat? || inbox.web_widget?
 
     I18n.t('conversations.survey.response', link: "#{ENV.fetch('FRONTEND_URL', nil)}/survey/responses/#{conversation.uuid}")

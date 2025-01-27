@@ -56,6 +56,21 @@ class Channel::Telegram < ApplicationRecord
     "https://api.telegram.org/file/bot#{bot_token}/#{response.parsed_response['result']['file_path']}"
   end
 
+  def find_chat_id
+    response = HTTParty.get("#{telegram_api_url}/getUpdates")
+    return unless response.success?
+
+    updates = response.parsed_response['result'] || []
+
+    update_with_chat = updates.find do |update|
+      update.dig('message', 'chat', 'id') || update.dig('edited_message', 'chat', 'id')
+    end
+
+    return unless update_with_chat
+
+    update_with_chat.dig('message', 'chat', 'id') || update_with_chat.dig('edited_message', 'chat', 'id')
+  end
+
   private
 
   def ensure_valid_bot_token

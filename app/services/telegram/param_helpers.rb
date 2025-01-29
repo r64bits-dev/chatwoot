@@ -3,7 +3,8 @@ module Telegram::ParamHelpers
   def private_message?
     return true if callback_query_params?
 
-    params.dig(:message, :chat, :type) == 'private'
+    chat_type = params.dig(:message, :chat, :type)
+    %w[private group supergroup].include?(chat_type)
   end
 
   def telegram_params_content_attributes

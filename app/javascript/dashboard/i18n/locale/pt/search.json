@@ -46,6 +46,10 @@
           "PLACEHOLDER": "Digite a mensagem",
           "LABEL": "Preencha o corpo da mensagem"
         },
+        "ASSIGN_CURRENT_USER": {
+          "LABEL": "Atribuir usuário atual",
+          "DESC": "Atribua a conversa ao usuário atual (isso também inclui a atribuição do time)"
+        },
         "SUBMIT": "Criar conversa",
         "CANCEL": "Cancelar"
       },

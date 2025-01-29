@@ -131,8 +131,15 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def create_conversation_and_message
+    params_message = permitted_params_message
+    if @contact_inbox.inbox.telegram?
+      params_message[:additional_attributes] = {
+        chat_id: find_chat_id
+      }
+    end
+
     @conversation = ConversationBuilder.new(
-      params: permitted_params_message,
+      params: params_message,
       contact_inbox: @contact_inbox
     ).perform
 
@@ -228,5 +235,9 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def only_numbers(string)
     "+#{string.gsub(/[^\d]/, '')}"
+  end
+
+  def find_chat_id
+    @contact_inbox.inbox.channel.find_chat_id
   end
 end

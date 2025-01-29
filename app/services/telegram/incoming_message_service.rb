@@ -71,9 +71,17 @@ class Telegram::IncomingMessageService
 
   def contact_attributes
     {
-      name: "#{telegram_params_first_name} #{telegram_params_last_name}",
+      name: telegram_params_chat_name,
       additional_attributes: additional_attributes
     }
+  end
+
+  def telegram_params_chat_name
+    if telegram_params_chat_type == 'private'
+      "#{telegram_params_first_name} #{telegram_params_last_name}"
+    else
+      telegram_params_chat_title
+    end
   end
 
   def additional_attributes
@@ -85,7 +93,9 @@ class Telegram::IncomingMessageService
 
   def conversation_additional_attributes
     {
-      chat_id: telegram_params_chat_id
+      chat_id: telegram_params_chat_id,
+      chat_title: telegram_params_chat_title,
+      chat_type: telegram_params_chat_type
     }
   end
 
@@ -136,5 +146,13 @@ class Telegram::IncomingMessageService
 
   def visual_media_params
     params[:message][:photo].presence&.last || params.dig(:message, :sticker, :thumb).presence || params[:message][:video].presence
+  end
+
+  def telegram_params_chat_title
+    telegram_params_base_object[:chat][:title]
+  end
+
+  def telegram_params_chat_type
+    telegram_params_base_object[:chat][:type]
   end
 end

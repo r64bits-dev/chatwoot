@@ -17,7 +17,8 @@ class AsyncDispatcher < BaseDispatcher
       NotificationListener.instance,
       ReportingEventListener.instance,
       WebhookListener.instance,
-      AutomationRuleListener.instance
+      AutomationRuleListener.instance,
+      WhatsappListener.instance
     ]
   end
 end

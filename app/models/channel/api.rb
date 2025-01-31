@@ -37,6 +37,14 @@ class Channel::Api < ApplicationRecord
     additional_attributes.present? && additional_attributes['agent_reply_time_window'].present?
   end
 
+  def from_evolution?
+    webhook_url.present? && webhook_url.start_with?(ENV.fetch('EVOLUTION_API_WEBHOOK', nil))
+  end
+
+  def webhook_instance_name
+    webhook_url.split('/').last
+  end
+
   private
 
   def ensure_valid_agent_reply_time_window

@@ -31,6 +31,23 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
     process_response(response)
   end
 
+  def delete_message(phone_number, message_id)
+    response = HTTParty.post(
+      "#{phone_id_path}/messages/#{message_id}",
+      headers: api_headers,
+      body: {
+        'type': 'delete',
+        'to': format_phone_number(phone_number),
+        'client': @whatsapp_channel.provider_config['api_key']
+      }.to_json
+    )
+
+    Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
+    raise CustomExceptions::Account::ErrorReply unless response.success?
+
+    process_response(response)
+  end
+
   def get_template(template_name)
     whatsapp_channel.message_templates.find { |template| template['name'] == template_name }
   end
@@ -140,6 +157,8 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         type: 'interactive'
       }.to_json
     )
+
+    binding.pry
 
     process_response(response)
   end

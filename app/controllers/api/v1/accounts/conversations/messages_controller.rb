@@ -13,7 +13,7 @@ class Api::V1::Accounts::Conversations::MessagesController < Api::V1::Accounts::
 
   def destroy
     ActiveRecord::Base.transaction do
-      delete_message if channel.from_evolution?
+      delete_message if channel.name == 'API' && channel.from_evolution?
       message.update!(content: I18n.t('conversations.messages.deleted'), content_attributes: { deleted: true })
       message.attachments.destroy_all
     end

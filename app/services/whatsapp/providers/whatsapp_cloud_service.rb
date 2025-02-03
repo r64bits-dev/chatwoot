@@ -32,7 +32,7 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def delete_message(phone_number, message_id)
-    response = HTTParty.post(
+    response = HTTParty.delete(
       "#{phone_id_path}/messages/#{message_id}",
       headers: api_headers,
       body: {
@@ -42,7 +42,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
       }.to_json
     )
 
-    Rails.logger.info "response: #{response.inspect} request payload: #{request_payload}"
     raise CustomExceptions::Account::ErrorReply unless response.success?
 
     process_response(response)
@@ -157,8 +156,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
         type: 'interactive'
       }.to_json
     )
-
-    binding.pry
 
     process_response(response)
   end

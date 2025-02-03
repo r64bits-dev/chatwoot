@@ -9,12 +9,10 @@ class WhatsappListener < BaseListener
 
     payload = message.webhook_data.merge(event: __method__.to_s)
 
-    params = {
-      phone_number: payload[:conversation][:meta][:sender][:phone_number],
-      message_id: message.source_id,
-      event: 'delete_message'
-    }
+    payload[:phone_number] = inbox.channel.phone_number
+    payload[:message_id] = message.source_id
+    payload[:event] = :message_deleted
 
-    Webhooks::WhatsappEventsJob.perform_later(params)
+    Whatsapp::DeleteMessageJob.perform_later(message.id, payload)
   end
 end

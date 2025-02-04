@@ -51,6 +51,7 @@
         :is-a-tweet="isATweet"
         :is-a-whatsapp-channel="isAWhatsAppChannel"
         :is-web-widget-inbox="isAWebWidgetInbox"
+        :channel-type="inbox.channel_type"
         :inbox-supports-reply-to="inboxSupportsReplyTo"
         :in-reply-to="getInReplyToMessage(message)"
       />
@@ -73,6 +74,7 @@
         :is-a-tweet="isATweet"
         :is-a-whatsapp-channel="isAWhatsAppChannel"
         :is-web-widget-inbox="isAWebWidgetInbox"
+        :channel-type="inbox.channel_type"
         :inbox-supports-reply-to="inboxSupportsReplyTo"
         :in-reply-to="getInReplyToMessage(message)"
       />

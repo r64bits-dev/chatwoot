@@ -196,6 +196,10 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    channelType: {
+      type: String,
+      default: '',
+    },
   },
   data() {
     return {
@@ -288,7 +292,9 @@ export default {
     contextMenuEnabledOptions() {
       return {
         copy: this.hasText,
-        delete: this.hasText || this.hasAttachments,
+        delete:
+          (this.hasText || this.hasAttachments) &&
+          this.channelType !== 'Channel::Whatsapp',
         cannedResponse: this.isOutgoing && this.hasText,
         replyTo:
           !this.data.private &&

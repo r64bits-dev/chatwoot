@@ -182,8 +182,6 @@ class Whatsapp::Providers::WhatsappCloudService < Whatsapp::Providers::BaseServi
   end
 
   def build_components(template, template_info)
-    return [] if template_info[:parameters].blank?
-
     components = build_body_component(template, template_info[:parameters])
     components.concat(template_info[:buttons].map { |button| build_button_component(button) }) if template_info[:buttons].present?
     Rails.logger.info "build_components: #{components}"

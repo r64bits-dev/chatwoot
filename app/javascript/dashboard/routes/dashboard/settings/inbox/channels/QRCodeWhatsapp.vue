@@ -49,7 +49,7 @@
       </label>
     </div>
 
-    <div class="medium-8 columns messagingServiceHelptext">
+    <!-- <div class="medium-8 columns messagingServiceHelptext">
       <label for="useReopenConversation">
         <input
           id="useReopenConversation"
@@ -59,9 +59,9 @@
         />
         {{ $t('INBOX_MGMT.ADD.QRCODE.USE_REOPEN_CONVERSATION') }}
       </label>
-    </div>
+    </div> -->
 
-    <div class="medium-8 columns messagingServiceHelptext">
+    <!-- <div class="medium-8 columns messagingServiceHelptext">
       <label for="useConversationPending">
         <input
           id="useConversationPending"
@@ -71,7 +71,7 @@
         />
         {{ $t('INBOX_MGMT.ADD.QRCODE.USE_CONVERSATION_PENDING') }}
       </label>
-    </div>
+    </div> -->
 
     <div class="w-full">
       <woot-submit-button

@@ -267,6 +267,16 @@ export default {
         }
       );
 
+      if (this.contentType === 'input_csat' && this.data?.content) {
+        return (
+          this.formatMessage(
+            this.data.content,
+            this.isATweet,
+            this.data.private
+          )
+        );
+      }
+
       if (this.contentType === 'input_csat') {
         return this.$t('CONVERSATION.CSAT_REPLY_MESSAGE') + botMessageContent;
       }

@@ -11,6 +11,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   def index
     @all_tickets = find_tickets
     @tickets = @all_tickets
+               .search_by_params(params[:search])
                .search_by_status(params[:status])
                .order(created_at: :desc)
                .page(params[:page] || 1)

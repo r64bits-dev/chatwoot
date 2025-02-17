@@ -1,6 +1,9 @@
 <template>
-  <div id="tickets-list" class="flex flex-row w-full">
-    <div class="flex-col w-full" :class="{ 'w-[70%]': !!ticket }">
+  <div
+    id="tickets-list"
+    class="flex flex-col md:flex-row w-full overflow-y-scrol"
+  >
+    <div class="flex-col w-full" :class="{ 'md:w-[70%]': !!ticket }">
       <div class="flex p-4">
         <div class="flex flex-row w-full">
           <div class="flex-1">
@@ -21,16 +24,34 @@
           </div>
         </div>
       </div>
-      <ve-table
-        v-if="!showEmpty"
-        :fixed-header="true"
-        :columns="columns"
-        :table-data="tableData"
-        :event-custom-option="eventCustomOption"
-        max-height="calc(100vh - 15rem)"
-      />
-
-      <div v-else class="empty-data">Nenhum ticket disponível.</div>
+      <div class="overflow-x-auto">
+        <div v-if="isMobile" class="flex flex-col gap-2">
+          <div
+            v-for="ticket in tableData"
+            :key="ticket.id"
+            class="border p-4 rounded-lg"
+          >
+            <p><strong>Número do Ticket:</strong> {{ ticket.id }}</p>
+            <p>
+              <strong>Data de Abertura:</strong>
+              {{ formatDate(ticket.created_at) }}
+            </p>
+            <p>
+              <strong>Status:</strong> {{ translateStatusText(ticket.status) }}
+            </p>
+            <p><strong>Descrição:</strong> {{ ticket.description }}</p>
+          </div>
+        </div>
+        <ve-table
+          v-else-if="!showEmpty"
+          :fixed-header="true"
+          :columns="columns"
+          :table-data="tableData"
+          :event-custom-option="eventCustomOption"
+          max-height="calc(100vh - 15rem)"
+        />
+        <div v-else class="empty-data">Nenhum ticket disponível.</div>
+      </div>
 
       <ve-pagination
         v-if="!showEmpty"
@@ -45,7 +66,7 @@
     </div>
     <div
       v-if="ticket"
-      class="flex flex-col w-[30%] border-l border-slate-50 dark:border-slate-800"
+      class="flex flex-col w-full md:w-[30%] border-t md:border-l md:border-t-0 border-slate-50 dark:border-slate-800"
     >
       <ticket-details :ticket-id="ticket.id" />
     </div>
@@ -94,6 +115,9 @@ export default {
       pagination: 'tickets/getPagination',
       currentUserId: 'getCurrentUserID',
     }),
+    isMobile() {
+      return window.innerWidth < 768;
+    },
     showEmpty() {
       return !this.tableData || this.tableData.length === 0;
     },
@@ -266,8 +290,6 @@ export default {
 
 <style lang="scss" scoped>
 #tickets-list {
-  @apply flex flex-col flex-1;
-
   .ve-table {
     &::v-deep {
       th.ve-table-header-th {
@@ -305,6 +327,12 @@ export default {
     font-size: 16px;
     border: 1px solid #eee;
     border-top: 0;
+  }
+
+  @media (max-width: 768px) {
+    .ve-table {
+      min-width: 100%;
+    }
   }
 }
 </style>

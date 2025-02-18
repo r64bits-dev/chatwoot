@@ -10,7 +10,8 @@ class AutoAssignment::AgentAssignmentService
 
   def perform
     new_assignee = find_assignee
-    conversation.update(assignee: new_assignee) if new_assignee
+
+    conversation.update(assignee: new_assignee, team: find_team(new_assignee)) if new_assignee
   end
 
   private
@@ -34,5 +35,9 @@ class AutoAssignment::AgentAssignmentService
 
   def round_robin_key
     format(::Redis::Alfred::ROUND_ROBIN_AGENTS, inbox_id: conversation.inbox_id)
+  end
+
+  def find_team(assignee)
+    assignee.teams.order(:level).first
   end
 end

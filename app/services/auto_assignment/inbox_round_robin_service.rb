@@ -27,6 +27,7 @@ class AutoAssignment::InboxRoundRobinService
   # the values of allowed member ids should be in string format
   def available_agent(allowed_agent_ids: [])
     reset_queue unless validate_queue?
+
     user_id = get_member_from_allowed_agent_ids_hierarchical(allowed_agent_ids)
     inbox.inbox_members.find_by(user_id: user_id)&.user if user_id.present?
   end
@@ -49,7 +50,7 @@ class AutoAssignment::InboxRoundRobinService
     while current_level <= max_hierarchy_level
       level_agent_ids = agents_by_level(current_level, allowed_agent_ids)
       user_id = level_agent_ids.intersection(queue).pop
-      return pop_push_to_queue(user_id) if user_id.present?
+      return pop_push_to_queue(user_id) && user_id if user_id.present?
 
       current_level += 1
     end

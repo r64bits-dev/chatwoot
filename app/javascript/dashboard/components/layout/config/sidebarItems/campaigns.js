@@ -2,7 +2,12 @@ import { frontendURL } from '../../../../helper/URLHelper';
 
 const campaigns = accountId => ({
   parentNav: 'campaigns',
-  routes: ['settings_account_campaigns', 'one_off', 'app_integration'],
+  routes: [
+    'settings_account_campaigns',
+    'one_off',
+    'app_integration',
+    'file_import',
+  ],
   menuItems: [
     {
       icon: 'arrow-swap',
@@ -27,6 +32,14 @@ const campaigns = accountId => ({
       hasSubMenu: false,
       toState: frontendURL(`accounts/${accountId}/campaigns/app_integration`),
       toStateName: 'app_integration',
+    },
+    {
+      key: 'fileImports',
+      icon: 'download',
+      label: 'FILE_IMPORT',
+      hasSubMenu: false,
+      toState: frontendURL(`accounts/${accountId}/campaigns/file_import`),
+      toStateName: 'file_import',
     },
   ],
 });

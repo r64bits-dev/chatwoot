@@ -148,6 +148,14 @@
             />
           </div>
         </div>
+        <div class="w-full flex items-center gap-2 mb-4">
+          <woot-toggle
+            v-model="assignCurrentUser"
+            :label="
+              $t('SEARCH.CREATE_CONVERSATION.FORM.ASSIGN_CURRENT_USER.DESC')
+            "
+          />
+        </div>
       </form>
 
       <div class="flex flex-row justify-end gap-2 p-2 w-full">
@@ -211,6 +219,7 @@ export default {
       activeDialCode: '',
       searchResults: [],
       searchTimeout: null,
+      assignCurrentUser: true,
     };
   },
   validations: {
@@ -265,7 +274,7 @@ export default {
       }
       this.isCreating = true;
       try {
-        const response = await ContactsAPI.createContactAndMessage({
+        const payload = {
           contact: {
             name: this.contactName,
             phone: this.phoneNumber,
@@ -273,7 +282,10 @@ export default {
           },
           message: this.conversationMessage,
           inboxId: this.inbox.id,
-        });
+          assignCurrentUser: this.assignCurrentUser,
+        };
+
+        const response = await ContactsAPI.createContactAndMessage(payload);
         if (response.status === 200) {
           this.showAlert(
             this.$t('SEARCH.CREATE_CONVERSATION.API.SUCCESS_MESSAGE')

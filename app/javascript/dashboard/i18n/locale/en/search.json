@@ -46,6 +46,10 @@
           "PLACEHOLDER": "Enter the message",
           "LABEL": "Fill the message body"
         },
+        "ASSIGN_CURRENT_USER": {
+          "LABEL": "Assign current user",
+          "DESC": "Assign the conversation to the current user (this also includes the assignment of the team)"
+        },
         "SUBMIT": "Create conversation",
         "CANCEL": "Cancel"
       },

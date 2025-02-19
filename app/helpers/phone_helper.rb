@@ -55,4 +55,18 @@ module PhoneHelper
     position = ddd ? number.index(ddd) + 2 : 3
     number.insert(position, '9')
   end
+
+  def remove_extra_nine(number)
+    return number unless number.start_with?('+55')
+
+    digits = number[1..]
+    case digits.length
+    when 11
+      number[3] == '9' ? number[0, 3] + number[4..] : number
+    when 13
+      number[5] == '9' ? number[0, 5] + number[6..] : number
+    else
+      number
+    end
+  end
 end

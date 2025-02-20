@@ -147,6 +147,10 @@ class User < ApplicationRecord
     availability_status == 'offline'
   end
 
+  def account_user
+    account_users.find_by(account_id: Current.account.id)
+  end
+
   def webhook_data
     {
       id: id,

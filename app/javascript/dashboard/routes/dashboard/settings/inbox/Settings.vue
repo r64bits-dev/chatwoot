@@ -606,7 +606,12 @@ export default {
       return this.inbox.name;
     },
     canLocktoSingleConversation() {
-      return this.isASmsInbox || this.isAWhatsAppChannel;
+      return (
+        this.isASmsInbox ||
+        this.isAWhatsAppChannel ||
+        this.isAnEmailChannel ||
+        this.isAPIInbox
+      );
     },
     inboxNameLabel() {
       if (this.isAWebWidgetInbox) {

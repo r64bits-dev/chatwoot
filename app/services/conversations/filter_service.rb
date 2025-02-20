@@ -54,7 +54,18 @@ class Conversations::FilterService < FilterService
   end
 
   def base_relation
-    @account.conversations.includes(
+    base_conversations = @account.conversations
+
+    if !@user.administrator?
+      base_conversations = base_conversations.where(team_id: @user.team_ids)
+    end
+
+    if !@user.administrator?
+      base_inboxes = Current.account.inboxes.joins(:inbox_members).where(inbox_members: { user_id: @user.id })
+      base_conversations = base_conversations.where(inbox_id: base_inboxes.pluck(:id))
+    end
+
+    base_conversations.includes(
       :taggings, :inbox, { assignee: { avatar_attachment: [:blob] } }, { contact: { avatar_attachment: [:blob] } }, :team, :messages, :contact_inbox
     )
   end

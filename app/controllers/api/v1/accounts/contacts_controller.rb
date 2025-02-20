@@ -138,6 +138,11 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
       }
     end
 
+    if permitted_params[:assign_current_user]
+      params_message[:team_id] = current_user.team_ids.first
+      params_message[:assignee_id] = current_user.id
+    end
+
     @conversation = ConversationBuilder.new(
       params: params_message,
       contact_inbox: @contact_inbox
@@ -186,7 +191,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params
-    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, additional_attributes: {}, custom_attributes: {})
+    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, :assign_current_user, additional_attributes: {},
+                                                                                                         custom_attributes: {})
   end
 
   def permitted_params_message

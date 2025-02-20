@@ -97,11 +97,12 @@ class ContactAPI extends ApiClient {
     );
   }
 
-  createContactAndMessage({ contact, message, inboxId }) {
+  createContactAndMessage({ contact, message, inboxId, assignCurrentUser }) {
     return axios.post(`${this.url}/messages`, {
       contact,
       message,
       inbox_id: inboxId,
+      assign_current_user: assignCurrentUser,
     });
   }
 }

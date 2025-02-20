@@ -41,19 +41,14 @@ class Webhooks::WhatsappEventsJob < ApplicationJob
   end
 
   def get_channel_from_wb_payload(wb_params)
-    # Extrai o número de telefone bruto do payload
     raw_phone_number = wb_params[:entry].first[:changes].first.dig(:value, :metadata, :display_phone_number)
-
-    # Formata o número de telefone usando o método format_phone_number
     phone_number = format_phone_number(raw_phone_number)
-    p "phone number, #{phone_number}"
+    phone_number_without_nine = remove_extra_nine(phone_number)
 
+    phone_numbers_to_search = [phone_number, phone_number_without_nine].uniq
     phone_number_id = wb_params[:entry].first[:changes].first.dig(:value, :metadata, :phone_number_id)
-    p "phone number id, #{phone_number_id}"
 
-    # Realiza a busca usando o número de telefone formatado
-    channel = Channel::Whatsapp.find_by(phone_number: phone_number)
-    p "channel from get channel, #{channel.inspect}"
+    channel = Channel::Whatsapp.where(phone_number: phone_numbers_to_search).first
 
     channel if channel && channel.provider_config['phone_number_id'] == phone_number_id
   end

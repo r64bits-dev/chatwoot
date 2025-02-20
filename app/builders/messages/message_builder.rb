@@ -17,11 +17,13 @@ class Messages::MessageBuilder
   end
 
   def perform
-    @message = @conversation.messages.build(message_params)
-    process_attachments
-    process_emails
-    @message.save!
-    @message
+    ActiveRecord::Base.transaction do
+      @message = @conversation.messages.build(message_params)
+      process_attachments
+      process_emails
+      @message.save!
+      @message
+    end
   end
 
   private

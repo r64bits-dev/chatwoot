@@ -16,7 +16,7 @@
 #  greeting_enabled              :boolean          default(FALSE)
 #  greeting_message              :string
 #  init_by_agent                 :boolean          default(FALSE), not null
-#  lock_to_single_conversation   :boolean          default(FALSE), not null
+#  lock_to_single_conversation   :boolean          default(TRUE), not null
 #  name                          :string           not null
 #  out_of_office_message         :string
 #  sender_name_type              :integer          default("friendly"), not null

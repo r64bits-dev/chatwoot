@@ -70,10 +70,16 @@ class ConversationFinder
   end
 
   def set_inboxes
+    if @current_user.administrator?
+      base_inboxes = @current_user.assigned_inboxes
+    else
+      base_inboxes = Current.account.inboxes.joins(:inbox_members).where(inbox_members: { user_id: @current_user.id })
+    end
+
     @inbox_ids = if params[:inbox_id]
-                   @current_user.assigned_inboxes.where(id: params[:inbox_id])
+                   base_inboxes.where(id: params[:inbox_id]).pluck(:id)
                  else
-                   @current_user.assigned_inboxes.pluck(:id)
+                   base_inboxes.pluck(:id)
                  end
   end
 

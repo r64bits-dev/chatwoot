@@ -1,8 +1,6 @@
 <template>
-  <div
-    id="tickets-list"
-    class="flex flex-col md:flex-row w-full overflow-y-scrol"
-  >
+  <div id="tickets-list" class="flex flex-col md:flex-row w-full">
+    <!-- Lista de Tickets -->
     <div class="flex-col w-full" :class="{ 'md:w-[70%]': !!ticket }">
       <div class="flex p-4">
         <div class="flex flex-row w-full">
@@ -24,12 +22,15 @@
           </div>
         </div>
       </div>
+
       <div class="overflow-x-auto">
+        <!-- Visualização Mobile: lista de tickets em forma de cards -->
         <div v-if="isMobile" class="flex flex-col gap-2">
           <div
             v-for="ticket in tableData"
             :key="ticket.id"
             class="border p-4 rounded-lg"
+            @click="handleRowClick(ticket)"
           >
             <p><strong>Número do Ticket:</strong> {{ ticket.id }}</p>
             <p>
@@ -42,6 +43,8 @@
             <p><strong>Descrição:</strong> {{ ticket.description }}</p>
           </div>
         </div>
+
+        <!-- Visualização Desktop: Tabela com os tickets -->
         <ve-table
           v-else-if="!showEmpty"
           :fixed-header="true"
@@ -50,12 +53,13 @@
           :event-custom-option="eventCustomOption"
           max-height="calc(100vh - 15rem)"
         />
+
         <div v-else class="empty-data">Nenhum ticket disponível.</div>
       </div>
 
       <ve-pagination
         v-if="!showEmpty"
-        class="!flex w-full justify-center !mt-8"
+        class="!flex justify-center !mt-0 w-full"
         :total="pagination.total_count"
         :page-index="pagination.current_page"
         :page-size="itemsPerPage"
@@ -64,11 +68,21 @@
         @on-page-size-change="updateItemsPerPage"
       />
     </div>
+
+    <!-- Sidebar: Ticket Details para desktop -->
     <div
-      v-if="ticket"
+      v-if="ticket && !isMobile"
       class="flex flex-col w-full md:w-[30%] border-t md:border-l md:border-t-0 border-slate-50 dark:border-slate-800"
     >
       <ticket-details :ticket-id="ticket.id" />
+    </div>
+
+    <!-- Modal: Ticket Details para mobile -->
+    <div v-if="isMobile && showTicketDetailsModal" class="modal-overlay">
+      <div class="modal-content">
+        <button class="modal-close" @click="closeModal">X</button>
+        <ticket-details :ticket-id="ticket.id" />
+      </div>
     </div>
   </div>
 </template>
@@ -81,6 +95,7 @@ import TicketDetails from './components/TicketDetails.vue';
 import { VeTable, VePagination } from 'vue-easytable';
 import TimeAgo from 'dashboard/components/ui/TimeAgo.vue';
 import { debounce } from '@chatwoot/utils';
+
 export default {
   name: 'TicketContent',
   components: {
@@ -93,10 +108,13 @@ export default {
   },
   data() {
     return {
+      windowWidth: window.innerWidth,
+      showTicketDetailsModal: false,
+      // Configuração dos eventos da tabela
       eventCustomOption: {
         bodyRowEvents: ({ row }) => ({
           click: () => {
-            this.$store.dispatch('tickets/get', row.id);
+            this.handleRowClick(row);
           },
         }),
       },
@@ -105,6 +123,7 @@ export default {
       hasPagination: false,
       itemsPerPage: 30,
       search: '',
+      currentPage: 1,
     };
   },
   computed: {
@@ -116,7 +135,7 @@ export default {
       currentUserId: 'getCurrentUserID',
     }),
     isMobile() {
-      return window.innerWidth < 768;
+      return this.windowWidth < 1280;
     },
     showEmpty() {
       return !this.tableData || this.tableData.length === 0;
@@ -148,7 +167,12 @@ export default {
           key: 'id',
           sortable: true,
           renderBodyCell: ({ row }) => (
-            <woot-button variant="clear">{row.id}</woot-button>
+            <woot-button
+              variant="clear"
+              onClick={() => this.handleRowClick(row)}
+            >
+              {row.id}
+            </woot-button>
           ),
         },
         {
@@ -169,32 +193,26 @@ export default {
           title: 'Status',
           key: 'status',
           sortable: true,
-          renderBodyCell: ({ row }) => {
-            return this.translateStatusText(row.status);
-          },
+          renderBodyCell: ({ row }) => this.translateStatusText(row.status),
         },
         {
           field: 'assigned_to',
           title: 'Atribuído',
           key: 'assigned_to',
           sortable: true,
-          renderBodyCell: ({ row }) => {
-            return this.getTextAssignee(row);
-          },
+          renderBodyCell: ({ row }) => this.getTextAssignee(row),
         },
         {
           field: 'resolved_at',
           title: 'Tempo de Conclusão',
           key: 'resolved_at',
           sortable: true,
-          renderBodyCell: ({ row }) => {
-            return (
-              <TimeAgo
-                last-activity-timestamp={this.getTimestamp(row.resolved_at)}
-                created-at-timestamp={this.getTimestamp(row.created_at)}
-              />
-            );
-          },
+          renderBodyCell: ({ row }) => (
+            <TimeAgo
+              last-activity-timestamp={this.getTimestamp(row.resolved_at)}
+              created-at-timestamp={this.getTimestamp(row.created_at)}
+            />
+          ),
         },
       ];
     },
@@ -208,9 +226,17 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener('resize', this.handleResize);
     this.fetchTickets(this.selectedLabel);
   },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.handleResize);
+  },
   methods: {
+    // Atualiza a largura da janela
+    handleResize() {
+      this.windowWidth = window.innerWidth;
+    },
     getTextAssignee(ticket) {
       if (!ticket.assigned_to) {
         return this.$t('TICKETS.ASSIGNEE_FILTER.UNASSIGNED');
@@ -284,6 +310,21 @@ export default {
           return status;
       }
     },
+    handleRowClick(row) {
+      if (this.ticket && this.ticket.id === row.id) {
+        this.$store.commit('tickets/SET_TICKET', null);
+        this.showTicketDetailsModal = false;
+      } else {
+        this.$store.dispatch('tickets/get', row.id);
+        if (this.isMobile) {
+          this.showTicketDetailsModal = true;
+        }
+      }
+    },
+    closeModal() {
+      this.showTicketDetailsModal = false;
+      this.$store.commit('tickets/SET_TICKET', null);
+    },
   },
 };
 </script>
@@ -296,7 +337,6 @@ export default {
         font-size: var(--font-size-mini) !important;
         padding: var(--space-small) var(--space-two) !important;
       }
-
       td.ve-table-body-td {
         padding: var(--space-one) var(--space-two) !important;
       }
@@ -305,7 +345,6 @@ export default {
 
   &::v-deep .ve-pagination {
     @apply bg-transparent dark:bg-transparent;
-
     @apply dark:text-white;
   }
 
@@ -334,5 +373,38 @@ export default {
       min-width: 100%;
     }
   }
+}
+
+/* Estilos do Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+.modal-content {
+  position: relative;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 4px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.modal-close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
 }
 </style>

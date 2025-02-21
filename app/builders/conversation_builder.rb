@@ -15,6 +15,8 @@ class ConversationBuilder
   private
 
   def look_up_existing_conversation
+    return if params[:type] == 'create_new_conversation'
+
     return unless @contact_inbox.inbox.lock_to_single_conversation?
 
     @contact_inbox.conversations.last

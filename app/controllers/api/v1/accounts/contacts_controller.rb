@@ -139,7 +139,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     end
 
     if permitted_params[:assign_current_user]
-      params_message[:team_id] = current_user.team_ids.first
+      params_message[:team_id] = current_user.teams.where(account: current_account).first
       params_message[:assignee_id] = current_user.id
     end
 
@@ -196,7 +196,7 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params_message
-    params.permit(:inbox_id, :contact_id, contact: {}, message: {})
+    params.permit(:inbox_id, :contact_id, :type, contact: {}, message: {})
   end
 
   def contact_custom_attributes

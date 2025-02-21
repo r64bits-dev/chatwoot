@@ -19,7 +19,7 @@ class ConversationBuilder
 
     return unless @contact_inbox.inbox.lock_to_single_conversation?
 
-    @contact_inbox.conversations.last
+    @contact_inbox.conversations.where(status: 'open').last
   end
 
   def create_new_conversation

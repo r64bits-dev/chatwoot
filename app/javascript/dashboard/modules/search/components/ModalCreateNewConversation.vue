@@ -283,6 +283,7 @@ export default {
           message: this.conversationMessage,
           inboxId: this.inbox.id,
           assignCurrentUser: this.assignCurrentUser,
+          type: 'create_new_conversation',
         };
 
         const response = await ContactsAPI.createContactAndMessage(payload);

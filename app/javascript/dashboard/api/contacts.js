@@ -103,6 +103,7 @@ class ContactAPI extends ApiClient {
     inboxId,
     assignCurrentUser,
     type,
+    teamId,
   }) {
     return axios.post(`${this.url}/messages`, {
       contact,
@@ -110,6 +111,7 @@ class ContactAPI extends ApiClient {
       inbox_id: inboxId,
       assign_current_user: assignCurrentUser,
       type,
+      teamId
     });
   }
 }

@@ -42,6 +42,10 @@
           "PLACEHOLDER": "Escolha a caixa de entrada",
           "ERROR": "Escolha a caixa de entrada"
         },
+        "TEAM": {
+          "LABEL": "Time",
+          "PLACEHOLDER": "Selecione o time onde essa conversa sera registrada"
+        },
         "MESSAGE": {
           "PLACEHOLDER": "Digite a mensagem",
           "LABEL": "Preencha o corpo da mensagem"

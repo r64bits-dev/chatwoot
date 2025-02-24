@@ -131,23 +131,37 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def create_conversation_and_message
+    Rails.logger.info "Permitted params: #{permitted_params_message.inspect}"
+    Rails.logger.info "teamId from params: #{permitted_params[:teamId]}"
+  
     params_message = permitted_params_message
     if @contact_inbox.inbox.telegram?
       params_message[:additional_attributes] = {
         chat_id: find_chat_id
       }
     end
-
-    if permitted_params[:assign_current_user]
-      params_message[:team_id] = current_user.teams.where(account: current_account).first
+  
+    # Primeiro, define o team_id com base no teamId enviado, se presente
+    if permitted_params[:teamId].present?
+      params_message[:team_id] = permitted_params[:teamId]
+    end
+  
+    # Depois, aplica assign_current_user apenas se team_id ainda não foi definido
+    if permitted_params[:assign_current_user] && !params_message[:team_id].present?
+      params_message[:team_id] = current_user.teams.where(account: current_account).first&.id
+      params_message[:assignee_id] = current_user.id
+    elsif permitted_params[:assign_current_user]
+      # Se assign_current_user é true e já temos um team_id, apenas seta o assignee
       params_message[:assignee_id] = current_user.id
     end
-
+  
+    params_message[:team_id] = permitted_params[:teamId] if permitted_params[:teamId].present?
+  
     @conversation = ConversationBuilder.new(
       params: params_message,
       contact_inbox: @contact_inbox
     ).perform
-
+  
     @message = Messages::MessageBuilder.new(
       current_user,
       @conversation,
@@ -191,12 +205,12 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params
-    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, :assign_current_user, additional_attributes: {},
+    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, :assign_current_user, :teamId, additional_attributes: {},
                                                                                                          custom_attributes: {})
   end
 
   def permitted_params_message
-    params.permit(:inbox_id, :contact_id, :type, contact: {}, message: {})
+    params.permit(:inbox_id, :contact_id, :type, :assign_current_user, :teamId, contact: {}, message: {})
   end
 
   def contact_custom_attributes

@@ -80,6 +80,9 @@
       }
     },
     "CUSTOM_TICKET": {
+      "NOTIFY_MESSAGE": "Notificar o cliente com o número desse ticket",
+      "YES": "SIM",
+      "NO": "NÃO",
       "TITLE": "Create a ticket",
       "SUBTITLE": "Create a ticket for the agent",
       "NAME": "Ticket Name",

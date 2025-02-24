@@ -51,7 +51,6 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     head :ok, message: I18n.t('errors.contacts.export.success')
   end
 
-  # returns online contacts
   def active
     contacts = Current.account.contacts.where(id: ::OnlineStatusTracker
                   .get_available_contact_ids(Current.account.id))
@@ -73,7 +72,6 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     @contactable_inboxes = @all_contactable_inboxes.select { |contactable_inbox| policy(contactable_inbox[:inbox]).show? }
   end
 
-  # TODO : refactor this method into dedicated contacts/custom_attributes controller class and routes
   def destroy_custom_attributes
     @contact.custom_attributes = @contact.custom_attributes.excluding(params[:custom_attributes])
     @contact.save!
@@ -90,8 +88,12 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contact_and_message
     ActiveRecord::Base.transaction do
-      #find_or_create_contact
-      find_or_reuse_contact
+      @contact = find_or_reuse_contact
+      unless @contact
+        render json: { error: 'Contato não encontrado e não pode ser criado pois o número já existe ou os dados estão incompletos' }, 
+               status: :unprocessable_entity and return
+      end
+      @contact_inbox = build_contact_inbox
       create_conversation_and_message
     end
   end
@@ -121,61 +123,84 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   private
 
-  def find_or_create_contact
-    @contact = current_account.contacts.find_or_create_by(
-      name: permitted_params_message[:contact][:name],
-      phone_number: only_numbers(permitted_params_message[:contact][:phone])
-    )
-    @contact.email = permitted_params_message[:contact][:email]
-    @contact.save!
-    @contact_inbox = build_contact_inbox
+  def find_or_reuse_contact
+    phone = params[:phone_number] || params.dig(:contact, :phone)
+    email = params[:email] || params.dig(:contact, :email)
+    name = params[:name] || params.dig(:contact, :name)
+
+    contact = find_existing_contact(phone, email)
+    return contact if contact.present?
+
+    # Se não encontrar, retorna nil sem criar
+    nil
   end
 
-  def find_or_reuse_contact
-    phone_number = only_numbers(permitted_params_message[:contact][:phone])
-    email = permitted_params_message[:contact][:email]
-    name = permitted_params_message[:contact][:name]
-
-    # Busca contato existente por telefone ou e-mail
-    @contact = current_account.contacts.find_by(phone_number: phone_number) ||
-               current_account.contacts.find_by(email: email)
-
-    # Se não encontrar, cria um novo contato
-    unless @contact
-      @contact = current_account.contacts.create!(
-        name: name,
-        phone_number: phone_number,
-        email: email
-      )
+  def find_existing_contact(phone, email)
+    return nil unless phone.present? || email.present?
+    
+    query = Contact.where(account_id: current_account.id)
+    
+    if phone.present?
+      variations = possible_phone_variations(phone)
+      query = query.where(phone_number: variations)
     end
+    
+    if email.present?
+      query = query.or(Contact.where(account_id: current_account.id, email: email))
+    end
+    
+    query.first
+  end
 
-    # Garante que o contact_inbox seja criado ou reutilizado
-    @contact_inbox = build_contact_inbox
+  def normalize_phone_number(phone)
+    return nil unless phone.present?
+    cleaned = phone.gsub(/[^0-9]/, '')
+    
+    cleaned = cleaned.sub(/^55/, '') if cleaned.start_with?('55')
+    
+    if cleaned.length == 11 && cleaned[2] == '9'
+      cleaned
+    elsif cleaned.length == 10
+      "#{cleaned[0..1]}9#{cleaned[2..-1]}"
+    else
+      cleaned
+    end
+  end
+
+  def possible_phone_variations(phone)
+    normalized = normalize_phone_number(phone)
+    return [] unless normalized.present?
+    
+    [
+      "+55#{normalized}",
+      "55#{normalized}",
+      normalized,
+      "+55#{normalized[0..1]}#{normalized[3..-1]}",
+      "55#{normalized[0..1]}#{normalized[3..-1]}",
+      "#{normalized[0..1]}#{normalized[3..-1]}"
+    ].uniq
   end
 
   def create_conversation_and_message
     Rails.logger.info "Permitted params: #{permitted_params_message.inspect}"
     Rails.logger.info "teamId from params: #{permitted_params[:teamId]}"
-    Rails.logger.info "Contato reutilizado ou criado: #{@contact.inspect}"
+    Rails.logger.info "Contato reutilizado: #{@contact.inspect}"
   
     params_message = permitted_params_message
-    if @contact_inbox.inbox.telegram?
+    if @contact_inbox&.inbox&.telegram?
       params_message[:additional_attributes] = {
         chat_id: find_chat_id
       }
     end
   
-    # Primeiro, define o team_id com base no teamId enviado, se presente
     if permitted_params[:teamId].present?
       params_message[:team_id] = permitted_params[:teamId]
     end
   
-    # Depois, aplica assign_current_user apenas se team_id ainda não foi definido
     if permitted_params[:assign_current_user] && !params_message[:team_id].present?
       params_message[:team_id] = current_user.teams.where(account: current_account).first&.id
       params_message[:assignee_id] = current_user.id
     elsif permitted_params[:assign_current_user]
-      # Se assign_current_user é true e já temos um team_id, apenas seta o assignee
       params_message[:assignee_id] = current_user.id
     end
   
@@ -193,12 +218,10 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     ).perform
   end
 
-  # TODO: Move this to a finder class
   def resolved_contacts
     return @resolved_contacts if @resolved_contacts
 
     @resolved_contacts = Current.account.contacts.resolved_contacts
-
     @resolved_contacts = @resolved_contacts.tagged_with(params[:labels], any: true) if params[:labels].present?
     @resolved_contacts
   end
@@ -213,7 +236,6 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
                            .page(@current_page).per(RESULTS_PER_PAGE)
 
     return contacts_with_avatar.includes([{ contact_inboxes: [:inbox] }]) if @include_contact_inboxes
-
     contacts_with_avatar
   end
 
@@ -229,8 +251,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
   end
 
   def permitted_params
-    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, :assign_current_user, :teamId, additional_attributes: {},
-                                                                                                         custom_attributes: {})
+    params.permit(:name, :identifier, :email, :phone_number, :avatar, :avatar_url, :assign_current_user, :teamId, 
+                  additional_attributes: {}, custom_attributes: {})
   end
 
   def permitted_params_message
@@ -239,12 +261,10 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contact_custom_attributes
     return @contact.custom_attributes.merge(permitted_params[:custom_attributes]) if permitted_params[:custom_attributes]
-
     @contact.custom_attributes
   end
 
   def contact_update_params
-    # we want the merged custom attributes not the original one
     permitted_params.except(:custom_attributes, :avatar_url).merge({ custom_attributes: contact_custom_attributes })
   end
 

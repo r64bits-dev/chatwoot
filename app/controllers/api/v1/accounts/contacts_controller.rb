@@ -90,7 +90,8 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
 
   def contact_and_message
     ActiveRecord::Base.transaction do
-      find_or_create_contact
+      #find_or_create_contact
+      find_or_reuse_contact
       create_conversation_and_message
     end
   end
@@ -130,9 +131,32 @@ class Api::V1::Accounts::ContactsController < Api::V1::Accounts::BaseController
     @contact_inbox = build_contact_inbox
   end
 
+  def find_or_reuse_contact
+    phone_number = only_numbers(permitted_params_message[:contact][:phone])
+    email = permitted_params_message[:contact][:email]
+    name = permitted_params_message[:contact][:name]
+
+    # Busca contato existente por telefone ou e-mail
+    @contact = current_account.contacts.find_by(phone_number: phone_number) ||
+               current_account.contacts.find_by(email: email)
+
+    # Se não encontrar, cria um novo contato
+    unless @contact
+      @contact = current_account.contacts.create!(
+        name: name,
+        phone_number: phone_number,
+        email: email
+      )
+    end
+
+    # Garante que o contact_inbox seja criado ou reutilizado
+    @contact_inbox = build_contact_inbox
+  end
+
   def create_conversation_and_message
     Rails.logger.info "Permitted params: #{permitted_params_message.inspect}"
     Rails.logger.info "teamId from params: #{permitted_params[:teamId]}"
+    Rails.logger.info "Contato reutilizado ou criado: #{@contact.inspect}"
   
     params_message = permitted_params_message
     if @contact_inbox.inbox.telegram?

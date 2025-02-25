@@ -47,6 +47,7 @@ module Chatwoot
 
     # Custom chatwoot configurations
     config.x = config_for(:app).with_indifferent_access
+    config.time_zone = 'America/Sao_Paulo'
 
     # default locale
     config.i18n.default_locale = :pt_BR

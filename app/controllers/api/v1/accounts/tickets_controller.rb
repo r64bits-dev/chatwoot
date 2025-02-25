@@ -139,13 +139,13 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
 
   def send_resolution_notification
     return unless @ticket.conversation_id.present?
-
+  
     conversation = Conversation.find(@ticket.conversation_id)
     return unless conversation.present?
-
-    # Formata a data e hora da resolução
-    resolved_at_formatted = @ticket.resolved_at.strftime('%d/%m/%Y %H:%M:%S')
-    message_content = "Seu ticket #{@ticket.id} foi resolvido!\nData da Resolução: #{resolved_at_formatted}"
+  
+    # Converte resolved_at para o fuso horário desejado (ex.: América/São Paulo)
+    resolved_at_formatted = @ticket.resolved_at.in_time_zone('America/Sao_Paulo').strftime('%d/%m/%Y %H:%M:%S')
+    message_content = "Seu ticket foi resolvido! Número: #{@ticket.id}, Resolvido em: #{resolved_at_formatted}"
     
     message_builder = Messages::MessageBuilder.new(
       current_user,

@@ -34,10 +34,14 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     Rails.logger.info "Parâmetros recebidos: #{params.inspect}"
     @ticket = build_ticket
     Rails.logger.info "Ticket criado: #{@ticket.inspect}"
-    return unless @ticket&.persisted?
 
-    send_ticket_notification if @ticket.send_notification?
-    render json: @ticket, status: :created
+    if @ticket&.persisted?
+      send_ticket_notification if @ticket.send_notification?
+      render json: @ticket, status: :created
+    else
+      Rails.logger.error "Erro ao salvar o ticket: #{@ticket.errors.full_messages}"
+      render json: { error: @ticket.errors.full_messages }, status: :unprocessable_entity
+    end
   end
 
   def update
@@ -64,8 +68,8 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     raise CustomExceptions::Ticket, I18n.t('activerecord.errors.models.ticket.errors.need_to_be_assigned') if @ticket.assignee.blank?
 
     @ticket.update!(status: :resolved, resolved_at: Time.current)
-    send_resolution_notification if @ticket.send_notification?  # Envia notificação se send_notification for true
-    render json: @ticket, status: :ok  # Retorna o ticket atualizado
+    send_resolution_notification if @ticket.send_notification?
+    render json: @ticket, status: :ok
   end
 
   def add_label
@@ -99,24 +103,6 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     end
   end
 
-  def ticket_params
-    request_params = params.require(:ticket).permit(
-      :title,
-      :description,
-      :status,
-      :assigned_to,
-      :conversation_id,
-      :account_id,
-      :user_id,
-      :resolved_at,
-      :send_notification,
-      custom_attributes: {}
-    )
-    request_params[:send_notification] = params[:sendNotification] if params[:sendNotification].present?
-    request_params[:conversation_id] = params[:conversation_id] if params[:conversation_id].present?
-    request_params
-  end
-
   def send_ticket_notification
     return unless @ticket.conversation_id.present?
 
@@ -143,7 +129,6 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     conversation = Conversation.find(@ticket.conversation_id)
     return unless conversation.present?
   
-    # Converte resolved_at para o fuso horário desejado (ex.: América/São Paulo)
     resolved_at_formatted = @ticket.resolved_at.in_time_zone('America/Sao_Paulo').strftime('%d/%m/%Y %H:%M:%S')
     message_content = "Seu ticket foi resolvido! Número: #{@ticket.id}, Resolvido em: #{resolved_at_formatted}"
     

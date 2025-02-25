@@ -114,7 +114,7 @@
             <!-- Exibição do Send Notification vindo do getTicket -->
             <div>
               <h3 class="text-sm text-slate-600">
-                {{ $t('CONVERSATION.CUSTOM_TICKET.NOTIFY_MESSAGE') }}:
+                {{ $t('CONVERSATION.CUSTOM_TICKET.NOTIFY_MESSAGE_RESOLVE') }}:
               </h3>
               <p class="text-sm text-slate-600">
                 <strong>{{ ticket.send_notification ? $t('CONVERSATION.CUSTOM_TICKET.YES') : $t('CONVERSATION.CUSTOM_TICKET.NO') }}</strong>

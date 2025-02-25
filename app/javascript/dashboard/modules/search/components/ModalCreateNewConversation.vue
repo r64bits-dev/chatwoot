@@ -23,18 +23,19 @@
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.LABEL')"
                 :placeholder="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.PLACEHOLDER')"
                 @input="onSearchQueryChange"
+                ref="nameInput"
               >
                 <template v-if="searchResults.length" #after>
-                  <div class="search-dropdown">
+                  <div class="search-dropdown" ref="searchDropdown">
                     <ul>
                       <li
                         v-for="contact in searchResults"
                         :key="contact.id"
                         @click="selectContact(contact)"
                       >
-                        <div>{{ contact.name }}</div>
-                        <small>{{ contact.email }}</small>
-                        <small>{{ contact.phone_number }}</small>
+                        <div style="color:black">{{ contact.name }}</div>
+                        <small style="color:black">{{ contact.email }}</small>
+                        <small style="color:black">{{ contact.phone_number }}</small>
                       </li>
                     </ul>
                   </div>
@@ -122,7 +123,7 @@
             </label>
           </div>
 
-          <!-- select team (novo campo) -->
+          <!-- select team -->
           <div class="w-full">
             <label>
               {{ $t('SEARCH.CREATE_CONVERSATION.FORM.TEAM.LABEL') }}
@@ -139,7 +140,8 @@
                 :max-height="160"
                 :close-on-select="true"
                 :options="teams"
-                :allow-empty="true">
+                :allow-empty="true"
+              >
                 <template slot="singleLabel" slot-scope="{ option }">
                   <span>{{ option.name }}</span>
                 </template>
@@ -225,7 +227,7 @@ export default {
         id: this.selectedInbox,
       },
       phoneNumber: '',
-      team: null, // Novo campo para o time selecionado
+      team: null,
       isCreating: false,
       isPhoneInputFocused: false,
       activeDialCode: '',
@@ -240,14 +242,14 @@ export default {
     conversationMessage: { required },
     phoneNumber: { required },
     inbox: { required },
-    team: {}, // Campo opcional, sem validação por enquanto
+    team: {},
   },
   computed: {
     ...mapGetters({
       currentUser: 'getCurrentUser',
       currentAccount: 'getCurrentAccount',
       inboxes: 'inboxes/getInboxes',
-      teams: 'teams/getTeams', // Assumindo que os times vêm do Vuex
+      teams: 'teams/getTeams',
     }),
     isFormValid() {
       return !this.$v.$invalid;
@@ -268,7 +270,6 @@ export default {
     },
   },
   watch: {
-    immediate: true,
     selectedInbox(newValue) {
       this.setSelectedInbox(newValue);
     },
@@ -278,7 +279,27 @@ export default {
       }
     },
   },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
   methods: {
+    // Novo método para limpar todos os campos
+    resetForm() {
+      this.contactName = '';
+      this.conversationEmail = '';
+      this.conversationMessage = { type: 'input', content: '' };
+      this.inbox = { id: this.selectedInbox }; // Mantém o inbox inicial se aplicável
+      this.phoneNumber = '';
+      this.team = null;
+      this.isPhoneInputFocused = false;
+      this.activeDialCode = '';
+      this.searchResults = [];
+      this.assignCurrentUser = true;
+      this.$v.$reset(); // Reseta as validações do vuelidate
+    },
     async onSubmit() {
       this.$v.$touch();
       if (!this.isFormValid) {
@@ -297,7 +318,7 @@ export default {
           inboxId: this.inbox.id,
           assignCurrentUser: this.assignCurrentUser,
           type: 'create_new_conversation',
-          teamId: this.team ? this.team.id : null, // Adiciona o ID do time, se selecionado
+          teamId: this.team ? this.team.id : null,
         };
 
         const response = await ContactsAPI.createContactAndMessage(payload);
@@ -305,7 +326,8 @@ export default {
           this.showAlert(
             this.$t('SEARCH.CREATE_CONVERSATION.API.SUCCESS_MESSAGE')
           );
-          this.onCancel();
+          this.resetForm(); // Limpa os campos após sucesso
+          this.onCancel(); // Fecha o modal
           this.$router.push({
             name: 'inbox_conversation',
             params: { conversation_id: response.data.payload.conversation.id },
@@ -351,7 +373,8 @@ export default {
       }
     },
     onCancel() {
-      this.$emit('cancel');
+      this.resetForm(); // Limpa os campos ao cancelar
+      this.$emit('cancel'); // Fecha o modal
     },
     onMessageInputChange(value) {
       this.conversationMessage.content = value;
@@ -393,9 +416,12 @@ export default {
       if (selectedInbox) {
         this.inbox = selectedInbox;
       } else {
-        this.inboxId = null;
+        this.inbox = null; // Reseta para null se não encontrado
         console.warn(`Inbox com ID ${inboxId} não encontrado.`);
       }
+    },
+    handleClickOutside(event) {
+      this.searchResults = [];
     },
   },
 };

@@ -80,6 +80,8 @@
       }
     },
     "CUSTOM_TICKET": {
+      "AGENT_LABEL": "Selecione o agente que deseja vincular esse ticket",
+      "AGENT_PLACEHOLDER":"Selecione o agente",
       "TITLE": "Criar um ticket",
       "SUBTITLE": "Criar um ticket para o agente",
       "NAME": "Nome do Ticket",

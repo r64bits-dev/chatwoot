@@ -23,15 +23,26 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def show
-    head :not_found if @ticket.nil?
+    if @ticket.nil?
+      head :not_found
+    else
+      render json: @ticket, include: ['assignee', 'labels']
+    end
   end
 
   def create
+    Rails.logger.info "Parâmetros recebidos: #{params.inspect}"
     @ticket = build_ticket
+    Rails.logger.info "Ticket criado: #{@ticket.inspect}"
+    return unless @ticket&.persisted?
+
+    send_ticket_notification if @ticket.send_notification?
+    render json: @ticket, status: :created
   end
 
   def update
     update_ticket(@ticket)
+    render json: @ticket, status: :ok
   end
 
   def destroy
@@ -53,6 +64,8 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     raise CustomExceptions::Ticket, I18n.t('activerecord.errors.models.ticket.errors.need_to_be_assigned') if @ticket.assignee.blank?
 
     @ticket.update!(status: :resolved, resolved_at: Time.current)
+    send_resolution_notification if @ticket.send_notification?  # Envia notificação se send_notification for true
+    render json: @ticket, status: :ok  # Retorna o ticket atualizado
   end
 
   def add_label
@@ -84,5 +97,65 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     else
       current_account.tickets.assigned_to(current_user.id)
     end
+  end
+
+  def ticket_params
+    request_params = params.require(:ticket).permit(
+      :title,
+      :description,
+      :status,
+      :assigned_to,
+      :conversation_id,
+      :account_id,
+      :user_id,
+      :resolved_at,
+      :send_notification,
+      custom_attributes: {}
+    )
+    request_params[:send_notification] = params[:sendNotification] if params[:sendNotification].present?
+    request_params[:conversation_id] = params[:conversation_id] if params[:conversation_id].present?
+    request_params
+  end
+
+  def send_ticket_notification
+    return unless @ticket.conversation_id.present?
+
+    conversation = Conversation.find(@ticket.conversation_id)
+    return unless conversation.present?
+
+    message_content = "Seu ticket #{@ticket.id} foi criado com sucesso!, \nDescrição: #{@ticket.description}"
+    
+    message_builder = Messages::MessageBuilder.new(
+      current_user,
+      conversation,
+      { content: message_content }
+    )
+    message_builder.perform
+    
+    Rails.logger.info "Notificação enviada para o ticket #{@ticket.id}: #{message_content}"
+  rescue StandardError => e
+    Rails.logger.error "Falha ao enviar notificação para o ticket #{@ticket.id}: #{e.message}"
+  end
+
+  def send_resolution_notification
+    return unless @ticket.conversation_id.present?
+
+    conversation = Conversation.find(@ticket.conversation_id)
+    return unless conversation.present?
+
+    # Formata a data e hora da resolução
+    resolved_at_formatted = @ticket.resolved_at.strftime('%d/%m/%Y %H:%M:%S')
+    message_content = "Seu ticket #{@ticket.id} foi resolvido!\nData da Resolução: #{resolved_at_formatted}"
+    
+    message_builder = Messages::MessageBuilder.new(
+      current_user,
+      conversation,
+      { content: message_content }
+    )
+    message_builder.perform
+    
+    Rails.logger.info "Notificação de resolução enviada para o ticket #{@ticket.id}: #{message_content}"
+  rescue StandardError => e
+    Rails.logger.error "Falha ao enviar notificação de resolução para o ticket #{@ticket.id}: #{e.message}"
   end
 end

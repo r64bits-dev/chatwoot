@@ -22,19 +22,33 @@
         :placeholder="$t('CONVERSATION.CUSTOM_TICKET.DESCRIPTION_PLACEHOLDER')"
         @blur="validateText"
       />
-
-      <!-- custom attributes -->
-      <div class="w-full flex-shrink-0 flex-grow-0">
-        <p class="text-sm font-medium leading-6 text-slate-900 dark:text-white">
-          <!-- {{ $t('CONVERSATION.CUSTOM_TICKET.CUSTOM_ATTRIBUTES') }} -->
-          Atributos Personalizados
-        </p>
-        <custom-attributes
-          attribute-type="ticket_attribute"
-          class="w-full"
-          @update-contact-custom-attributes="updateContactCustomAttributes"
-        />
+      <!-- notification radio button -->
+      <div class="columns mt-3">
+        <label class="text-sm font-medium leading-5 text-slate-900 dark:text-white">
+          {{ $t('CONVERSATION.CUSTOM_TICKET.NOTIFY_MESSAGE') }}
+        </label>
+        <div class="flex gap-4 mt-2">
+          <label class="flex items-center">
+            <input
+              v-model="sendNotification"
+              type="radio"
+              value="yes"
+              class="mr-2"
+            />
+            {{ $t('CONVERSATION.CUSTOM_TICKET.YES') }}
+          </label>
+          <label class="flex items-center">
+            <input
+              v-model="sendNotification"
+              type="radio"
+              value="no"
+              class="mr-2"
+            />
+            {{ $t('CONVERSATION.CUSTOM_TICKET.NO') }}
+          </label>
+        </div>
       </div>
+
       <div class="flex flex-row justify-end gap-2 py-2 px-0 w-full">
         <woot-button variant="clear" @click.prevent="onClose">
           {{ $t('CONVERSATION.CUSTOM_TICKET.CANCEL') }}
@@ -73,6 +87,7 @@ export default {
       description: '',
       priority: '',
       customAttributes: {},
+      sendNotification: 'yes', // "SIM" como padrão
     };
   },
   computed: {
@@ -102,12 +117,14 @@ export default {
       );
     },
     onSubmit() {
+
       this.$store
         .dispatch('tickets/create', {
           title: this.title,
           description: this.description,
           conversationId: this.conversationId,
           customAttributes: this.customAttributes,
+          sendNotification: this.sendNotification === 'yes',
         })
         .then(() => {
           this.showAlert(this.$t('CONVERSATION.CUSTOM_TICKET.SUCCESS_MESSAGE'));

@@ -13,6 +13,8 @@ const state = {
   labels: [],
   selectedTicket: null,
   customAttributes: {},
+  sendNotification: 'yes',
+  agentId: null,
   uiFlags: {
     isCreating: false,
     isFetching: false,
@@ -49,6 +51,12 @@ export const getters = {
   },
   getCustomAttributes($state) {
     return $state.customAttributes;
+  },
+  getSendNotification($state) {
+    return $state.sendNotification;
+  },
+  getAgentId($state){
+    return $state.agentId;
   },
   getPagination($state) {
     return $state.pagination;
@@ -111,7 +119,7 @@ export const actions = {
   },
   create: async (
     { commit },
-    { title, description, status, assigneeId, conversationId, customAttributes }
+    { title, description, status, assigneeId, conversationId, customAttributes, sendNotification, agentId }
   ) => {
     commit(types.default.SET_TICKETS_UI_FLAG, { isCreating: true });
     try {
@@ -123,6 +131,8 @@ export const actions = {
         conversation_id: conversationId,
         display_id: conversationId,
         custom_attributes: customAttributes,
+        sendNotification: sendNotification,
+        agent_id: agentId
       });
       commit(types.default.SET_TICKETS, response.data);
       commit(types.default.SET_TICKETS_UI_FLAG, {
@@ -286,6 +296,12 @@ export const mutations = {
   },
   [types.default.SET_TICKET_CUSTOM_ATTRIBUTES]($state, customAttributes) {
     $state.customAttributes = customAttributes;
+  },
+  [types.default.SET_TICKET_SEND_NOTIFICATION]($state, sendNotification) {
+    $state.sendNotification = sendNotification;
+  },
+  [types.default.SET_TICKET_AGENT_ID]($state, agentId) {
+    $state.agentId = agentId;
   },
   [types.default.SET_TICKETS_PAGINATION]($state, pagination) {
     $state.pagination = pagination;

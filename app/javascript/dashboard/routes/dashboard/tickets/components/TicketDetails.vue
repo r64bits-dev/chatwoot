@@ -36,6 +36,32 @@
               :placeholder="$t('TICKETS.DESCRIPTION_PLACEHOLDER')"
               help-text="Forneça uma descrição detalhada."
             />
+            <!-- Campo de Notificação para Edição -->
+            <div class="mt-4">
+              <label class="text-sm font-medium leading-5 text-slate-900 dark:text-white">
+                {{ $t('CONVERSATION.CUSTOM_TICKET.NOTIFY_MESSAGE_RESOLVE') }}
+              </label>
+              <div class="flex gap-4 mt-2">
+                <label class="flex items-center">
+                  <input
+                    v-model="sendNotification"
+                    type="radio"
+                    :value="true"
+                    class="mr-2"
+                  />
+                  {{ $t('CONVERSATION.CUSTOM_TICKET.YES') }}
+                </label>
+                <label class="flex items-center">
+                  <input
+                    v-model="sendNotification"
+                    type="radio"
+                    :value="false"
+                    class="mr-2"
+                  />
+                  {{ $t('CONVERSATION.CUSTOM_TICKET.NO') }}
+                </label>
+              </div>
+            </div>
             <woot-button
               color-scheme="primary"
               class="my-4 w-full"
@@ -85,6 +111,15 @@
                 <strong>{{ ticket.resolved_at || '-' }}</strong>
               </p>
             </div>
+            <!-- Exibição do Send Notification vindo do getTicket -->
+            <div>
+              <h3 class="text-sm text-slate-600">
+                {{ $t('CONVERSATION.CUSTOM_TICKET.NOTIFY_MESSAGE_RESOLVE') }}:
+              </h3>
+              <p class="text-sm text-slate-600">
+                <strong>{{ ticket.send_notification ? $t('CONVERSATION.CUSTOM_TICKET.YES') : $t('CONVERSATION.CUSTOM_TICKET.NO') }}</strong>
+              </p>
+            </div>
           </div>
           <div class="flex flex-col">
             <h3 class="text-sm text-slate-600">
@@ -132,6 +167,7 @@
     </woot-modal>
   </section>
 </template>
+
 <script>
 import { mapGetters } from 'vuex';
 import MoreActionsDropdown from './MoreActionsDropdown.vue';
@@ -157,6 +193,7 @@ export default {
     isEditing: false,
     createModalVisible: false,
     showLabelSelector: false,
+    sendNotification: false, // Estado local sincronizado com ticket.send_notification
   }),
   computed: {
     ...mapGetters({
@@ -173,7 +210,25 @@ export default {
       return this.ticket.assigned_to.name;
     },
   },
+  watch: {
+    // Sincroniza o estado local com o valor do ticket vindo do getTicket
+    'ticket.send_notification': {
+      immediate: true,
+      handler(newVal) {
+        this.sendNotification = newVal;
+      },
+    },
+  },
+  created() {
+    // Carrega os dados do ticket ao inicializar o componente
+    this.loadTicket();
+  },
   methods: {
+    loadTicket() {
+      this.$store.dispatch('tickets/show', { ticketId: this.ticketId }).catch(error => {
+        this.showAlert(error.message || 'Erro ao carregar o ticket');
+      });
+    },
     updateDescription(newValue) {
       this.$store.dispatch('tickets/update', {
         ticketId: this.ticketId,
@@ -189,13 +244,21 @@ export default {
     },
     saveChanges() {
       this.isEditing = false;
-      this.$store.dispatch('tickets/update', {
-        ticketId: this.ticketId,
-        body: {
-          title: this.ticket.title,
-          description: this.ticket.description,
-        },
-      });
+      this.$store
+        .dispatch('tickets/update', {
+          ticketId: this.ticketId,
+          body: {
+            title: this.ticket.title,
+            description: this.ticket.description,
+            sendNotification: this.sendNotification,
+          },
+        })
+        .then(() => {
+          this.showAlert(this.$t('TICKETS.ACTIONS.SAVE_SUCCESS'), 'success');
+        })
+        .catch(error => {
+          this.showAlert(error.message || this.$t('TICKETS.ACTIONS.SAVE_ERROR'));
+        });
     },
     toggleLabelSelector() {
       this.showLabelSelector = !this.showLabelSelector;

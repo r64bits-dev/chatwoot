@@ -21,22 +21,21 @@
                 name="name"
                 class="w-full"
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.LABEL')"
-                :placeholder="
-                  $t('SEARCH.CREATE_CONVERSATION.FORM.NAME.PLACEHOLDER')
-                "
+                :placeholder="$t('SEARCH.CREATE_CONVERSATION.FORM.NAME.PLACEHOLDER')"
                 @input="onSearchQueryChange"
+                ref="nameInput"
               >
                 <template v-if="searchResults.length" #after>
-                  <div class="search-dropdown">
+                  <div class="search-dropdown" ref="searchDropdown">
                     <ul>
                       <li
                         v-for="contact in searchResults"
                         :key="contact.id"
                         @click="selectContact(contact)"
                       >
-                        <div>{{ contact.name }}</div>
-                        <small>{{ contact.email }}</small>
-                        <small>{{ contact.phone_number }}</small>
+                        <div style="color:black">{{ contact.name }}</div>
+                        <small style="color:black">{{ contact.email }}</small>
+                        <small style="color:black">{{ contact.phone_number }}</small>
                       </li>
                     </ul>
                   </div>
@@ -47,9 +46,7 @@
                 name="email"
                 class="w-1/2"
                 :label="$t('SEARCH.CREATE_CONVERSATION.FORM.EMAIL.LABEL')"
-                :placeholder="
-                  $t('SEARCH.CREATE_CONVERSATION.FORM.EMAIL.PLACEHOLDER')
-                "
+                :placeholder="$t('SEARCH.CREATE_CONVERSATION.FORM.EMAIL.PLACEHOLDER')"
                 @blur="$v.conversationEmail.$touch"
               />
             </div>
@@ -60,9 +57,7 @@
                   v-model="phoneNumber"
                   :value="phoneNumber"
                   :error="isPhoneNumberNotValid"
-                  :placeholder="
-                    $t('CONTACT_FORM.FORM.PHONE_NUMBER.PLACEHOLDER')
-                  "
+                  :placeholder="$t('CONTACT_FORM.FORM.PHONE_NUMBER.PLACEHOLDER')"
                   @input="onPhoneNumberInputChange"
                   @blur="handlePhoneBlur"
                   @setCode="setPhoneCode"
@@ -71,8 +66,6 @@
                   {{ phoneNumberError }}
                 </span>
               </label>
-
-              <!-- Div de mensagem de ajuda mostrada somente quando em foco -->
               <div
                 v-if="isPhoneInputFocused"
                 class="callout small warning text-sm dark:bg-yellow-200/20 dark:text-yellow-400"
@@ -111,9 +104,7 @@
                     :channel-type="option.channel_type"
                   />
                   <span v-else>
-                    {{
-                      $t('SEARCH.CREATE_CONVERSATION.FORM.INBOX.PLACEHOLDER')
-                    }}
+                    {{ $t('SEARCH.CREATE_CONVERSATION.FORM.INBOX.PLACEHOLDER') }}
                   </span>
                 </template>
                 <template slot="option" slot-scope="{ option }">
@@ -132,18 +123,42 @@
             </label>
           </div>
 
+          <!-- select team -->
+          <div class="w-full">
+            <label>
+              {{ $t('SEARCH.CREATE_CONVERSATION.FORM.TEAM.LABEL') }}
+            </label>
+            <div class="multiselect-wrap--small">
+              <multiselect
+                v-model="team"
+                track-by="id"
+                label="name"
+                :placeholder="$t('SEARCH.CREATE_CONVERSATION.FORM.TEAM.PLACEHOLDER')"
+                selected-label=""
+                select-label=""
+                deselect-label=""
+                :max-height="160"
+                :close-on-select="true"
+                :options="teams"
+                :allow-empty="true"
+              >
+                <template slot="singleLabel" slot-scope="{ option }">
+                  <span>{{ option.name }}</span>
+                </template>
+                <template slot="option" slot-scope="{ option }">
+                  <span>{{ option.name }}</span>
+                </template>
+              </multiselect>
+            </div>
+          </div>
+
           <!-- input message -->
           <div class="w-full">
-            <h4 class="text-lg font-semibold mb-2">
-              {{ $t('SEARCH.CREATE_CONVERSATION.MESSAGE_TITLE') }}
-            </h4>
             <text-area
               v-model.trim="conversationMessage.content"
               class="w-full mb-2"
               :label="$t('SEARCH.CREATE_CONVERSATION.FORM.MESSAGE.LABEL')"
-              :placeholder="
-                $t('SEARCH.CREATE_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')
-              "
+              :placeholder="$t('SEARCH.CREATE_CONVERSATION.FORM.MESSAGE.PLACEHOLDER')"
               @input="onMessageInputChange"
             />
           </div>
@@ -151,9 +166,7 @@
         <div class="w-full flex items-center gap-2 mb-4">
           <woot-toggle
             v-model="assignCurrentUser"
-            :label="
-              $t('SEARCH.CREATE_CONVERSATION.FORM.ASSIGN_CURRENT_USER.DESC')
-            "
+            :label="$t('SEARCH.CREATE_CONVERSATION.FORM.ASSIGN_CURRENT_USER.DESC')"
           />
         </div>
       </form>
@@ -214,6 +227,7 @@ export default {
         id: this.selectedInbox,
       },
       phoneNumber: '',
+      team: null,
       isCreating: false,
       isPhoneInputFocused: false,
       activeDialCode: '',
@@ -228,12 +242,14 @@ export default {
     conversationMessage: { required },
     phoneNumber: { required },
     inbox: { required },
+    team: {},
   },
   computed: {
     ...mapGetters({
       currentUser: 'getCurrentUser',
       currentAccount: 'getCurrentAccount',
       inboxes: 'inboxes/getInboxes',
+      teams: 'teams/getTeams',
     }),
     isFormValid() {
       return !this.$v.$invalid;
@@ -250,12 +266,10 @@ export default {
     phoneNumberError() {
       if (this.phoneNumber === '')
         return this.$t('CONTACT_FORM.FORM.PHONE_NUMBER.ERROR');
-
       return '';
     },
   },
   watch: {
-    immediate: true,
     selectedInbox(newValue) {
       this.setSelectedInbox(newValue);
     },
@@ -265,7 +279,27 @@ export default {
       }
     },
   },
+  mounted() {
+    document.addEventListener('click', this.handleClickOutside);
+  },
+  beforeDestroy() {
+    document.removeEventListener('click', this.handleClickOutside);
+  },
   methods: {
+    // Novo método para limpar todos os campos
+    resetForm() {
+      this.contactName = '';
+      this.conversationEmail = '';
+      this.conversationMessage = { type: 'input', content: '' };
+      this.inbox = { id: this.selectedInbox }; // Mantém o inbox inicial se aplicável
+      this.phoneNumber = '';
+      this.team = null;
+      this.isPhoneInputFocused = false;
+      this.activeDialCode = '';
+      this.searchResults = [];
+      this.assignCurrentUser = true;
+      this.$v.$reset(); // Reseta as validações do vuelidate
+    },
     async onSubmit() {
       this.$v.$touch();
       if (!this.isFormValid) {
@@ -284,6 +318,7 @@ export default {
           inboxId: this.inbox.id,
           assignCurrentUser: this.assignCurrentUser,
           type: 'create_new_conversation',
+          teamId: this.team ? this.team.id : null,
         };
 
         const response = await ContactsAPI.createContactAndMessage(payload);
@@ -291,17 +326,17 @@ export default {
           this.showAlert(
             this.$t('SEARCH.CREATE_CONVERSATION.API.SUCCESS_MESSAGE')
           );
-          this.onCancel();
+          this.resetForm(); // Limpa os campos após sucesso
+          this.onCancel(); // Fecha o modal
           this.$router.push({
             name: 'inbox_conversation',
             params: { conversation_id: response.data.payload.conversation.id },
           });
         }
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error(error);
         if (error.response.status === 422) {
-          this.showAlert(this.$t('CONTACT_FORM.FORM.EMAIL_ADDRESS.DUPLICATE'));
+          this.showAlert(error.response.data.message);
         } else {
           this.showAlert(
             this.$t('SEARCH.CREATE_CONVERSATION.API.ERROR_MESSAGE')
@@ -338,7 +373,8 @@ export default {
       }
     },
     onCancel() {
-      this.$emit('cancel');
+      this.resetForm(); // Limpa os campos ao cancelar
+      this.$emit('cancel'); // Fecha o modal
     },
     onMessageInputChange(value) {
       this.conversationMessage.content = value;
@@ -360,7 +396,6 @@ export default {
         const response = await ContactsAPI.search(query);
         this.searchResults = response.data.payload;
       } catch (error) {
-        // eslint-disable-next-line no-console
         console.error('Erro ao buscar contatos:', error);
         this.searchResults = [];
       }
@@ -378,14 +413,15 @@ export default {
       const selectedInbox = this.inboxes.find(
         inbox => inbox.id === Number(inboxId)
       );
-
       if (selectedInbox) {
         this.inbox = selectedInbox;
       } else {
-        this.inboxId = null;
-        // eslint-disable-next-line no-console
+        this.inbox = null; // Reseta para null se não encontrado
         console.warn(`Inbox com ID ${inboxId} não encontrado.`);
       }
+    },
+    handleClickOutside(event) {
+      this.searchResults = [];
     },
   },
 };

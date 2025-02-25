@@ -1,8 +1,8 @@
 module Api::V2::Tickets::TicketHelper
   def build_ticket
     ActiveRecord::Base.transaction do
-      ticket = Ticket.new(ticket_params)
-      ticket.user = current_user
+      ticket = Ticket.new(ticket_params_with_agent)
+      ticket.user = current_user # Garante que o user seja definido (obrigatório)
       ticket.conversation = find_conversation(params[:display_id]) if params[:display_id].present?
       ticket.account = current_account
 
@@ -33,14 +33,41 @@ module Api::V2::Tickets::TicketHelper
   end
 
   def ticket_params
-    request_params = params.require(:ticket).permit(:title, :description, :status,
-                                                    :assigned_to, :conversation_id,
-                                                    :account_id, :user_id, :resolved_at, custom_attributes: {})
-    request_params[:conversation_id] = params.dig(:conversation, :id) if params.dig(:conversation, :id).present?
-    request_params
+    # Permitir parâmetros no nível raiz e dentro de ticket
+    request_params = params.permit(
+      :title,
+      :description,
+      :status,
+      :assigned_to,
+      :conversation_id,
+      :account_id,
+      :user_id,
+      :resolved_at,
+      :send_notification,
+      :agent_id, # Permitir agent_id no nível raiz
+      ticket: [:title, :description, :status, :assigned_to, :conversation_id, :account_id, :user_id, :resolved_at, :send_notification, custom_attributes: {}]
+    )
+
+    # Usar ticket como base se existir, senão usar parâmetros raiz
+    ticket_data = request_params[:ticket] || request_params
+    ticket_data[:conversation_id] = params[:conversation_id] if params[:conversation_id].present?
+    ticket_data
   end
 
- 
+  def ticket_params_with_agent
+    # Pegar os parâmetros básicos
+    base_params = ticket_params
+
+    # Mapear agent_id para assigned_to se presente
+    if params[:agent_id].present?
+      base_params[:assigned_to] = params[:agent_id]
+    end
+
+    # Garantir que send_notification seja incluído
+    base_params[:send_notification] = params[:sendNotification] if params[:sendNotification].present?
+    
+    base_params.except(:agent_id) # Remover agent_id para evitar conflitos
+  end
 
   private
 

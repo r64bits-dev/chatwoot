@@ -50,7 +50,6 @@
         @click="onSelectCountry(country)"
       >
         <span class="text-base mr-1">{{ country.emoji }}</span>
-
         <span
           class="max-w-[7.5rem] overflow-hidden text-ellipsis whitespace-nowrap"
         >
@@ -119,9 +118,9 @@ export default {
       selectedIndex: -1,
       showDropdown: false,
       searchCountry: '',
-      activeCountryCode: '',
-      activeDialCode: '',
-      phoneNumber: this.value,
+      activeCountryCode: 'BR',  // Define Brasil como padrão
+      activeDialCode: '+55',   // Define +55 como padrão
+      phoneNumber: '',         // Deixa vazio para o usuário preencher o número
     };
   },
   computed: {
@@ -146,15 +145,20 @@ export default {
     },
   },
   watch: {
-    value() {
-      const number = parsePhoneNumber(this.value);
+    value(newValue) {
+      const number = parsePhoneNumber(newValue);
       if (number) {
         this.activeCountryCode = number.country;
         this.activeDialCode = `+${number.countryCallingCode}`;
-        this.phoneNumber = this.value.replace(
+        this.phoneNumber = newValue.replace(
           `+${number.countryCallingCode}`,
           ''
         );
+      } else if (!newValue) {
+        // Se o valor for vazio, volta para o padrão +55 Brasil
+        this.activeCountryCode = 'BR';
+        this.activeDialCode = '+55';
+        this.phoneNumber = '';
       }
     },
   },
@@ -180,7 +184,6 @@ export default {
       if (this.activeDialCode === '+55') {
         // Remove tudo que não é dígito
         phoneNumber = phoneNumber.replace(/\D/g, '');
-
         // Adicionar a formatação (XX) 9XXXX-XXXX
         if (phoneNumber.length > 2) {
           phoneNumber = phoneNumber
@@ -263,6 +266,7 @@ export default {
   },
 };
 </script>
+
 <style scoped lang="scss">
 .phone-input--wrap {
   .phone-input {

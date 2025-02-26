@@ -17,13 +17,30 @@ class Messages::MessageBuilder
   end
 
   def perform
+    Rails.logger.error "Iniciando perform para conversation #{@conversation.id}"
     ActiveRecord::Base.transaction do
+      Rails.logger.error "Construindo mensagem com params: #{message_params.inspect}"
       @message = @conversation.messages.build(message_params)
+      Rails.logger.error "Mensagem construída: #{@message.inspect}"
+  
+      Rails.logger.error "Processando attachments"
       process_attachments
+      Rails.logger.error "Attachments processados"
+  
+      Rails.logger.error "Processando emails"
       process_emails
+      Rails.logger.error "Emails processados"
+  
+      Rails.logger.error "Tentando salvar mensagem: #{@message.inspect}"
       @message.save!
+      Rails.logger.error "Mensagem salva com ID: #{@message.id}"
+  
       @message
     end
+  rescue StandardError => e
+    Rails.logger.error "Erro em perform: #{e.message}"
+    Rails.logger.error e.backtrace.join("\n")
+    raise e # Re-levanta a exceção para não silenciar o problema
   end
 
   private

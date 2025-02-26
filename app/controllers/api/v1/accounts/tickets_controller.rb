@@ -33,8 +33,8 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   def create
     Rails.logger.info "Parâmetros recebidos: #{params.inspect}"
     @ticket = build_ticket
-    Rails.logger.info "Ticket criado: #{@ticket.inspect}"
-
+    Rails.logger.info "Ticket criado: #{@ticket.inspect}, conversation_id: #{@ticket.conversation_id}"
+  
     if @ticket&.persisted?
       send_ticket_notification if @ticket.send_notification?
       render json: @ticket, status: :created
@@ -104,23 +104,33 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
   end
 
   def send_ticket_notification
-    return unless @ticket.conversation_id.present?
-
+    Rails.logger.info "Starting send_ticket_notification for ticket #{@ticket.id}"
+    unless @ticket.conversation_id.present?
+      Rails.logger.warn "No conversation_id for ticket #{@ticket.id}"
+      return
+    end
+  
     conversation = Conversation.find(@ticket.conversation_id)
-    return unless conversation.present?
-
+    Rails.logger.info "Conversation loaded: ID=#{conversation.id}, Account_ID=#{conversation.account_id}"
+    unless conversation.present? && conversation.account_id == current_account.id
+      Rails.logger.error "Conversation #{@ticket.conversation_id} não pertence ao account #{current_account.id}"
+      return
+    end
+  
     message_content = "Seu ticket #{@ticket.id} foi criado com sucesso!, \nDescrição: #{@ticket.description}"
-    
     message_builder = Messages::MessageBuilder.new(
       current_user,
       conversation,
-      { content: message_content }
+      { content: message_content, account_id: current_account.id } # Forçar account_id
     )
-    message_builder.perform
-    
-    Rails.logger.info "Notificação enviada para o ticket #{@ticket.id}: #{message_content}"
+    result = message_builder.perform
+    if result
+      Rails.logger.info "Notification sent for ticket #{@ticket.id}: #{message_content}"
+    else
+      Rails.logger.error "MessageBuilder failed silently for ticket #{@ticket.id}"
+    end
   rescue StandardError => e
-    Rails.logger.error "Falha ao enviar notificação para o ticket #{@ticket.id}: #{e.message}"
+    Rails.logger.error "Failed to send notification for ticket #{@ticket.id}: #{e.message}"
   end
 
   def send_resolution_notification
@@ -139,7 +149,7 @@ class Api::V1::Accounts::TicketsController < Api::V1::Accounts::BaseController
     )
     message_builder.perform
     
-    Rails.logger.info "Notificação de resolução enviada para o ticket #{@ticket.id}: #{message_content}"
+    Rails.logger.error "Notificação de resolução enviada para o ticket #{@ticket.id}: #{message_content}"
   rescue StandardError => e
     Rails.logger.error "Falha ao enviar notificação de resolução para o ticket #{@ticket.id}: #{e.message}"
   end

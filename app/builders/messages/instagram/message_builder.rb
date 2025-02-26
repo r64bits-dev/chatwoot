@@ -15,8 +15,7 @@ class Messages::Instagram::MessageBuilder < Messages::Messenger::MessageBuilder
   end
 
   def perform
-    return if @inbox.channel.reauthorization_required?
-
+    @inbox.channel.reauthorization_required?
     ActiveRecord::Base.transaction do
       build_message
     end

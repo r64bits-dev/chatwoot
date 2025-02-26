@@ -3,11 +3,22 @@ module Api::V2::Tickets::TicketHelper
     ActiveRecord::Base.transaction do
       ticket = Ticket.new(ticket_params_with_agent)
       ticket.user = current_user # Garante que o user seja definido (obrigatório)
-      ticket.conversation = find_conversation(params[:display_id]) if params[:display_id].present?
+  
+      # Usar conversation_id dos parâmetros e validar
+      if params[:ticket][:conversation_id].present?
+        conversation = Conversation.find_by(display_id: params[:ticket][:conversation_id], account_id: current_account.id)
+        unless conversation
+          Rails.logger.error "Conversation #{params[:ticket][:conversation_id]} não encontrada ou não pertence ao account #{current_account.id}"
+          raise "Conversation inválida para o account atual"
+        end
+        ticket.conversation = conversation
+        Rails.logger.info "Conversation associada ao ticket: ID=#{conversation.id}, Account_ID=#{conversation.account_id}"
+      end
+  
       ticket.account = current_account
-
       create_or_update_labels(ticket)
       ticket.save!
+      Rails.logger.info "Ticket salvo: #{ticket.inspect}"
       ticket
     end
   end
@@ -72,6 +83,11 @@ module Api::V2::Tickets::TicketHelper
   private
 
   def find_conversation(display_id)
-    Conversation.find_by(display_id: display_id)
+    conversation = Conversation.find_by(display_id: display_id, account_id: current_account.id)
+    unless conversation
+      Rails.logger.error "Nenhuma conversation encontrada para display_id: #{display_id} no account #{current_account.id}"
+      raise "Conversation não encontrada"
+    end
+    conversation
   end
 end

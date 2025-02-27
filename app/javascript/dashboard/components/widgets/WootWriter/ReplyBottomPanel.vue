@@ -135,8 +135,8 @@
       <woot-button
         size="small"
         :class-names="buttonClass"
-        :is-disabled="isSendDisabled"
-        @click="onSend"
+        :is-disabled="isSendDisabled" 
+        @click="handleSendClick"
       >
         {{ sendButtonText }}
       </woot-button>
@@ -170,6 +170,10 @@ export default {
     mode: {
       type: String,
       default: REPLY_EDITOR_MODES.REPLY,
+    },
+    isAssignedToCurrentUser: { // Nova prop
+      type: Boolean,
+      default: true,
     },
     onSend: {
       type: Function,
@@ -264,6 +268,8 @@ export default {
     ...mapGetters({
       accountId: 'getCurrentAccountId',
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
+      currentUser: 'getCurrentUser', // Adicionado para acessar o usuário atual
+      currentChat: 'getSelectedChat', // Adicionado para acessar a conversa atual
     }),
     isNote() {
       return this.mode === REPLY_EDITOR_MODES.NOTE;
@@ -285,11 +291,9 @@ export default {
       if (this.isALineChannel) {
         return false;
       }
-      // Disable audio recorder for safari browser as recording is not supported
       const isSafari = /^((?!chrome|android|crios|fxios).)*safari/i.test(
         navigator.userAgent
       );
-
       return (
         this.isFeatureEnabledonAccount(
           this.accountId,
@@ -316,7 +320,6 @@ export default {
     },
     audioRecorderPlayStopIcon() {
       switch (this.recordingAudioState) {
-        // playing paused recording stopped inactive destroyed
         case 'playing':
           return 'microphone-pause';
         case 'paused':
@@ -334,11 +337,9 @@ export default {
       return !this.isOnPrivateNote;
     },
     sendWithSignature() {
-      // channelType is sourced from inboxMixin
       return this.fetchSignatureFlagFromUiSettings(this.channelType);
     },
     sendWithDisplayName() {
-      // channelType is sourced from inboxMixin
       return this.fetchDisplayNameFlagFromUiSettings(this.channelType);
     },
     signatureToggleTooltip() {
@@ -379,6 +380,14 @@ export default {
     },
     toggleInsertArticle() {
       this.$emit('toggle-insert-article');
+    },
+    handleSendClick() {
+      debugger
+      if (!this.isAssignedToCurrentUser) {
+        this.$emit('show-not-assigned-error', this.conversationId);
+        return;
+      }
+      this.onSend();
     },
   },
 };

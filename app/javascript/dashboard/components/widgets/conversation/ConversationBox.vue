@@ -31,6 +31,7 @@
         v-if="currentChat.id"
         :inbox-id="inboxId"
         :is-contact-panel-open="isContactPanelOpen"
+        :is-assigned-to-current-user="isAssignedToCurrentUser"
         @contact-panel-toggle="onToggleContactPanel"
       />
       <empty-state v-else :is-on-expanded-layout="isOnExpandedLayout" />
@@ -57,6 +58,7 @@
     />
   </div>
 </template>
+
 <script>
 import { mapGetters } from 'vuex';
 import ContactPanel from 'dashboard/routes/dashboard/conversation/ContactPanel.vue';
@@ -96,7 +98,14 @@ export default {
     ...mapGetters({
       currentChat: 'getSelectedChat',
       dashboardApps: 'dashboardApps/getRecords',
+      currentUser: 'getCurrentUser', // Adicionado para verificar atribuição
     }),
+    isAssignedToCurrentUser() {
+      const currentUserId = this.currentUser.id;
+      const conversationAssigneeId = this.currentChat.meta.assignee.id;
+      // Retorna true se a conversa está atribuída ao usuário atual ou não atribuída
+      return conversationAssigneeId === currentUserId || conversationAssigneeId === null;
+    },
     dashboardAppTabs() {
       return [
         {
@@ -123,10 +132,18 @@ export default {
       this.fetchLabels();
       this.activeIndex = 0;
     },
+    'currentChat.assignee_id'(newAssigneeId) {
+      // Verifica se a conversa ainda está atribuída ao usuário atual
+      this.checkConversationAssignment(newAssigneeId);
+    },
   },
   mounted() {
     this.fetchLabels();
     this.$store.dispatch('dashboardApps/get');
+    this.setupWebSocketListeners(); // Configura os listeners do WebSocket
+  },
+  beforeDestroy() {
+    this.removeWebSocketListeners(); // Remove os listeners ao destruir o componente
   },
   methods: {
     fetchLabels() {
@@ -141,9 +158,52 @@ export default {
     onDashboardAppTabChange(index) {
       this.activeIndex = index;
     },
+    setupWebSocketListeners() {
+      // Exemplo: Assumindo que você usa um canal de eventos como 'bus' ou diretamente o WebSocket
+      // Substitua 'bus' pelo seu sistema de eventos real, se for diferente
+      bus.$on('conversation_updated', this.handleConversationUpdate);
+    },
+    removeWebSocketListeners() {
+      bus.$off('conversation_updated', this.handleConversationUpdate);
+    },
+    handleConversationUpdate(event) {
+      // Evento recebido do WebSocket com informações da conversa atualizada
+      if (event.conversation_id === this.currentChat.id) {
+        const newAssigneeId = event.assignee_id;
+        this.checkConversationAssignment(newAssigneeId);
+      }
+    },
+    checkConversationAssignment(assigneeId) {
+      const currentUserId = this.currentUser.id;
+      if (assigneeId !== currentUserId && assigneeId !== null) {
+        this.closeConversationView();
+        return false; // Adicionado retorno para usar na validação
+      }
+      if (assigneeId === null && this.isAssignedToMeFilterActive()) {
+        this.closeConversationView();
+        return false;
+      }
+      return true;
+    },
+    isAssignedToMeFilterActive() {
+      // Verifica se o contexto atual предполага que apenas conversas atribuídas ao usuário devem ser exibidas
+      // Ajuste conforme sua lógica de filtros (ex.: pode estar em uiSettings ou rota)
+      return this.$route.name === 'conversation_mentions' || false; // Exemplo, ajuste conforme necessário
+    },
+    closeConversationView() {
+      // Redireciona para a lista de conversas ou outra tela apropriada
+      const {
+        params: { accountId, inbox_id: inboxId, label, teamId },
+        name,
+      } = this.$route;
+      const conversationListUrl = `/app/accounts/${accountId}/conversations`; // Ajuste conforme sua rota
+      this.$router.push(conversationListUrl);
+      this.$store.dispatch('setCurrentChat', {}); // Limpa a conversa atual no Vuex
+    },
   },
 };
 </script>
+
 <style lang="scss" scoped>
 .conversation-details-wrap {
   @apply flex flex-col min-w-0 w-full;

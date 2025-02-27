@@ -232,6 +232,7 @@
         "CANCEL": "Cancelar"
       }
     },
+    "NOT_ASSIGNED_TO_YOU": "Não é possível enviar a mensagem, pois esta conversa não está atribuída a voce",
     "PREVIOUS_CONVERSATIONS": {
       "BUTTON": "Ver conversas anteriores",
       "DIVIDER_TITLE": "Protocolo Id: %{conversationId}"

@@ -102,7 +102,9 @@
       <reply-box
         :conversation-id="currentChat.id"
         :popout-reply-box.sync="isPopoutReplyBox"
+        :is-assigned-to-current-user="isAssignedToCurrentUser" 
         @click="showPopoutReplyBox"
+        @before-send="validateAssignmentBeforeSend"
       />
     </div>
   </div>
@@ -127,6 +129,7 @@ import inboxMixin, { INBOX_FEATURES } from 'shared/mixins/inboxMixin';
 import configMixin from 'shared/mixins/configMixin';
 import eventListenerMixins from 'shared/mixins/eventListenerMixins';
 import aiMixin from 'dashboard/mixins/aiMixin';
+import alertMixin from 'shared/mixins/alertMixin';
 
 // utils
 import { getTypingUsersText } from '../../../helper/commons';
@@ -154,11 +157,16 @@ export default {
     eventListenerMixins,
     configMixin,
     aiMixin,
+    alertMixin,
   ],
   props: {
     isContactPanelOpen: {
       type: Boolean,
       default: false,
+    },
+    isAssignedToCurrentUser: { // Nova prop recebida do ConversationBox
+      type: Boolean,
+      default: true,
     },
   },
 
@@ -186,6 +194,7 @@ export default {
       appIntegrations: 'integrations/getAppIntegrations',
       isFeatureEnabledonAccount: 'accounts/isFeatureEnabledonAccount',
       currentAccountId: 'getCurrentAccountId',
+      currentUser: 'getCurrentUser',
     }),
     contact() {
       return this.$store.getters['contacts/getContact'](this.contactId);
@@ -222,12 +231,9 @@ export default {
     },
     typingUserNames() {
       const userList = this.typingUsersList;
-
       if (this.isAnyoneTyping) {
-        const userListAsName = getTypingUsersText(userList);
-        return userListAsName;
+        return getTypingUsersText(userList);
       }
-
       return '';
     },
     getMessages() {
@@ -238,16 +244,10 @@ export default {
       return messages;
     },
     getReadMessages() {
-      return this.readMessages(
-        this.getMessages,
-        this.currentChat.agent_last_seen_at
-      );
+      return this.readMessages(this.getMessages, this.currentChat.agent_last_seen_at);
     },
     getUnReadMessages() {
-      return this.unReadMessages(
-        this.getMessages,
-        this.currentChat.agent_last_seen_at
-      );
+      return this.unReadMessages(this.getMessages, this.currentChat.agent_last_seen_at);
     },
     shouldShowSpinner() {
       return (
@@ -257,37 +257,24 @@ export default {
     },
     conversationType() {
       const { additional_attributes: additionalAttributes } = this.currentChat;
-      const type = additionalAttributes ? additionalAttributes.type : '';
-      return type || '';
+      return additionalAttributes ? additionalAttributes.type : '';
     },
-
     isATweet() {
       return this.conversationType === 'tweet';
     },
     isRightOrLeftIcon() {
-      if (this.isContactPanelOpen) {
-        return 'arrow-chevron-right';
-      }
-      return 'arrow-chevron-left';
+      return this.isContactPanelOpen ? 'arrow-chevron-right' : 'arrow-chevron-left';
     },
     getLastSeenAt() {
-      const { contact_last_seen_at: contactLastSeenAt } = this.currentChat;
-      return contactLastSeenAt;
+      return this.currentChat.contact_last_seen_at;
     },
-
     replyWindowBannerMessage() {
       if (this.isAWhatsAppChannel) {
         return this.$t('CONVERSATION.TWILIO_WHATSAPP_CAN_REPLY');
       }
       if (this.isAPIInbox) {
         const { additional_attributes: additionalAttributes = {} } = this.inbox;
-        if (additionalAttributes) {
-          const {
-            agent_reply_time_window_message: agentReplyTimeWindowMessage,
-          } = additionalAttributes;
-          return agentReplyTimeWindowMessage;
-        }
-        return '';
+        return additionalAttributes?.agent_reply_time_window_message || '';
       }
       return this.$t('CONVERSATION.CANNOT_REPLY');
     },
@@ -317,7 +304,6 @@ export default {
       const outgoing =
         this.inboxHasFeature(INBOX_FEATURES.REPLY_TO_OUTGOING) &&
         !this.is360DialogWhatsAppChannel;
-
       return { incoming, outgoing };
     },
   },
@@ -335,10 +321,7 @@ export default {
 
   created() {
     bus.$on(BUS_EVENTS.SCROLL_TO_MESSAGE, this.onScrollToMessage);
-    // when a new message comes in, we refetch the label suggestions
     bus.$on(BUS_EVENTS.FETCH_LABEL_SUGGESTIONS, this.fetchSuggestions);
-    // when a message is sent we set the flag to true this hides the label suggestions,
-    // until the chat is changed and the flag is reset in the watch for currentChat
     bus.$on(BUS_EVENTS.MESSAGE_SENT, () => {
       this.messageSentSinceOpened = true;
     });
@@ -357,39 +340,16 @@ export default {
 
   methods: {
     async fetchSuggestions() {
-      // start empty, this ensures that the label suggestions are not shown
       this.labelSuggestions = [];
-
-      if (this.isLabelSuggestionDismissed()) {
-        return;
-      }
-
-      if (!this.isEnterprise) {
-        return;
-      }
-
-      // method available in mixin, need to ensure that integrations are present
+      if (this.isLabelSuggestionDismissed()) return;
+      if (!this.isEnterprise) return;
       await this.fetchIntegrationsIfRequired();
-
-      if (!this.isLabelSuggestionFeatureEnabled) {
-        return;
-      }
-
+      if (!this.isLabelSuggestionFeatureEnabled) return;
       this.labelSuggestions = await this.fetchLabelSuggestions({
         conversationId: this.currentChat.id,
       });
-
-      // once the labels are fetched, we need to scroll to bottom
-      // but we need to wait for the DOM to be updated
-      // so we use the nextTick method
       this.$nextTick(() => {
-        // this param is added to route, telling the UI to navigate to the message
-        // it is triggered by the SCROLL_TO_MESSAGE method
-        // see setActiveChat on ConversationView.vue for more info
         const { messageId } = this.$route.query;
-
-        // only trigger the scroll to bottom if the user has not scrolled
-        // and there's no active messageId that is selected in view
         if (!messageId && !this.hasUserScrolled) {
           this.scrollToBottom();
         }
@@ -445,30 +405,16 @@ export default {
     scrollToBottom() {
       this.isProgrammaticScroll = true;
       let relevantMessages = [];
-
-      // label suggestions are not part of the messages list
-      // so we need to handle them separately
-      let labelSuggestions =
-        this.conversationPanel.querySelector('.label-suggestion');
-
-      // if there are unread messages, scroll to the first unread message
+      let labelSuggestions = this.conversationPanel.querySelector('.label-suggestion');
       if (this.unreadMessageCount > 0) {
-        // capturing only the unread messages
-        relevantMessages =
-          this.conversationPanel.querySelectorAll('.message--unread');
+        relevantMessages = this.conversationPanel.querySelectorAll('.message--unread');
       } else if (labelSuggestions) {
-        // when scrolling to the bottom, the label suggestions is below the last message
-        // so we scroll there if there are no unread messages
-        // Unread messages always take the highest priority
         relevantMessages = [labelSuggestions];
       } else {
-        // if there are no unread messages or label suggestion, scroll to the last message
-        // capturing last message from the messages list
         relevantMessages = Array.from(
           this.conversationPanel.querySelectorAll('.message--read')
         ).slice(-1);
       }
-
       this.conversationPanel.scrollTop = calculateScrollTop(
         this.conversationPanel.scrollHeight,
         this.$el.scrollHeight,
@@ -482,19 +428,13 @@ export default {
       this.heightBeforeLoad = this.conversationPanel.scrollHeight;
       this.scrollTopBeforeLoad = this.conversationPanel.scrollTop;
     },
-
     async fetchPreviousMessages(scrollTop = 0) {
       this.setScrollParams();
       const shouldLoadMoreMessages =
         this.currentChat.dataFetched === true &&
         !this.listLoadingStatus &&
         !this.isLoadingPrevious;
-
-      if (
-        scrollTop < 100 &&
-        !this.isLoadingPrevious &&
-        shouldLoadMoreMessages
-      ) {
+      if (scrollTop < 100 && !this.isLoadingPrevious && shouldLoadMoreMessages) {
         this.isLoadingPrevious = true;
         try {
           await this.$store.dispatch('fetchPreviousMessages', {
@@ -513,10 +453,8 @@ export default {
         }
       }
     },
-
     handleScroll(e) {
       if (this.isProgrammaticScroll) {
-        // Reset the flag
         this.isProgrammaticScroll = false;
         this.hasUserScrolled = false;
       } else {
@@ -525,22 +463,25 @@ export default {
       bus.$emit(BUS_EVENTS.ON_MESSAGE_LIST_SCROLL);
       this.fetchPreviousMessages(e.target.scrollTop);
     },
-
     makeMessagesRead() {
       this.$store.dispatch('markMessagesRead', { id: this.currentChat.id });
     },
-
     getInReplyToMessage(parentMessage) {
       if (!parentMessage) return {};
       const inReplyToMessageId = parentMessage.content_attributes?.in_reply_to;
       if (!inReplyToMessageId) return {};
-
-      return this.currentChat?.messages.find(message => {
-        if (message.id === inReplyToMessageId) {
-          return true;
-        }
+      return this.currentChat?.messages.find(message => message.id === inReplyToMessageId) || {};
+    },
+    validateAssignmentBeforeSend(messageData) {
+      if (!this.isAssignedToCurrentUser) {
+        this.showAlert(
+          this.$t('CONVERSATION.NOT_ASSIGNED_TO_YOU', {
+            conversationId: this.currentChat.id,
+          })
+        );
         return false;
-      });
+      }
+      return true;
     },
   },
 };
@@ -552,7 +493,6 @@ export default {
   .rounded-bl-calc {
     border-bottom-left-radius: calc(1.5rem + 1px);
   }
-
   .rounded-tl-calc {
     border-top-left-radius: calc(1.5rem + 1px);
   }
@@ -565,19 +505,15 @@ export default {
     .ProseMirror-woot-style {
       @apply max-h-[25rem];
     }
-
     .reply-box {
       @apply border border-solid border-slate-75 dark:border-slate-600 max-w-[75rem] w-[70%];
     }
-
-    .reply-box .reply-box__top {
+    .reply-box__top {
       @apply relative min-h-[27.5rem];
     }
-
     .reply-box__top .input {
       @apply min-h-[27.5rem];
     }
-
     .emoji-dialog {
       @apply absolute left-auto bottom-1;
     }

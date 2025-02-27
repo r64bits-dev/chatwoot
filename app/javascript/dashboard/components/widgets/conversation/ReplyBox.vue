@@ -135,6 +135,7 @@
       :message="message"
       :portal-slug="connectedPortalSlug"
       :new-conversation-modal-active="newConversationModalActive"
+      :is-assigned-to-current-user="isAssignedToCurrentUser"
       @selectWhatsappTemplate="openWhatsappTemplateModal"
       @toggle-editor="toggleRichContentEditor"
       @replace-text="replaceText"
@@ -238,6 +239,10 @@ export default {
     popoutReplyBox: {
       type: Boolean,
       default: false,
+    },
+    isAssignedToCurrentUser: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

@@ -173,7 +173,7 @@ export default {
     },
     isAssignedToCurrentUser: { // Nova prop
       type: Boolean,
-      default: true,
+      default: false,
     },
     onSend: {
       type: Function,

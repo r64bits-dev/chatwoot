@@ -37,6 +37,28 @@ const actions = {
     }
   },
 
+  getCurrentAssignee: ({ state }, conversationId) => {
+    return new Promise((resolve, reject) => {
+      try {
+        // Find the conversation in the state
+        const conversation = state.allConversations.find(
+          conv => conv.id === conversationId
+        );
+        
+        if (!conversation) {
+          reject(new Error('Conversation not found'));
+          return;
+        }
+  
+        // Get the assignee from the conversation meta
+        const assignee = conversation.meta?.assignee || null;
+        resolve(assignee);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
   fetchAllConversations: async ({ commit, dispatch }, params) => {
     commit(types.SET_LIST_LOADING_STATUS);
     try {

@@ -100,12 +100,10 @@ export default {
       dashboardApps: 'dashboardApps/getRecords',
       currentUser: 'getCurrentUser', // Adicionado para verificar atribuição
     }),
-    isAssignedToCurrentUser() {
+    async isAssignedToCurrentUser() {
       const currentUserId = this.currentUser.id;
-      //const conversationAssigneeId = this.currentChat.meta.assignee.id;
-      const conversationAssigneeId = this.currentChat.last_non_activity_message.conversation.assignee_id;
-      // Retorna true se a conversa está atribuída ao usuário atual ou não atribuída
-      return conversationAssigneeId === currentUserId;
+      const assignee = await this.$store.dispatch('getCurrentAssignee', this.currentChat.id);
+      return currentUserId === assignee.id;
     },
     dashboardAppTabs() {
       return [

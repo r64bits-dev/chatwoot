@@ -381,13 +381,14 @@ export default {
     toggleInsertArticle() {
       this.$emit('toggle-insert-article');
     },
-    handleSendClick() {
-      debugger
-      if (!this.isAssignedToCurrentUser) {
-        this.$emit('show-not-assigned-error', this.conversationId);
-        return;
+    async handleSendClick() {
+      const currentUserId = this.currentUser.id;
+      const assignee = await this.$store.dispatch('getCurrentAssignee', this.currentChat.id);
+      if (currentUserId === assignee.id) {
+         this.onSend();
+      } else {
+        this.showAlert('Você não está atribuído a esta conversa');
       }
-      this.onSend();
     },
   },
 };

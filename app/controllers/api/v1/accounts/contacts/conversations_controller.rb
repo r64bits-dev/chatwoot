@@ -4,18 +4,33 @@ class Api::V1::Accounts::Contacts::ConversationsController < Api::V1::Accounts::
 
   PER_PAGE = 100
 
+  def index
+    @conversations = Current.account.conversations.includes(
+      :assignee, :contact, :inbox, :taggings
+    ).where(inbox_id: inbox_ids, contact_id: @contact.id).order(id: :desc).limit(20)
+  end
+
   def messages; end
+
+  def create
+    # create contact if it doesn't exist
+    # create conversation if it doesn't exist
+    # create message
+  end
 
   private
 
   def find_conversation
     search_column = Rails.env.development? ? :id : :display_id
+
     @conversation = Current.account.conversations.includes(:inbox)
-                           .find_by(:inbox_id => inbox_ids, :contact_id => @contact.id, search_column => params[:id])
-    raise ActiveRecord::RecordNotFound, "Conversation not found for id #{params[:id]}" unless @conversation
+                           .order(created_at: :desc)
+                           .where(:inbox_id => inbox_ids, :contact_id => @contact.id, search_column => params[:id])
+                           .first
   end
 
   def load_messages
+    @messages = @conversation.messages.reorder(created_at: :desc).page(params[:page]).per(PER_PAGE)
     # Busca todas as conversas do contato até a data da conversa selecionada
     conversations = Current.account.conversations
                            .where(:inbox_id => inbox_ids, :contact_id => @contact.id)

@@ -29,7 +29,7 @@ module Api::V1::ConversationsHelper
     user_ids = inbox.auto_assignment_only_this_agents_ids
 
     # Verifica se o agente está disponível
-    return unless current_user.status == 'available' # Ajuste conforme seu modelo
+    return unless current_user.availability == 'online' # Ajuste conforme seu modelo
     return unless user_ids.present? && user_ids.include?(current_user.id)
     return unless max_limit.positive?
 
